@@ -265,8 +265,8 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-5"
             >
-              Intelligent investieren.<br />
-              <span className="text-zinc-400">Steuern sparen.</span>
+              Dein Mieter zahlt.<br />
+              <span className="text-zinc-400">Du baust Vermögen auf.</span>
             </motion.h1>
 
             <motion.p
@@ -275,7 +275,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
             >
-              Schau dir in 60 Sekunden an, wie du mit einer vermieteten Wohnung Steuern sparst und gleichzeitig Vermögen aufbaust.
+              Schau dir in 60 Sekunden an, wie aus einem Kredit eine Wohnung wird, die dir später allein gehört – und warum du dabei oft sogar Steuern sparst.
             </motion.p>
           </div>
 
@@ -313,8 +313,8 @@ export default function Home() {
               </p>
               <ul className="hidden lg:block space-y-4">
                 {[
-                  'Steuervorteil mit deinen echten Zahlen berechnet',
-                  'Passende Objekte, die nicht auf Portalen stehen',
+                  'Mieter und Steuervorteil zahlen mit',
+                  'Objekte, die nicht auf Portalen stehen',
                   '0 € Käuferprovision',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-zinc-700">
