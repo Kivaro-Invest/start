@@ -168,13 +168,14 @@ function scrollToCheck() {
 }
 
 function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLDivElement | null>; checkRef: RefObject<HTMLElement | null> }) {
-  const [heroVisible, setHeroVisible] = useState(true);
+  // Erst einblenden, wenn der Button unter dem Video nach OBEN aus dem Bild gescrollt wurde
+  const [pastHeroCta, setPastHeroCta] = useState(false);
   const [checkVisible, setCheckVisible] = useState(false);
 
   useEffect(() => {
     const obs = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (e.target === heroCtaRef.current) setHeroVisible(e.isIntersecting);
+        if (e.target === heroCtaRef.current) setPastHeroCta(!e.isIntersecting && e.boundingClientRect.top < 0);
         if (e.target === checkRef.current) setCheckVisible(e.isIntersecting);
       }
     }, { threshold: 0.05 });
@@ -183,7 +184,7 @@ function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLD
     return () => obs.disconnect();
   }, [heroCtaRef, checkRef]);
 
-  const show = !heroVisible && !checkVisible;
+  const show = pastHeroCta && !checkVisible;
 
   return (
     <AnimatePresence>
