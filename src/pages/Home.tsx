@@ -438,11 +438,6 @@ export default function Home() {
             <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet dich transparent und persönlich durch jeden Schritt.</p>
           </div>
 
-          <div className="relative mb-16 lg:mb-24 overflow-hidden rounded-3xl shadow-xl">
-            <img src="/objekte/region-stadt.webp" alt="Marktplatz in Schweinfurt" className="w-full aspect-[16/9] sm:aspect-[21/9] object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-zinc-950/10 to-transparent" />
-            <p className="absolute bottom-5 left-5 right-5 sm:bottom-8 sm:left-8 text-white text-lg sm:text-2xl font-semibold">Wohnungen in starken Städten der Region – saniert, vermietbar, verwaltet.</p>
-          </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
             <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200"></div>
