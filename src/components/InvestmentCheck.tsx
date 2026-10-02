@@ -12,7 +12,9 @@ import {
 } from '../lib/investmentCheck';
 import { getAttribution } from '../lib/attribution';
 
-type Status = 'idle' | 'submitting' | 'success' | 'error';
+type Status = 'idle' | 'submitting' | 'finishing' | 'success' | 'error';
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const inputClass =
   'w-full px-4 py-3.5 rounded-xl border border-zinc-200 bg-white text-base focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all';
@@ -43,7 +45,7 @@ export default function InvestmentCheck() {
   const questions = useMemo(() => visibleQuestions(answers), [answers]);
   const totalSteps = questions.length + 1; // + Kontakt
   const isContactStep = stepIndex >= questions.length;
-  const progress = status === 'success' ? 100 : Math.round(((stepIndex + 1) / (totalSteps + 1)) * 100);
+  const progress = status === 'success' || status === 'finishing' ? 100 : Math.round(((stepIndex + 1) / (totalSteps + 1)) * 100);
 
   useEffect(() => {
     // Fokus auf die neue Frage setzen (Screenreader & Tastatur), ohne die Seite springen zu lassen
@@ -77,10 +79,11 @@ export default function InvestmentCheck() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched(true);
-    if (!formOk || status === 'submitting') return;
+    if (!formOk || status === 'submitting' || status === 'finishing') return;
     setStatus('submitting');
     setErrorMessage('');
     try {
+      const minDelay = sleep(1600); // Ladeanzeige mindestens kurz zeigen
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -102,6 +105,9 @@ export default function InvestmentCheck() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || `Fehler ${res.status}`);
       }
+      await minDelay;
+      setStatus('finishing'); // Balken läuft auf 100 %
+      await sleep(450);
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
@@ -113,8 +119,8 @@ export default function InvestmentCheck() {
 
   return (
     <div ref={cardRef} id="investment-check-card" className="scroll-mt-24 bg-white rounded-[2rem] border border-zinc-200 shadow-xl overflow-hidden">
-      {/* Fortschritt */}
-      <div className="px-6 sm:px-10 pt-6 sm:pt-8">
+      {/* Fortschritt – während der Übermittlung ausgeblendet */}
+      <div className={`px-6 sm:px-10 pt-6 sm:pt-8 ${status === 'submitting' || status === 'finishing' ? 'invisible' : ''}`}>
         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">
           <span>{status === 'success' ? 'Geschafft' : `Schritt ${Math.min(stepIndex + 1, totalSteps)} von ${totalSteps}`}</span>
           <span>{progress}%</span>
@@ -131,7 +137,44 @@ export default function InvestmentCheck() {
 
       <div className="px-6 sm:px-10 pt-8 pb-8 sm:pb-10 min-h-[420px]">
         <AnimatePresence mode="wait" initial={false} custom={direction}>
-          {status === 'success' ? (
+          {status === 'submitting' || status === 'finishing' ? (
+            <motion.div
+              key="sending"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center text-center py-16"
+              role="status"
+              aria-live="polite"
+            >
+              <div className="relative w-16 h-16 mb-8">
+                <div className="absolute inset-0 rounded-full border-4 border-zinc-100" />
+                {status === 'finishing' ? (
+                  <motion.div
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="absolute inset-0 rounded-full bg-emerald-500 text-white flex items-center justify-center"
+                  >
+                    <Check className="w-8 h-8" />
+                  </motion.div>
+                ) : (
+                  <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
+                )}
+              </div>
+              <p className="text-xl font-semibold text-zinc-900 mb-6">
+                {status === 'finishing' ? 'Übermittelt!' : 'Dein Investment-Check wird übermittelt …'}
+              </p>
+              <div className="w-full max-w-xs h-2 rounded-full bg-zinc-100 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-emerald-500"
+                  initial={{ width: '0%' }}
+                  animate={{ width: status === 'finishing' ? '100%' : '96%' }}
+                  transition={status === 'finishing' ? { duration: 0.3, ease: 'easeOut' } : { duration: 1.4, ease: [0.1, 0.7, 0.3, 1] }}
+                />
+              </div>
+              <p className={`mt-4 text-sm text-zinc-500 ${status === 'finishing' ? 'invisible' : ''}`}>Bitte kurz warten und die Seite nicht schließen.</p>
+            </motion.div>
+          ) : status === 'success' ? (
             <motion.div
               key="success"
               initial={{ opacity: 0, y: 12 }}
@@ -309,7 +352,7 @@ export default function InvestmentCheck() {
           )}
         </AnimatePresence>
 
-        {status !== 'success' && stepIndex > 0 && (
+        {(status === 'idle' || status === 'error') && stepIndex > 0 && (
           <button
             type="button"
             onClick={back}
