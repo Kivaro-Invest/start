@@ -1,0 +1,430 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import SteuerRechner from '../components/SteuerRechner';
+
+const faqs = [
+  {
+    question: "Warum fallen bei Kivaro Invest keine Maklerkosten an?",
+    answer: "Wir arbeiten direkt mit dem Bauträger zusammen und werden von der Verkäuferseite vergütet. Für Sie als Käufer fällt keine Käuferprovision an."
+  },
+  {
+    question: "Was genau sind Off-Market-Immobilien?",
+    answer: "Off-Market-Immobilien sind Wohnungen, die nicht öffentlich auf Immobilienportalen angeboten werden. Sie erfahren davon über uns, bevor oder ohne dass sie öffentlich vermarktet werden."
+  },
+  {
+    question: "Wie wirkt sich eine vermietete Wohnung auf meine Steuer aus?",
+    answer: "Zinsen, die Abschreibung des Gebäudes (AfA) und laufende Kosten sind Werbungskosten. Übersteigen sie die Mieteinnahmen, mindert der Verlust Ihr zu versteuerndes Einkommen und damit Ihre Lohn- und Einkommensteuer. Wie viel das bei Ihnen ausmacht, zeigt unser Steuerersparnis-Rechner. Die steuerliche Beurteilung im Einzelfall übernimmt Ihr Steuerberater; wir stellen ihm die Unterlagen zusammen."
+  },
+  {
+    question: "Wer kümmert sich um die Vermietung und Verwaltung?",
+    answer: "Auf Wunsch bieten wir Ihnen ein komplettes 'Rundum-Sorglos-Paket'. Das beinhaltet eine professionelle Hausverwaltung, die sich um alle Mieterangelegenheiten, Nebenkostenabrechnungen und Instandhaltungen kümmert."
+  },
+  {
+    question: "Muss ich mich um die Sanierung kümmern?",
+    answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Verkäufer abgeschlossen – ohne versteckte Zusatzkosten für Sie. Sie übernehmen eine schlüsselfertige, vermietbare Immobilie."
+  },
+  {
+    question: "Welche Risiken gibt es?",
+    answer: "Mietausfall, Leerstand, Instandhaltung und Zinsänderungen nach Ablauf der Zinsbindung. Eine Immobilie ist langfristig gebunden und nicht kurzfristig verkäuflich. Wir sprechen diese Punkte im Erstgespräch offen an."
+  }
+];
+
+function FAQItem({ question, answer, isOpen, onClick }: { key?: number, question: string, answer: string, isOpen: boolean, onClick: () => void }) {
+  return (
+    <div className="border-b border-zinc-200 last:border-0">
+      <button
+        className="flex w-full items-center justify-between py-6 text-left focus:outline-none group"
+        onClick={onClick}
+      >
+        <span className="text-lg font-semibold text-zinc-900 group-hover:text-emerald-600 transition-colors pr-8">{question}</span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex-shrink-0 text-zinc-400 group-hover:text-emerald-500 transition-colors"
+        >
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="pb-6 text-zinc-600 leading-relaxed pr-12">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+const projects = [
+  {
+    id: "duesseldorf",
+    city: "DÜSSELDORF",
+    title: "Moderne 2-Zimmer-Wohnung in Düsseldorf",
+    location: "DÜSSELDORF",
+    description: "Diese gepflegte 2-Zimmer-Wohnung überzeugt durch eine smarte Raumaufteilung und eine sehr gute Anbindung an den öffentlichen Nahverkehr. Ein ideales Investment mit verlässlichen Mieteinnahmen und attraktiven Steuervorteilen.",
+    metrics: {
+      yield: "4,00%",
+      rentPa: "11.400€"
+    },
+    calculation: {
+      yield: "4,00%",
+      price: "285.000€",
+      rentMonthly: "950€"
+    },
+    image: "/duesseldorf.webp"
+  }
+];
+
+function ProjectCard({ project, index }: { key?: string, project: typeof projects[0], index: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      {/* Images */}
+      <div className={`relative ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+        {/* Offset border decoration */}
+        <div className="absolute -inset-4 border border-zinc-200 hidden lg:block z-0 rounded-3xl"></div>
+        
+        <div className="relative z-10 aspect-[4/3] lg:aspect-[4/5] overflow-hidden bg-zinc-100 rounded-2xl shadow-lg">
+          <img 
+            src={project.image} 
+            alt={project.title} 
+            className="w-full h-full object-cover" 
+            loading="lazy"
+            referrerPolicy="no-referrer" 
+          />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className={`space-y-8 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+        <div>
+          <div className="flex items-center text-emerald-600 tracking-wider text-sm uppercase font-semibold mb-3">
+            <MapPin className="w-4 h-4 mr-2" />
+            {project.location}
+          </div>
+          <h4 className="text-3xl lg:text-4xl font-bold text-zinc-900 leading-tight">{project.title}</h4>
+        </div>
+        
+        <p className="text-zinc-600 leading-relaxed text-lg">
+          {project.description}
+        </p>
+
+        {/* Metrics */}
+        <div className="grid grid-cols-3 gap-2 md:gap-4 py-6 border-y border-zinc-200">
+          <div>
+            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.calculation.price}</div>
+            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Kaufpreis inkl. NK</div>
+          </div>
+          <div className="border-l border-zinc-200 pl-2 md:pl-4 lg:pl-6">
+            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.metrics.yield}</div>
+            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Mietrendite</div>
+          </div>
+          <div className="border-l border-zinc-200 pl-2 md:pl-4 lg:pl-6">
+            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.metrics.rentPa}</div>
+            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Mieteinnahmen p.a.</div>
+          </div>
+        </div>
+
+        {/* Rechenbeispiel Accordion */}
+        <div className="border border-zinc-200 bg-zinc-50 rounded-2xl overflow-hidden">
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full flex items-center justify-between p-6 hover:bg-zinc-100 transition-colors"
+          >
+            <span className="text-lg font-semibold text-zinc-900">Rechenbeispiel</span>
+            {isOpen ? <X className="w-5 h-5 text-zinc-500" /> : <Plus className="w-5 h-5 text-zinc-500" />}
+          </button>
+          
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="px-6 pb-6 pt-2 space-y-4">
+                  <div className="flex justify-between text-zinc-600 text-lg">
+                    <span>Mietrendite</span>
+                    <span className="text-zinc-900 font-medium">{project.calculation.yield}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600 text-lg pb-4 border-b border-zinc-200">
+                    <span>Kaufpreis inkl. NK</span>
+                    <span className="text-zinc-900 font-medium">{project.calculation.price}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600 text-lg pt-2">
+                    <span>Mieteinnahmen</span>
+                    <span className="text-zinc-900 font-medium">{project.calculation.rentMonthly}</span>
+                  </div>
+                  <a href="#rechner" className="flex justify-between items-center text-emerald-600 hover:text-emerald-700 text-lg pt-2 font-medium">
+                    <span>Steuerersparnis mit Ihren Zahlen berechnen</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* CTA */}
+        <div className="pt-2">
+          <Link to="/kontakt" className="inline-flex items-center justify-center w-full px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+            Jetzt Kontakt aufnehmen <ArrowRight className="ml-2 w-5 h-5" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  return (
+    <div className="w-full">
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-32 lg:pt-36 lg:pb-40 overflow-hidden bg-zinc-50">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop&q=60')] bg-cover bg-center opacity-[0.03] mix-blend-multiply"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-zinc-200 shadow-sm mb-8"
+            >
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">Off-Market Immobilien</span>
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-8"
+            >
+              Intelligent investieren.<br />
+              <span className="text-zinc-400">Steuern sparen.</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-10 max-w-2xl"
+            >
+              Wir unterstützen gutverdienende Angestellte und Führungskräfte in ganz Deutschland dabei, ihre hohe Steuerlast durch ausgewählte Off-Market-Immobilien in privaten Vermögensaufbau umzuwandeln. Zinsen, Abschreibung und Kosten der vermieteten Wohnung senken Ihre Steuerlast, die Tilgung baut Vermögen auf.
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <Link to="/kontakt" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                Unverbindliche Beratung
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <a href="#rechner" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-medium text-zinc-900 bg-white border border-zinc-200 hover:bg-zinc-50 rounded-2xl transition-all shadow-sm">
+                Steuerersparnis berechnen
+              </a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Section */}
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der smarte Vergleich</h2>
+            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Allein kaufen oder begleitet kaufen?</h3>
+            <p className="mt-6 text-lg text-zinc-600">Ein Kauf in Eigenregie ist oft mühsam und fehleranfällig. Mit Kivaro Invest haben Sie einen Ansprechpartner, der Sie vom ersten Gespräch bis zum Notartermin begleitet.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+            {/* Without Kivaro */}
+            <div className="bg-zinc-50 rounded-3xl p-8 lg:p-12 border border-zinc-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <XCircle className="w-32 h-32" />
+              </div>
+              <h4 className="text-2xl font-bold text-zinc-400 mb-8 flex items-center gap-3">
+                <XCircle className="w-6 h-6 text-red-400" />
+                Ohne Kivaro
+              </h4>
+              <ul className="space-y-6 relative z-10">
+                {[
+                  "Käuferprovision von oft rund 3,5 Prozent",
+                  "Suche auf Portalen, viele Mitbewerber je Objekt",
+                  "Mühsame Suche nach einer passenden Bank",
+                  "Keine Beratung zu Steuervorteilen",
+                  "Sanierungsrisiken, Handwerker schwer zu finden",
+                  "Viel Zeitaufwand für die Mietersuche"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-4 text-zinc-500">
+                    <XCircle className="w-5 h-5 text-red-300 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* With Kivaro */}
+            <div className="bg-zinc-900 rounded-3xl p-8 lg:p-12 shadow-2xl relative overflow-hidden text-white">
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <CheckCircle2 className="w-32 h-32" />
+              </div>
+              <h4 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                Mit Kivaro
+              </h4>
+              <ul className="space-y-6 relative z-10">
+                {[
+                  "0 Euro Käuferprovision",
+                  "Wohnungen, die nicht auf Portalen angeboten werden",
+                  "Kontakt zu unserer Finanzierungspartnerin",
+                  "Sanierung vor Übergabe durch den Verkäufer",
+                  "Unterstützung bei steuerlichen Abschreibungen",
+                  "Inklusive Unterlagen für den Steuerberater"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-4 text-zinc-300">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed text-white font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <div className="mt-12 pt-8 border-t border-zinc-800 relative z-10">
+                <Link to="/kontakt" className="inline-flex w-full justify-center items-center gap-2 px-6 py-4 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-xl transition-colors">
+                  Kostenloses Erstgespräch
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Steuerersparnis-Rechner */}
+      <SteuerRechner />
+
+      {/* Process Section */}
+      <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der Ablauf</h2>
+            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Auf Augenhöhe zur eigenen Immobilie.</h3>
+            <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet Sie transparent und persönlich durch jeden Schritt.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            {/* Connecting line for desktop */}
+            <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200"></div>
+
+            {[
+              {
+                step: "01",
+                title: "Individuelle Bedarfsanalyse",
+                desc: "Wir analysieren Ihre finanzielle Situation und definieren gemeinsam Ihre Anlageziele.",
+                icon: <Users className="w-6 h-6" />
+              },
+              {
+                step: "02",
+                title: "Finanzierung",
+                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit Ihnen die Finanzierung.",
+                icon: <FileText className="w-6 h-6" />
+              },
+              {
+                step: "03",
+                title: "Portfolio Aufbau",
+                desc: "Sie erhalten Zugang zu exklusiven Objekten und wir begleiten Sie bis zum Notartermin und darüber hinaus.",
+                icon: <TrendingUp className="w-6 h-6" />
+              }
+            ].map((item, i) => (
+              <div key={i} className="relative z-10 flex flex-col items-center text-center">
+                <div className="w-24 h-24 rounded-full bg-white border-4 border-zinc-50 shadow-xl flex items-center justify-center mb-8 relative">
+                  <span className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-zinc-900 text-white text-xs font-bold flex items-center justify-center shadow-md">{item.step}</span>
+                  <div className="text-zinc-400">{item.icon}</div>
+                </div>
+                <h4 className="text-xl font-bold text-zinc-900 mb-4">{item.title}</h4>
+                <p className="text-zinc-600 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 lg:mb-24">
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Unsere Referenzobjekte</h2>
+            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-6">Einblicke in unser Portfolio</h3>
+            <p className="text-zinc-600 max-w-3xl mx-auto leading-relaxed text-lg">
+              Wir vermitteln regelmäßig attraktive Kapitalanlage-Immobilien an ausgewählten Standorten. Da viele unserer Objekte diskret (Off-Market) an vorgemerkte Kunden vermittelt werden, zeigen wir hier eine Auswahl erfolgreich abgeschlossener Projekte. Sprechen Sie uns an, um aktuelle Angebote zu erhalten, bevor sie öffentlich vermarktet werden.
+            </p>
+          </div>
+          
+          <div className="space-y-32">
+            {projects.map((p, index) => <ProjectCard key={p.id} project={p} index={index} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 lg:mb-24">
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">FAQ</h2>
+            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Häufig gestellte Fragen</h3>
+          </div>
+          <div className="border-y border-zinc-200">
+            {faqs.map((faq, index) => (
+              <FAQItem 
+                key={index} 
+                question={faq.question} 
+                answer={faq.answer} 
+                isOpen={openFaqIndex === index}
+                onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 lg:py-32 bg-zinc-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-zinc-900 rounded-[2.5rem] p-8 sm:p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 opacity-50"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-6">
+                Bereit für Ihr erstes Investment?
+              </h2>
+              <p className="text-lg text-zinc-400 mb-10 max-w-2xl mx-auto">
+                Sichern Sie sich jetzt Zugriff auf exklusive Off-Market Immobilien und lassen Sie sich unverbindlich beraten.
+              </p>
+              <Link to="/kontakt" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                Kostenloses Erstgespräch vereinbaren
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
