@@ -246,7 +246,7 @@ export const handler: Handler = async (event) => {
         subject: 'Dein Investment-Check ist angekommen',
         text: `Hallo ${firstName},
 
-danke für deinen Investment-Check! Wir melden uns in der Regel innerhalb von 24 Stunden telefonisch bei dir unter ${phone} und rechnen mit dir durch, was eine Kapitalanlage-Immobilie für dich bringen kann.
+danke für deinen Investment-Check! Wir melden uns in der Regel innerhalb von 24 Stunden bei dir und vereinbaren ein kostenloses Erstgespräch.
 
 Du möchtest doch nicht angerufen werden? Antworte einfach kurz auf diese E-Mail – dann löschen wir deine Anfrage.
 

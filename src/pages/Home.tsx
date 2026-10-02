@@ -275,7 +275,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
             >
-              Schau dir in 60 Sekunden an, wie aus einem Kredit eine Wohnung wird, die dir später allein gehört – und warum du dabei oft sogar Steuern sparst.
+              Schau dir in 60 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dir später allein gehört – und warum du dabei oft sogar Steuern sparst.
             </motion.p>
           </div>
 
@@ -307,15 +307,15 @@ export default function Home() {
           <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
             <div className="lg:col-span-2 lg:sticky lg:top-32">
               <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Investment-Check</h2>
-              <h3 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-4 lg:mb-6">Passt eine Kapitalanlage-Immobilie zu dir?</h3>
+              <h3 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-4 lg:mb-6">Finde heraus, was mit Immobilien für dich möglich ist.</h3>
               <p className="text-base sm:text-lg text-zinc-600 leading-relaxed lg:mb-8">
-                Beantworte ein paar kurze Fragen. Danach rufen wir dich an und rechnen mit deinen Zahlen durch, was für dich drin ist.
+                Beantworte ein paar kurze Fragen. Danach melden wir uns bei dir und zeigen dir in einem kostenlosen Erstgespräch, wie der Weg zu deiner eigenen Kapitalanlage aussieht.
               </p>
               <ul className="hidden lg:block space-y-4">
                 {[
-                  'Mieter und Steuervorteil zahlen mit',
-                  'Objekte, die nicht auf Portalen stehen',
-                  '0 € Käuferprovision',
+                  'Hausverwaltung inklusive – sie kümmert sich um Mieter und Reparaturen',
+                  'Je nach Objekt mit Mietgarantie des Bauträgers',
+                  '0 € Käuferprovision für dich',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-zinc-700">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
@@ -401,7 +401,7 @@ export default function Home() {
               <ul className="space-y-6 relative z-10">
                 {[
                   "0 Euro Käuferprovision",
-                  "Wohnungen, die nicht auf Portalen angeboten werden",
+                  "Hausverwaltung über den Bauträger inklusive",
                   "Kontakt zu unserer Finanzierungspartnerin",
                   "Sanierung vor Übergabe durch den Verkäufer",
                   "Unterstützung bei steuerlichen Abschreibungen",
@@ -441,7 +441,7 @@ export default function Home() {
               {
                 step: "01",
                 title: "Investment-Check & Gespräch",
-                desc: "Du machst den Check, wir rufen dich an und schauen uns gemeinsam deine Situation und deine Ziele an.",
+                desc: "Du machst den Check, wir melden uns bei dir und lernen dich und deine Ziele in einem kostenlosen Erstgespräch kennen.",
                 icon: <Users className="w-6 h-6" />
               },
               {

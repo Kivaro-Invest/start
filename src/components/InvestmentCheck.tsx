@@ -188,14 +188,13 @@ export default function InvestmentCheck() {
                 Danke, {contact.firstName.trim()}!
               </h3>
               <p className="text-zinc-600 text-lg mb-8">
-                Dein Investment-Check ist bei uns. Wir rufen dich in der Regel innerhalb von 24 Stunden unter{' '}
-                <span className="font-semibold text-zinc-900 whitespace-nowrap">{contact.phone}</span> an.
+                Dein Investment-Check ist bei uns. Wir melden uns in der Regel innerhalb von 24 Stunden bei dir.
               </p>
               <div className="text-left bg-zinc-50 border border-zinc-100 rounded-2xl p-6 space-y-4">
                 <p className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Was dich im Gespräch erwartet</p>
                 {[
-                  'Wir rechnen mit deinen Zahlen durch, was eine Immobilie steuerlich für dich bedeutet.',
-                  'Du siehst konkrete Objekte, die zu deiner Situation passen.',
+                  'Wir lernen dich, deine Situation und deine Ziele kennen.',
+                  'Du erfährst, wie der Weg zu deiner eigenen Kapitalanlage abläuft.',
                   'Kostenlos und unverbindlich – du entscheidest in Ruhe.',
                 ].map((t) => (
                   <div key={t} className="flex items-start gap-3 text-zinc-700">
@@ -260,7 +259,7 @@ export default function InvestmentCheck() {
               <h3 ref={headingRef} tabIndex={-1} className="text-2xl sm:text-3xl font-bold text-zinc-900 leading-tight outline-none">
                 Fast geschafft! Wohin dürfen wir dein Ergebnis schicken?
               </h3>
-              <p className="mt-2 text-zinc-500">Wir besprechen dein Ergebnis kurz am Telefon – kostenlos und unverbindlich.</p>
+              <p className="mt-2 text-zinc-500">Wir melden uns bei dir – kostenlos und unverbindlich.</p>
 
               <div className="mt-8 space-y-4">
                 <div>
