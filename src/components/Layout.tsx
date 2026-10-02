@@ -23,7 +23,7 @@ export function Header() {
 
   const navLinks = [
     { name: 'Startseite', path: '/' },
-    { name: 'Steuerrechner', path: '/rechner' },
+    { name: 'Investment-Check', path: '/#investment-check' },
     { name: 'Downloads', path: '/downloads' },
     { name: 'Kontakt', path: '/kontakt' },
   ];
@@ -42,16 +42,16 @@ export function Header() {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`text-sm font-medium transition-colors ${location.pathname === link.path ? 'text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'}`}
+                className={`text-sm font-medium transition-colors ${location.pathname + location.hash === link.path ? 'text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'}`}
               >
                 {link.name}
               </Link>
             ))}
             <Link
-              to="/kontakt"
+              to="/#investment-check"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              Erstgespräch
+              Investment-Check
               <ArrowRight className="w-4 h-4" />
             </Link>
           </nav>
@@ -78,17 +78,17 @@ export function Header() {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`block px-4 py-3 rounded-xl text-base font-medium ${location.pathname === link.path ? 'bg-zinc-50 text-zinc-900' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'}`}
+                className={`block px-4 py-3 rounded-xl text-base font-medium ${location.pathname + location.hash === link.path ? 'bg-zinc-50 text-zinc-900' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'}`}
               >
                 {link.name}
               </Link>
             ))}
             <div className="pt-4 px-4">
               <Link
-                to="/kontakt"
+                to="/#investment-check"
                 className="flex w-full items-center justify-center gap-2 px-5 py-3 text-base font-medium text-white bg-zinc-900 rounded-xl shadow-md"
               >
-                Erstgespräch
+                Kostenloser Investment-Check
               </Link>
             </div>
           </div>
@@ -110,7 +110,7 @@ export function Footer() {
               <img src="/white-transparent.svg" alt="Kivaro Invest" className="h-24 md:h-32 lg:h-40 w-auto -mt-4 md:-mt-8 lg:-mt-12 -mb-4 md:-mb-8 lg:-mb-12" referrerPolicy="no-referrer" />
             </Link>
             <p className="text-sm leading-relaxed max-w-xs">
-              Intelligent investieren, Steuern sparen und Vermögen aufbauen. Ihr Partner für exklusive Off-Market-Immobilien in Deutschland.
+              Intelligent investieren, Steuern sparen und Vermögen aufbauen. Dein Partner für Kapitalanlage-Immobilien in Deutschland.
             </p>
           </div>
 
@@ -119,6 +119,7 @@ export function Footer() {
             <h3 className="text-white font-semibold mb-6">Navigation</h3>
             <ul className="space-y-4">
               <li><Link to="/" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Startseite</Link></li>
+              <li><Link to="/investment-check" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Investment-Check</Link></li>
               <li><Link to="/downloads" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Downloads & Ressourcen</Link></li>
               <li><Link to="/kontakt" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Kontakt</Link></li>
             </ul>

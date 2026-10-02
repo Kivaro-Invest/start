@@ -1,33 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SteuerRechner from '../components/SteuerRechner';
+import ExplainerVideo from '../components/ExplainerVideo';
+import InvestmentCheck from '../components/InvestmentCheck';
+import { team } from '../lib/team';
 
 const faqs = [
   {
     question: "Warum fallen bei Kivaro Invest keine Maklerkosten an?",
-    answer: "Wir arbeiten direkt mit dem Bauträger zusammen und werden von der Verkäuferseite vergütet. Für Sie als Käufer fällt keine Käuferprovision an."
+    answer: "Wir arbeiten direkt mit dem Bauträger zusammen und werden von der Verkäuferseite vergütet. Für dich als Käufer fällt keine Käuferprovision an."
   },
   {
     question: "Was genau sind Off-Market-Immobilien?",
-    answer: "Off-Market-Immobilien sind Wohnungen, die nicht öffentlich auf Immobilienportalen angeboten werden. Sie erfahren davon über uns, bevor oder ohne dass sie öffentlich vermarktet werden."
+    answer: "Off-Market-Immobilien sind Wohnungen, die nicht öffentlich auf Immobilienportalen angeboten werden. Du erfährst davon über uns, bevor oder ohne dass sie öffentlich vermarktet werden."
   },
   {
     question: "Wie wirkt sich eine vermietete Wohnung auf meine Steuer aus?",
-    answer: "Zinsen, die Abschreibung des Gebäudes (AfA) und laufende Kosten sind Werbungskosten. Übersteigen sie die Mieteinnahmen, mindert der Verlust Ihr zu versteuerndes Einkommen und damit Ihre Lohn- und Einkommensteuer. Wie viel das bei Ihnen ausmacht, zeigt unser Steuerersparnis-Rechner. Die steuerliche Beurteilung im Einzelfall übernimmt Ihr Steuerberater; wir stellen ihm die Unterlagen zusammen."
+    answer: "Zinsen, die Abschreibung des Gebäudes (AfA) und laufende Kosten sind Werbungskosten. Übersteigen sie die Mieteinnahmen, mindert der Verlust dein zu versteuerndes Einkommen und damit deine Lohn- und Einkommensteuer. Wie viel das bei dir ausmacht, rechnen wir im Gespräch mit deinen Zahlen durch. Die steuerliche Beurteilung im Einzelfall übernimmt dein Steuerberater; wir stellen ihm die Unterlagen zusammen."
   },
   {
     question: "Wer kümmert sich um die Vermietung und Verwaltung?",
-    answer: "Auf Wunsch bieten wir Ihnen ein komplettes 'Rundum-Sorglos-Paket'. Das beinhaltet eine professionelle Hausverwaltung, die sich um alle Mieterangelegenheiten, Nebenkostenabrechnungen und Instandhaltungen kümmert."
+    answer: "Auf Wunsch bekommst du ein komplettes 'Rundum-Sorglos-Paket'. Das beinhaltet eine professionelle Hausverwaltung, die sich um alle Mieterangelegenheiten, Nebenkostenabrechnungen und Instandhaltungen kümmert."
   },
   {
     question: "Muss ich mich um die Sanierung kümmern?",
-    answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Verkäufer abgeschlossen – ohne versteckte Zusatzkosten für Sie. Sie übernehmen eine schlüsselfertige, vermietbare Immobilie."
+    answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Verkäufer abgeschlossen – ohne versteckte Zusatzkosten für dich. Du übernimmst eine schlüsselfertige, vermietbare Immobilie."
   },
   {
     question: "Welche Risiken gibt es?",
-    answer: "Mietausfall, Leerstand, Instandhaltung und Zinsänderungen nach Ablauf der Zinsbindung. Eine Immobilie ist langfristig gebunden und nicht kurzfristig verkäuflich. Wir sprechen diese Punkte im Erstgespräch offen an."
+    answer: "Mietausfall, Leerstand, Instandhaltung und Zinsänderungen nach Ablauf der Zinsbindung. Eine Immobilie ist langfristig gebunden und nicht kurzfristig verkäuflich. Wir sprechen diese Punkte im Erstgespräch offen mit dir an."
   }
 ];
 
@@ -168,8 +171,8 @@ function ProjectCard({ project, index }: { key?: string, project: typeof project
                     <span>Mieteinnahmen</span>
                     <span className="text-zinc-900 font-medium">{project.calculation.rentMonthly}</span>
                   </div>
-                  <a href="#rechner" className="flex justify-between items-center text-emerald-600 hover:text-emerald-700 text-lg pt-2 font-medium">
-                    <span>Steuerersparnis mit Ihren Zahlen berechnen</span>
+                  <a href="#investment-check" className="flex justify-between items-center text-emerald-600 hover:text-emerald-700 text-lg pt-2 font-medium">
+                    <span>Passt so ein Objekt zu dir? Zum Investment-Check</span>
                     <ArrowRight className="w-5 h-5" />
                   </a>
                 </div>
@@ -180,71 +183,177 @@ function ProjectCard({ project, index }: { key?: string, project: typeof project
 
         {/* CTA */}
         <div className="pt-2">
-          <Link to="/kontakt" className="inline-flex items-center justify-center w-full px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-            Jetzt Kontakt aufnehmen <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+          <a href="#investment-check" className="inline-flex items-center justify-center w-full px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+            Investment-Check starten <ArrowRight className="ml-2 w-5 h-5" />
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
+function scrollToCheck() {
+  document.getElementById('investment-check-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLDivElement | null>; checkRef: RefObject<HTMLElement | null> }) {
+  const [heroVisible, setHeroVisible] = useState(true);
+  const [checkVisible, setCheckVisible] = useState(false);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.target === heroCtaRef.current) setHeroVisible(e.isIntersecting);
+        if (e.target === checkRef.current) setCheckVisible(e.isIntersecting);
+      }
+    }, { threshold: 0.05 });
+    if (heroCtaRef.current) obs.observe(heroCtaRef.current);
+    if (checkRef.current) obs.observe(checkRef.current);
+    return () => obs.disconnect();
+  }, [heroCtaRef, checkRef]);
+
+  const show = !heroVisible && !checkVisible;
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          exit={{ y: 100 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-zinc-200 bg-white/95 backdrop-blur-md px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+        >
+          <button
+            type="button"
+            onClick={scrollToCheck}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-4 text-base font-semibold text-white shadow-lg"
+          >
+            Kostenlosen Investment-Check starten <ArrowRight className="w-5 h-5" />
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const heroCtaRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLElement>(null);
+  const teamWithPhotos = team.filter((m) => m.photo);
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-32 lg:pt-36 lg:pb-40 overflow-hidden bg-zinc-50">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop&q=60')] bg-cover bg-center opacity-[0.03] mix-blend-multiply"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
+      {/* Hero mit Erklärvideo */}
+      <section className="relative pt-10 pb-16 lg:pt-20 lg:pb-24 overflow-hidden bg-zinc-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-zinc-200 shadow-sm mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-zinc-200 shadow-sm mb-6"
             >
               <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">Off-Market Immobilien</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">Kapitalanlage-Immobilien</span>
             </motion.div>
-            
-            <motion.h1 
+
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-8"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-5"
             >
               Intelligent investieren.<br />
               <span className="text-zinc-400">Steuern sparen.</span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-10 max-w-2xl"
+              className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
             >
-              Wir unterstützen gutverdienende Angestellte und Führungskräfte in ganz Deutschland dabei, ihre hohe Steuerlast durch ausgewählte Off-Market-Immobilien in privaten Vermögensaufbau umzuwandeln. Zinsen, Abschreibung und Kosten der vermieteten Wohnung senken Ihre Steuerlast, die Tilgung baut Vermögen auf.
+              Schau dir in 60 Sekunden an, wie du mit einer vermieteten Wohnung Steuern sparst und gleichzeitig Vermögen aufbaust.
             </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4"
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <ExplainerVideo onCta={scrollToCheck} />
+          </motion.div>
+
+          <div ref={heroCtaRef} className="mt-8 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={scrollToCheck}
+              className="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
-              <Link to="/kontakt" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                Unverbindliche Beratung
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <a href="#rechner" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-medium text-zinc-900 bg-white border border-zinc-200 hover:bg-zinc-50 rounded-2xl transition-all shadow-sm">
-                Steuerersparnis berechnen
-              </a>
-            </motion.div>
+              Kostenlosen Investment-Check starten
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <p className="text-sm text-zinc-500">1 Minute · kostenlos · unverbindlich</p>
           </div>
         </div>
       </section>
+
+      {/* Investment-Check */}
+      <section id="investment-check" ref={checkRef} className="scroll-mt-24 py-10 sm:py-16 lg:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
+            <div className="lg:col-span-2 lg:sticky lg:top-32">
+              <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Investment-Check</h2>
+              <h3 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-4 lg:mb-6">Passt eine Kapitalanlage-Immobilie zu dir?</h3>
+              <p className="text-base sm:text-lg text-zinc-600 leading-relaxed lg:mb-8">
+                Beantworte ein paar kurze Fragen. Danach rufen wir dich an und rechnen mit deinen Zahlen durch, was für dich drin ist.
+              </p>
+              <ul className="hidden lg:block space-y-4">
+                {[
+                  'Steuervorteil mit deinen echten Zahlen berechnet',
+                  'Passende Objekte, die nicht auf Portalen stehen',
+                  '0 € Käuferprovision',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-3 text-zinc-700">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="lg:col-span-3">
+              <InvestmentCheck />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team – erscheint automatisch, sobald Fotos hinterlegt sind (src/lib/team.ts) */}
+      {teamWithPhotos.length > 0 && (
+        <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Wer hinter Kivaro steht</h2>
+              <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Persönlich statt anonym.</h3>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
+              {teamWithPhotos.map((m) => (
+                <div key={m.name} className="bg-white rounded-3xl overflow-hidden border border-zinc-200 shadow-sm">
+                  <img src={m.photo} alt={m.name} className="w-full aspect-square object-cover" loading="lazy" />
+                  <div className="p-6">
+                    <p className="text-xl font-bold text-zinc-900">{m.name}</p>
+                    <p className="text-zinc-500">{m.role}</p>
+                    {m.quote && <p className="mt-4 text-zinc-600 italic">„{m.quote}“</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Comparison Section */}
       <section className="py-24 lg:py-32 bg-white">
@@ -252,11 +361,10 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
             <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der smarte Vergleich</h2>
             <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Allein kaufen oder begleitet kaufen?</h3>
-            <p className="mt-6 text-lg text-zinc-600">Ein Kauf in Eigenregie ist oft mühsam und fehleranfällig. Mit Kivaro Invest haben Sie einen Ansprechpartner, der Sie vom ersten Gespräch bis zum Notartermin begleitet.</p>
+            <p className="mt-6 text-lg text-zinc-600">Ein Kauf in Eigenregie ist oft mühsam und fehleranfällig. Mit Kivaro Invest hast du einen Ansprechpartner, der dich vom ersten Gespräch bis zum Notartermin begleitet.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-            {/* Without Kivaro */}
             <div className="bg-zinc-50 rounded-3xl p-8 lg:p-12 border border-zinc-100 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <XCircle className="w-32 h-32" />
@@ -282,7 +390,6 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* With Kivaro */}
             <div className="bg-zinc-900 rounded-3xl p-8 lg:p-12 shadow-2xl relative overflow-hidden text-white">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <CheckCircle2 className="w-32 h-32" />
@@ -306,20 +413,17 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              
+
               <div className="mt-12 pt-8 border-t border-zinc-800 relative z-10">
-                <Link to="/kontakt" className="inline-flex w-full justify-center items-center gap-2 px-6 py-4 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-xl transition-colors">
-                  Kostenloses Erstgespräch
+                <button type="button" onClick={scrollToCheck} className="inline-flex w-full justify-center items-center gap-2 px-6 py-4 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-xl transition-colors">
+                  Investment-Check starten
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Steuerersparnis-Rechner */}
-      <SteuerRechner />
 
       {/* Process Section */}
       <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
@@ -327,30 +431,29 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
             <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der Ablauf</h2>
             <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Auf Augenhöhe zur eigenen Immobilie.</h3>
-            <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet Sie transparent und persönlich durch jeden Schritt.</p>
+            <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet dich transparent und persönlich durch jeden Schritt.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connecting line for desktop */}
             <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200"></div>
 
             {[
               {
                 step: "01",
-                title: "Individuelle Bedarfsanalyse",
-                desc: "Wir analysieren Ihre finanzielle Situation und definieren gemeinsam Ihre Anlageziele.",
+                title: "Investment-Check & Gespräch",
+                desc: "Du machst den Check, wir rufen dich an und schauen uns gemeinsam deine Situation und deine Ziele an.",
                 icon: <Users className="w-6 h-6" />
               },
               {
                 step: "02",
                 title: "Finanzierung",
-                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit Ihnen die Finanzierung.",
+                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit dir die Finanzierung.",
                 icon: <FileText className="w-6 h-6" />
               },
               {
                 step: "03",
-                title: "Portfolio Aufbau",
-                desc: "Sie erhalten Zugang zu exklusiven Objekten und wir begleiten Sie bis zum Notartermin und darüber hinaus.",
+                title: "Deine Immobilie",
+                desc: "Du bekommst Zugang zu passenden Objekten und wir begleiten dich bis zum Notartermin und darüber hinaus.",
                 icon: <TrendingUp className="w-6 h-6" />
               }
             ].map((item, i) => (
@@ -374,10 +477,10 @@ export default function Home() {
             <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Unsere Referenzobjekte</h2>
             <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-6">Einblicke in unser Portfolio</h3>
             <p className="text-zinc-600 max-w-3xl mx-auto leading-relaxed text-lg">
-              Wir vermitteln regelmäßig attraktive Kapitalanlage-Immobilien an ausgewählten Standorten. Da viele unserer Objekte diskret (Off-Market) an vorgemerkte Kunden vermittelt werden, zeigen wir hier eine Auswahl erfolgreich abgeschlossener Projekte. Sprechen Sie uns an, um aktuelle Angebote zu erhalten, bevor sie öffentlich vermarktet werden.
+              Viele unserer Objekte werden diskret (Off-Market) an vorgemerkte Kunden vermittelt. Hier siehst du eine Auswahl abgeschlossener Projekte. Mach den Investment-Check, um aktuelle Angebote zu bekommen, bevor sie öffentlich vermarktet werden.
             </p>
           </div>
-          
+
           <div className="space-y-32">
             {projects.map((p, index) => <ProjectCard key={p.id} project={p} index={index} />)}
           </div>
@@ -393,10 +496,10 @@ export default function Home() {
           </div>
           <div className="border-y border-zinc-200">
             {faqs.map((faq, index) => (
-              <FAQItem 
-                key={index} 
-                question={faq.question} 
-                answer={faq.answer} 
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
                 isOpen={openFaqIndex === index}
                 onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
               />
@@ -412,19 +515,21 @@ export default function Home() {
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 opacity-50"></div>
             <div className="relative z-10">
               <h2 className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-6">
-                Bereit für Ihr erstes Investment?
+                Bereit für dein erstes Investment?
               </h2>
               <p className="text-lg text-zinc-400 mb-10 max-w-2xl mx-auto">
-                Sichern Sie sich jetzt Zugriff auf exklusive Off-Market Immobilien und lassen Sie sich unverbindlich beraten.
+                Mach den kostenlosen Investment-Check und finde heraus, was eine Kapitalanlage-Immobilie für dich bringt.
               </p>
-              <Link to="/kontakt" className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                Kostenloses Erstgespräch vereinbaren
+              <button type="button" onClick={scrollToCheck} className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                Investment-Check starten
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </section>
+
+      <MobileStickyCta heroCtaRef={heroCtaRef} checkRef={checkRef} />
     </div>
   );
 }

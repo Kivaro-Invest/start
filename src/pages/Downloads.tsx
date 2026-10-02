@@ -36,7 +36,7 @@ export default function Downloads() {
             transition={{ delay: 0.1 }}
             className="text-lg text-zinc-600 leading-relaxed"
           >
-            Auf dieser Seite finden Sie alle wichtigen Dokumente und Vorlagen für die Zusammenarbeit mit Kivaro Invest. Bei Fragen zu einzelnen Unterlagen können Sie sich jederzeit an Ihren persönlichen Ansprechpartner wenden.
+            Hier findest du alle wichtigen Dokumente und Vorlagen für die Zusammenarbeit mit Kivaro Invest. Bei Fragen zu einzelnen Unterlagen wende dich jederzeit an deinen persönlichen Ansprechpartner.
           </motion.p>
         </div>
 

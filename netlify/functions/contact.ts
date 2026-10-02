@@ -1,6 +1,13 @@
 import { Handler } from "@netlify/functions";
 import nodemailer from "nodemailer";
 
+const esc = (v: unknown) =>
+  String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 const handler: Handler = async (event, context) => {
   // Only allow POST
   if (event.httpMethod !== "POST") {
@@ -69,12 +76,12 @@ ${message}
       `,
       html: `
 <h3>Neue Kontaktanfrage</h3>
-<p><strong>Name:</strong> ${firstName} ${lastName}</p>
-<p><strong>E-Mail:</strong> ${email}</p>
-<p><strong>Telefon:</strong> ${phone || "Nicht angegeben"}</p>
+<p><strong>Name:</strong> ${esc(firstName)} ${esc(lastName)}</p>
+<p><strong>E-Mail:</strong> ${esc(email)}</p>
+<p><strong>Telefon:</strong> ${esc(phone || "Nicht angegeben")}</p>
 <br>
 <p><strong>Nachricht:</strong></p>
-<p>${message.replace(/\n/g, "<br>")}</p>
+<p>${esc(message).replace(/\n/g, "<br>")}</p>
       `,
     };
 

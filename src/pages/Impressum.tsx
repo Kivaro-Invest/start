@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 
-// Vor dem Veröffentlichen ausfüllen (Kevin):
+// Unternehmensangaben
 const REGISTERNUMMER = 'HRB 311467';
-const ERLAUBNIS_34C_BEHOERDE = ''; // Behörde laut Erlaubnisbescheid nach § 34c GewO
+const ERLAUBNIS_34C_BEHOERDE = 'IHK München und Oberbayern, Max-Joseph-Straße 2, 80333 München';
 const TELEFON = ''; // optional, empfohlen
 const UST_ID = 'DE462818701';
 

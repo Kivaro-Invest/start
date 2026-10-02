@@ -55,10 +55,10 @@ export default function Kontakt() {
               className="max-w-lg"
             >
               <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-zinc-900 mb-6">
-                Jetzt Termin vereinbaren
+                Schreib uns
               </h1>
               <p className="text-lg text-zinc-600 leading-relaxed mb-12">
-                Einfach Kontakt aufnehmen und unverbindliche Beratung sichern. Nutzen Sie das folgende Kontaktformular, um uns zu kontaktieren. Wir melden uns schnellstmöglich zurück.
+                Schreib uns einfach über das Formular – wir melden uns schnellstmöglich bei dir. Noch schneller geht's mit dem <Link to="/investment-check" className="text-zinc-900 font-medium underline underline-offset-4 hover:text-emerald-600">Investment-Check</Link>.
               </p>
 
               <div className="space-y-8">
@@ -87,9 +87,9 @@ export default function Kontakt() {
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <CheckCircle2 className="w-32 h-32" />
                 </div>
-                <h3 className="text-xl font-bold mb-4 relative z-10">Sichern Sie sich Zugriff auf exklusive Off-Market Immobilien.</h3>
+                <h3 className="text-xl font-bold mb-4 relative z-10">Sichere dir Zugriff auf Off-Market-Immobilien.</h3>
                 <p className="text-zinc-400 text-sm leading-relaxed relative z-10">
-                  Unsere Objekte werden nicht auf öffentlichen Portalen angeboten. Profitieren Sie von unserem Netzwerk.
+                  Unsere Objekte werden nicht auf öffentlichen Portalen angeboten. Profitiere von unserem Netzwerk.
                 </p>
               </div>
             </motion.div>
@@ -108,7 +108,7 @@ export default function Kontakt() {
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h3 className="text-2xl font-bold text-zinc-900 mb-4">Vielen Dank!</h3>
-                <p className="text-zinc-600 mb-8">Das Formular wurde erfolgreich übermittelt. Wir melden uns in Kürze bei Ihnen.</p>
+                <p className="text-zinc-600 mb-8">Das Formular wurde erfolgreich übermittelt. Wir melden uns in Kürze bei dir.</p>
                 <button 
                   onClick={() => setFormState('idle')}
                   className="px-6 py-3 bg-zinc-900 text-white rounded-xl font-medium hover:bg-zinc-800 transition-colors"
@@ -123,7 +123,7 @@ export default function Kontakt() {
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <div>
                       <p className="font-semibold mb-1">Fehler beim Absenden.</p>
-                      <p className="text-red-600/90">{errorMessage || 'Bitte überprüfen Sie die Eingaben und versuchen Sie es erneut.'}</p>
+                      <p className="text-red-600/90">{errorMessage || 'Bitte prüf deine Eingaben und versuch es nochmal.'}</p>
                     </div>
                   </div>
                 )}
@@ -177,14 +177,14 @@ export default function Kontakt() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="message" className="text-sm font-medium text-zinc-900">Ihre Nachricht</label>
+                  <label htmlFor="message" className="text-sm font-medium text-zinc-900">Deine Nachricht</label>
                   <textarea 
                     id="message" 
                     name="message"
                     rows={4}
                     required
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all resize-none"
-                    placeholder="Wie können wir Ihnen helfen?"
+                    placeholder="Wie können wir dir helfen?"
                   ></textarea>
                 </div>
 
@@ -198,7 +198,7 @@ export default function Kontakt() {
                 </button>
                 
                 <p className="text-xs text-zinc-500 text-center mt-4">
-                  Mit dem Absenden erklären Sie sich mit unserer <Link to="/datenschutz" className="underline hover:text-zinc-900">Datenschutzerklärung</Link> einverstanden.
+                  Informationen zur Verarbeitung deiner Daten findest du in unserer <Link to="/datenschutz" className="underline hover:text-zinc-900">Datenschutzerklärung</Link>.
                 </p>
               </form>
             )}
