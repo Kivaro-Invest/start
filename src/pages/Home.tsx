@@ -73,124 +73,91 @@ function FAQItem({ question, answer, isOpen, onClick }: { key?: number, question
   );
 }
 
-const projects = [
+type Projekt = {
+  ort: string;
+  lage: string;
+  titel: string;
+  bilder: { src: string; alt: string }[];
+  fakten: { label: string; wert: string }[];
+  highlights: string[];
+};
+
+const projekte: Projekt[] = [
   {
-    id: "duesseldorf",
-    city: "DÜSSELDORF",
-    title: "Moderne 2-Zimmer-Wohnung in Düsseldorf",
-    location: "DÜSSELDORF",
-    description: "Diese gepflegte 2-Zimmer-Wohnung überzeugt durch eine smarte Raumaufteilung und eine sehr gute Anbindung an den öffentlichen Nahverkehr. Ein ideales Investment mit verlässlichen Mieteinnahmen und attraktiven Steuervorteilen.",
-    metrics: {
-      yield: "4,00%",
-      rentPa: "11.400€"
-    },
-    calculation: {
-      yield: "4,00%",
-      price: "285.000€",
-      rentMonthly: "950€"
-    },
-    image: "/duesseldorf.webp"
-  }
+    ort: 'Schweinfurt',
+    lage: 'Theresienstraße · Zentrum',
+    titel: 'Modernisierter Altbau im Zentrum',
+    bilder: [
+      { src: '/objekte/schweinfurt-fassade.webp', alt: 'Fassade des Objekts in Schweinfurt' },
+      { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
+      { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
+    ],
+    fakten: [
+      { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
+      { label: 'Wohnfläche', wert: '57 – 70 m²' },
+      { label: 'Einheiten', wert: '12 Wohnungen' },
+      { label: 'Beispiel-Rendite', wert: '4,0 %' },
+    ],
+    highlights: ['2025 modernisiert', 'Garagen & Stellplätze', 'Starke Arbeitgeber wie Schaeffler & ZF'],
+  },
+  {
+    ort: 'Plattling',
+    lage: 'Straubinger Straße · Landkreis Deggendorf',
+    titel: 'Exklusives Haus mit nur 6 Wohnungen',
+    bilder: [
+      { src: '/objekte/plattling-fassade.webp', alt: 'Fassade des Objekts in Plattling' },
+      { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
+      { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
+    ],
+    fakten: [
+      { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
+      { label: 'Wohnfläche', wert: '63 – 112 m²' },
+      { label: 'Einheiten', wert: '6 Wohnungen' },
+      { label: 'Sanierung', wert: '2026' },
+    ],
+    highlights: ['ICE-Bahnhof & A92/A3 in der Nähe', 'Nähe BMW Dingolfing & TH Deggendorf', 'Garagen & Stellplätze'],
+  },
 ];
 
-function ProjectCard({ project, index }: { key?: string, project: typeof projects[0], index: number }) {
-  const [isOpen, setIsOpen] = useState(false);
-
+function ProjektKarte({ p }: { key?: string; p: Projekt }) {
   return (
-    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-      {/* Images */}
-      <div className={`relative ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-        {/* Offset border decoration */}
-        <div className="absolute -inset-4 border border-zinc-200 hidden lg:block z-0 rounded-3xl"></div>
-        
-        <div className="relative z-10 aspect-[4/3] lg:aspect-[4/5] overflow-hidden bg-zinc-100 rounded-2xl shadow-lg">
-          <img 
-            src={project.image} 
-            alt={project.title} 
-            className="w-full h-full object-cover" 
-            loading="lazy"
-            referrerPolicy="no-referrer" 
-          />
-        </div>
+    <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="relative">
+        <img src={p.bilder[0].src} alt={p.bilder[0].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
+        <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
+          <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
+        </span>
       </div>
-
-      {/* Content */}
-      <div className={`space-y-8 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-        <div>
-          <div className="flex items-center text-emerald-600 tracking-wider text-sm uppercase font-semibold mb-3">
-            <MapPin className="w-4 h-4 mr-2" />
-            {project.location}
-          </div>
-          <h4 className="text-3xl lg:text-4xl font-bold text-zinc-900 leading-tight">{project.title}</h4>
-        </div>
-        
-        <p className="text-zinc-600 leading-relaxed text-lg">
-          {project.description}
-        </p>
-
-        {/* Metrics */}
-        <div className="grid grid-cols-3 gap-2 md:gap-4 py-6 border-y border-zinc-200">
-          <div>
-            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.calculation.price}</div>
-            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Kaufpreis inkl. NK</div>
-          </div>
-          <div className="border-l border-zinc-200 pl-2 md:pl-4 lg:pl-6">
-            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.metrics.yield}</div>
-            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Mietrendite</div>
-          </div>
-          <div className="border-l border-zinc-200 pl-2 md:pl-4 lg:pl-6">
-            <div className="text-lg md:text-2xl lg:text-3xl font-bold text-zinc-900 mb-1">{project.metrics.rentPa}</div>
-            <div className="text-zinc-500 text-xs md:text-sm leading-tight">Mieteinnahmen p.a.</div>
-          </div>
-        </div>
-
-        {/* Rechenbeispiel Accordion */}
-        <div className="border border-zinc-200 bg-zinc-50 rounded-2xl overflow-hidden">
-          <button 
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex items-center justify-between p-6 hover:bg-zinc-100 transition-colors"
-          >
-            <span className="text-lg font-semibold text-zinc-900">Rechenbeispiel</span>
-            {isOpen ? <X className="w-5 h-5 text-zinc-500" /> : <Plus className="w-5 h-5 text-zinc-500" />}
-          </button>
-          
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="px-6 pb-6 pt-2 space-y-4">
-                  <div className="flex justify-between text-zinc-600 text-lg">
-                    <span>Mietrendite</span>
-                    <span className="text-zinc-900 font-medium">{project.calculation.yield}</span>
-                  </div>
-                  <div className="flex justify-between text-zinc-600 text-lg pb-4 border-b border-zinc-200">
-                    <span>Kaufpreis inkl. NK</span>
-                    <span className="text-zinc-900 font-medium">{project.calculation.price}</span>
-                  </div>
-                  <div className="flex justify-between text-zinc-600 text-lg pt-2">
-                    <span>Mieteinnahmen</span>
-                    <span className="text-zinc-900 font-medium">{project.calculation.rentMonthly}</span>
-                  </div>
-                  <a href="#investment-check" className="flex justify-between items-center text-emerald-600 hover:text-emerald-700 text-lg pt-2 font-medium">
-                    <span>Passt so ein Objekt zu dir? Zum Investment-Check</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* CTA */}
-        <div className="pt-2">
-          <a href="#investment-check" className="inline-flex items-center justify-center w-full px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-            Investment-Check starten <ArrowRight className="ml-2 w-5 h-5" />
-          </a>
-        </div>
+      <div className="grid grid-cols-2 gap-1 bg-white">
+        {p.bilder.slice(1).map((b) => (
+          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+        ))}
+      </div>
+      <div className="p-6 sm:p-8 flex flex-col flex-1">
+        <p className="text-sm text-zinc-500">{p.lage}</p>
+        <h4 className="mt-1 text-2xl font-bold text-zinc-900">{p.titel}</h4>
+        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-zinc-200 py-6">
+          {p.fakten.map((f) => (
+            <div key={f.label}>
+              <dt className="text-xs text-zinc-500">{f.label}</dt>
+              <dd className="text-lg font-bold text-zinc-900">{f.wert}</dd>
+            </div>
+          ))}
+        </dl>
+        <ul className="mt-6 space-y-2 flex-1">
+          {p.highlights.map((h) => (
+            <li key={h} className="flex items-start gap-2 text-zinc-700">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> {h}
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={scrollToCheck}
+          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-4 font-semibold text-white hover:bg-zinc-800 transition-colors"
+        >
+          Interesse? Investment-Check starten <ArrowRight className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
@@ -350,6 +317,21 @@ export default function Home() {
               <InvestmentCheck />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Aktuelle Projekte */}
+      <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14 lg:mb-20">
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Aktuelle Projekte</h2>
+            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Wohnungen aus der Region</h3>
+            <p className="mt-6 text-lg text-zinc-600">Saniert, vermietbar und mit Hausverwaltung – so sehen Objekte aus, die wir vermitteln.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {projekte.map((p) => <ProjektKarte key={p.ort} p={p} />)}
+          </div>
+          <p className="mt-8 text-center text-xs text-zinc-500">Angaben laut Bauträger, ohne Gewähr. Bilder teilweise Beispielwohnungen. Verfügbarkeit auf Anfrage.</p>
         </div>
       </section>
 
