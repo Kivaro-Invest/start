@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BadgeCheck, Landmark, Handshake, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
+import { BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -306,10 +306,10 @@ export default function Home() {
           {/* Vertrauensleiste */}
           <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
-              { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Erlaubnis der IHK München und Oberbayern' },
-              { icon: <Landmark className="w-6 h-6" />, title: 'Finanzierung mit Partnerin', text: 'mit Erlaubnis nach § 34i GewO' },
-              { icon: <Handshake className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Wir arbeiten direkt mit Bauträgern' },
-              { icon: <ShieldCheck className="w-6 h-6" />, title: 'Eingetragene Gesellschaft', text: 'Amtsgericht München, HRB 311467' },
+              { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Offizielle Erlaubnis als Immobilienmakler' },
+              { icon: <Landmark className="w-6 h-6" />, title: 'Passende Finanzierung', text: 'Über zugelassene Finanzierungsexperten' },
+              { icon: <BadgeEuro className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Wir arbeiten direkt mit Bauträgern' },
+              { icon: <Handshake className="w-6 h-6" />, title: 'Persönliche Begleitung', text: 'Vom Erstgespräch bis zum Notartermin' },
             ].map((t) => (
               <div key={t.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-2xl bg-white border border-zinc-200 p-4 sm:p-5">
                 <div className="w-10 h-10 shrink-0 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">{t.icon}</div>

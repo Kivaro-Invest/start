@@ -155,7 +155,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Kivaro Invest UG (haftungsbeschränkt). Alle Rechte vorbehalten.
           </p>
           <p className="text-sm text-zinc-600">
-            Immobilienmakler mit Erlaubnis nach § 34c GewO · IHK München und Oberbayern
+            Immobilienmakler mit Erlaubnis nach § 34c GewO
           </p>
         </div>
       </div>
