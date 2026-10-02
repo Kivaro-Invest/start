@@ -9,12 +9,12 @@ import { team } from '../lib/team';
 
 const faqs = [
   {
-    question: "Warum fallen bei Kivaro Invest keine Maklerkosten an?",
+    question: "Warum zahle ich bei Kivaro Invest keine Provision?",
     answer: "Wir arbeiten direkt mit dem Bauträger zusammen und werden von der Verkäuferseite vergütet. Für dich als Käufer fällt keine Käuferprovision an."
   },
   {
     question: "Brauche ich Eigenkapital?",
-    answer: "Nicht zwingend. Je nach Bonität ist eine Finanzierung auch ohne Eigenkapital möglich. Eigenkapital kann deine monatliche Rate senken. Was in deinem Fall sinnvoll ist, klärt unsere Finanzierungspartnerin mit dir."
+    answer: "Nicht zwingend. Je nach Bonität ist eine Finanzierung auch ohne Eigenkapital möglich. Eigenkapital kann deine monatliche Rate senken. Was in deinem Fall sinnvoll ist, klären unsere Finanzierungsexperten mit dir."
   },
   {
     question: "Wie wirkt sich eine vermietete Wohnung auf meine Steuer aus?",
@@ -26,11 +26,11 @@ const faqs = [
   },
   {
     question: "Was passiert, wenn die Wohnung mal leer steht?",
-    answer: "Bei vielen Objekten gibt der Bauträger eine Mietgarantie: Steht die Wohnung leer, bekommst du trotzdem die vereinbarte Miete. Umfang und Laufzeit hängen vom jeweiligen Objekt ab – wir legen dir die Bedingungen vorab schriftlich vor."
+    answer: "Bei vielen Objekten gibt der Bauträger eine Mietgarantie: Steht die Wohnung leer, bekommst du trotzdem die vereinbarte Miete. Umfang und Laufzeit hängen vom jeweiligen Objekt ab – die Garantie ist zeitlich begrenzt, und wir legen dir die Bedingungen vorab schriftlich vor."
   },
   {
     question: "Muss ich mich um die Sanierung kümmern?",
-    answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Verkäufer abgeschlossen – ohne versteckte Zusatzkosten für dich. Du übernimmst eine schlüsselfertige, vermietbare Immobilie."
+    answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Bauträger abgeschlossen – ohne versteckte Zusatzkosten für dich. Du übernimmst eine schlüsselfertige, vermietbare Immobilie."
   },
   {
     question: "Welche Risiken gibt es?",
@@ -400,7 +400,7 @@ export default function Home() {
                   "Käuferprovision von oft rund 3,5 Prozent",
                   "Suche auf Portalen, viele Mitbewerber je Objekt",
                   "Mühsame Suche nach einer passenden Bank",
-                  "Keine Beratung zu Steuervorteilen",
+                  "Steuerliche Vorteile bleiben oft ungenutzt",
                   "Sanierungsrisiken, Handwerker schwer zu finden",
                   "Viel Zeitaufwand für die Mietersuche"
                 ].map((item, i) => (
@@ -422,10 +422,10 @@ export default function Home() {
               </h4>
               <ul className="space-y-6 relative z-10">
                 {[
-                  "0 Euro Käuferprovision",
+                  "0 € Käuferprovision",
                   "Hausverwaltung über den Bauträger inklusive",
-                  "Kontakt zu unserer Finanzierungspartnerin",
-                  "Sanierung vor Übergabe durch den Verkäufer",
+                  "Kontakt zu zugelassenen Finanzierungsexperten",
+                  "Sanierung vor Übergabe durch den Bauträger",
                   "Je nach Objekt mit Mietgarantie des Bauträgers",
                   "Inklusive Unterlagen für den Steuerberater"
                 ].map((item, i) => (
@@ -469,7 +469,7 @@ export default function Home() {
               {
                 step: "02",
                 title: "Finanzierung",
-                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit dir die Finanzierung.",
+                desc: "Wir bringen dich mit zugelassenen Finanzierungsexperten zusammen, die mit dir die passende Finanzierung erarbeiten.",
                 icon: <FileText className="w-6 h-6" />
               },
               {
