@@ -91,8 +91,6 @@ const projekte: Projekt[] = [
       { src: '/objekte/schweinfurt-fassade.webp', alt: 'Fassade des Objekts in Schweinfurt' },
       { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
       { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
-      { src: '/objekte/schweinfurt-luftbild.webp', alt: 'Luftbild des Objekts in Schweinfurt' },
-      { src: '/objekte/schweinfurt-flur.webp', alt: 'Flur nach Modernisierung' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
@@ -110,8 +108,6 @@ const projekte: Projekt[] = [
       { src: '/objekte/plattling-fassade.webp', alt: 'Fassade des Objekts in Plattling' },
       { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
       { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
-      { src: '/objekte/plattling-isar.webp', alt: 'Plattling an der Isar von oben' },
-      { src: '/objekte/plattling-rathaus.webp', alt: 'Rathaus Plattling' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
@@ -124,26 +120,17 @@ const projekte: Projekt[] = [
 ];
 
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
-  const [aktiv, setAktiv] = useState(0);
   return (
     <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
       <div className="relative">
-        <img src={p.bilder[aktiv].src} alt={p.bilder[aktiv].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
+        <img src={p.bilder[0].src} alt={p.bilder[0].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
         </span>
       </div>
-      <div className="grid grid-cols-5 gap-1.5 p-1.5 bg-white">
-        {p.bilder.map((b, i) => (
-          <button
-            key={b.src}
-            type="button"
-            onClick={() => setAktiv(i)}
-            aria-label={`Bild ${i + 1} anzeigen: ${b.alt}`}
-            className={`overflow-hidden rounded-lg ring-2 transition ${i === aktiv ? 'ring-emerald-500' : 'ring-transparent opacity-80 hover:opacity-100'}`}
-          >
-            <img src={b.src} alt="" className="w-full aspect-square object-cover" loading="lazy" />
-          </button>
+      <div className="grid grid-cols-2 gap-1 bg-white">
+        {p.bilder.slice(1).map((b) => (
+          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/3] object-cover" loading="lazy" />
         ))}
       </div>
       <div className="p-6 sm:p-8 flex flex-col flex-1">
@@ -451,6 +438,12 @@ export default function Home() {
             <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet dich transparent und persönlich durch jeden Schritt.</p>
           </div>
 
+          <div className="relative mb-16 lg:mb-24 overflow-hidden rounded-3xl shadow-xl">
+            <img src="/objekte/region-stadt.webp" alt="Marktplatz in Schweinfurt" className="w-full aspect-[16/9] sm:aspect-[21/9] object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-zinc-950/10 to-transparent" />
+            <p className="absolute bottom-5 left-5 right-5 sm:bottom-8 sm:left-8 text-white text-lg sm:text-2xl font-semibold">Wohnungen in starken Städten der Region – saniert, vermietbar, verwaltet.</p>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-8 relative">
             <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200"></div>
 
@@ -512,7 +505,8 @@ export default function Home() {
       <section className="py-24 lg:py-32 bg-zinc-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-zinc-900 rounded-[2.5rem] p-8 sm:p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 opacity-50"></div>
+            <img src="/objekte/plattling-isar.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-zinc-950/75"></div>
             <div className="relative z-10">
               <h2 className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-6">
                 Bereit für dein erstes Investment?
