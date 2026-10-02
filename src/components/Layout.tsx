@@ -152,7 +152,10 @@ export function Footer() {
         
         <div className="mt-16 pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-zinc-600">
-            &copy; {new Date().getFullYear()} Kivaro Invest. Alle Rechte vorbehalten.
+            &copy; {new Date().getFullYear()} Kivaro Invest UG (haftungsbeschränkt). Alle Rechte vorbehalten.
+          </p>
+          <p className="text-sm text-zinc-600">
+            Immobilienmakler mit Erlaubnis nach § 34c GewO · IHK München und Oberbayern
           </p>
         </div>
       </div>

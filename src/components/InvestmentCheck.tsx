@@ -344,7 +344,7 @@ export default function InvestmentCheck() {
                   {status !== 'submitting' && <ArrowRight className="w-5 h-5" />}
                 </button>
                 <p className="flex items-center justify-center gap-1.5 text-xs text-zinc-500">
-                  <Lock className="w-3.5 h-3.5" /> Verschlüsselt übertragen. Nur Kivaro Invest meldet sich bei dir.
+                  <Lock className="w-3.5 h-3.5" /> Verschlüsselt übertragen. Nur Kivaro Invest meldet sich bei dir – Makler mit Erlaubnis nach § 34c GewO.
                 </p>
               </div>
             </motion.form>

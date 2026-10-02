@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
+import { BadgeCheck, Landmark, Handshake, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -302,6 +302,24 @@ export default function Home() {
             </button>
             <p className="text-sm text-zinc-500">1 Minute · kostenlos · unverbindlich</p>
           </div>
+
+          {/* Vertrauensleiste */}
+          <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Erlaubnis der IHK München und Oberbayern' },
+              { icon: <Landmark className="w-6 h-6" />, title: 'Finanzierung mit Partnerin', text: 'mit Erlaubnis nach § 34i GewO' },
+              { icon: <Handshake className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Wir arbeiten direkt mit Bauträgern' },
+              { icon: <ShieldCheck className="w-6 h-6" />, title: 'Eingetragene Gesellschaft', text: 'Amtsgericht München, HRB 311467' },
+            ].map((t) => (
+              <div key={t.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-2xl bg-white border border-zinc-200 p-4 sm:p-5">
+                <div className="w-10 h-10 shrink-0 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">{t.icon}</div>
+                <div>
+                  <p className="text-sm font-semibold text-zinc-900 leading-snug">{t.title}</p>
+                  <p className="text-xs text-zinc-500 leading-snug mt-0.5">{t.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -451,7 +469,7 @@ export default function Home() {
               {
                 step: "02",
                 title: "Finanzierung",
-                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit dir die Finanzierung.",
+                desc: "Wir stellen den Kontakt zu unserer Finanzierungspartnerin her. Sie verfügt über die Erlaubnis nach § 34i GewO und erarbeitet mit dir die Finanzierung.",
                 icon: <FileText className="w-6 h-6" />
               },
               {
