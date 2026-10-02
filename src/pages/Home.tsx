@@ -91,46 +91,59 @@ const projekte: Projekt[] = [
       { src: '/objekte/schweinfurt-fassade.webp', alt: 'Fassade des Objekts in Schweinfurt' },
       { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
       { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
+      { src: '/objekte/schweinfurt-luftbild.webp', alt: 'Luftbild des Objekts in Schweinfurt' },
+      { src: '/objekte/schweinfurt-flur.webp', alt: 'Flur nach Modernisierung' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
       { label: 'Wohnfläche', wert: '57 – 70 m²' },
-      { label: 'Einheiten', wert: '12 Wohnungen' },
       { label: 'Beispiel-Rendite', wert: '4,0 %' },
+      { label: 'Zustand', wert: '2025 modernisiert' },
     ],
-    highlights: ['2025 modernisiert', 'Garagen & Stellplätze', 'Starke Arbeitgeber wie Schaeffler & ZF'],
+    highlights: ['Zentrale Lage, Bahnhof & Innenstadt schnell erreichbar', 'Garagen & Stellplätze', 'Starke Arbeitgeber wie Schaeffler & ZF'],
   },
   {
     ort: 'Plattling',
     lage: 'Straubinger Straße · Landkreis Deggendorf',
-    titel: 'Exklusives Haus mit nur 6 Wohnungen',
+    titel: 'Charmanter Altbau in zentraler Lage',
     bilder: [
       { src: '/objekte/plattling-fassade.webp', alt: 'Fassade des Objekts in Plattling' },
       { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
       { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
+      { src: '/objekte/plattling-isar.webp', alt: 'Plattling an der Isar von oben' },
+      { src: '/objekte/plattling-rathaus.webp', alt: 'Rathaus Plattling' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
       { label: 'Wohnfläche', wert: '63 – 112 m²' },
-      { label: 'Einheiten', wert: '6 Wohnungen' },
       { label: 'Sanierung', wert: '2026' },
+      { label: 'Lage', wert: 'Zentrum, 10 Min. zu Fuß' },
     ],
     highlights: ['ICE-Bahnhof & A92/A3 in der Nähe', 'Nähe BMW Dingolfing & TH Deggendorf', 'Garagen & Stellplätze'],
   },
 ];
 
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
+  const [aktiv, setAktiv] = useState(0);
   return (
     <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
       <div className="relative">
-        <img src={p.bilder[0].src} alt={p.bilder[0].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
+        <img src={p.bilder[aktiv].src} alt={p.bilder[aktiv].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-1 bg-white">
-        {p.bilder.slice(1).map((b) => (
-          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+      <div className="grid grid-cols-5 gap-1.5 p-1.5 bg-white">
+        {p.bilder.map((b, i) => (
+          <button
+            key={b.src}
+            type="button"
+            onClick={() => setAktiv(i)}
+            aria-label={`Bild ${i + 1} anzeigen: ${b.alt}`}
+            className={`overflow-hidden rounded-lg ring-2 transition ${i === aktiv ? 'ring-emerald-500' : 'ring-transparent opacity-80 hover:opacity-100'}`}
+          >
+            <img src={b.src} alt="" className="w-full aspect-square object-cover" loading="lazy" />
+          </button>
         ))}
       </div>
       <div className="p-6 sm:p-8 flex flex-col flex-1">
