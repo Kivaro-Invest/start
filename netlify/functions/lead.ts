@@ -13,25 +13,26 @@ import {
 
 // ---------------------------------------------------------------------------
 // monday.com – Spalten-IDs des Boards „Leads – Investment-Check“
-// (Werte stammen aus dem Board; bei neuen Spalten hier ergänzen)
+// Board: https://greenjobsgmbh.monday.com/boards/5105369698 (Workspace „Kivaro“)
+const MONDAY_BOARD_ID_DEFAULT = '5105369698';
 // ---------------------------------------------------------------------------
 const MONDAY_COLUMNS = {
-  status: '',
-  einstufung: '',
-  telefon: '',
-  email: '',
-  ziel: '',
-  beruf: '',
-  probezeit: '',
-  einkommen: '',
-  ersparnisse: '',
-  immobilien: '',
-  alter: '',
-  start: '',
-  quelle: '',
-  kampagne: '',
-  eingang: '',
-  einwilligung: '',
+  status: 'color_mm7rwbk5',
+  einstufung: 'color_mm7r87d2',
+  telefon: 'phone_mm7rz8s1',
+  email: 'email_mm7rgxm0',
+  ziel: 'text_mm7r7y9q',
+  beruf: 'text_mm7r47ah',
+  probezeit: 'text_mm7r7adj',
+  einkommen: 'text_mm7r6tbe',
+  ersparnisse: 'text_mm7r5f48',
+  immobilien: 'text_mm7rfxjy',
+  alter: 'text_mm7rfrsc',
+  start: 'text_mm7r3wj5',
+  quelle: 'text_mm7rk9e7',
+  kampagne: 'text_mm7r8609',
+  eingang: 'date_mm7rayea',
+  einwilligung: 'long_text_mm7rqb20',
 };
 
 type LeadBody = {
@@ -126,7 +127,7 @@ export const handler: Handler = async (event) => {
 
   // ---------------- monday.com ----------------
   const token = process.env.MONDAY_API_TOKEN;
-  const boardId = process.env.MONDAY_BOARD_ID;
+  const boardId = process.env.MONDAY_BOARD_ID || MONDAY_BOARD_ID_DEFAULT;
   if (token && boardId) {
     try {
       const c = MONDAY_COLUMNS;
@@ -134,7 +135,7 @@ export const handler: Handler = async (event) => {
       const set = (id: string, v: unknown) => { if (id) values[id] = v; };
       set(c.status, { label: 'Neu' });
       set(c.einstufung, { label: score });
-      set(c.telefon, { phone: phone.startsWith('+') ? phone : phone.replace(/^0/, '+49'), countryShortName: 'DE' });
+      set(c.telefon, { phone: phone.startsWith('+') ? phone : phone.startsWith('00') ? phone.replace(/^00/, '+') : phone.replace(/^0/, '+49'), countryShortName: 'DE' });
       set(c.email, { email, text: email });
       set(c.ziel, labelFor('ziel', answers.ziel));
       set(c.beruf, labelFor('beruf', answers.beruf));
