@@ -99,7 +99,7 @@ export default function Datenschutz() {
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Netlify, Inc.</strong> (USA) – Hosting der Website und Verarbeitung der Formulare.</li>
                 <li><strong>monday.com Ltd.</strong>, 6 Yitzhak Sadeh St., Tel Aviv, Israel – Verwaltung unserer Interessenten- und Kundenkontakte. Für Israel besteht ein Angemessenheitsbeschluss der EU-Kommission.</li>
-                <li><strong>Unser E-Mail-Anbieter</strong> – Versand und Empfang von E-Mails.</li>
+                <li><strong>STRATO GmbH</strong>, Otto-Ostrowski-Straße 7, 10249 Berlin – Versand und Empfang von E-Mails.</li>
               </ul>
               <p>
                 Wenn du im Gespräch eine Finanzierung wünschst, geben wir deine Daten nur mit deiner Zustimmung an unsere Finanzierungspartnerin weiter.

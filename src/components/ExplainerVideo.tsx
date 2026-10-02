@@ -42,14 +42,12 @@ export default function ExplainerVideo({ onCta }: Props) {
         <button
           type="button"
           onClick={play}
-          className="group absolute inset-0 flex flex-col items-center justify-center gap-3 bg-zinc-900/25 hover:bg-zinc-900/35 transition-colors"
-          aria-label="Erklärvideo abspielen"
+          className="group absolute inset-0 bg-transparent hover:bg-zinc-900/10 transition-colors"
+          aria-label="Erklärvideo abspielen (60 Sekunden)"
         >
-          <span className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-white text-zinc-900 shadow-2xl transition-transform group-hover:scale-105">
-            <Play className="h-8 w-8 sm:h-10 sm:w-10 translate-x-0.5 fill-current" />
-          </span>
-          <span className="rounded-full bg-zinc-900/80 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur">
-            Kivaro in 60 Sekunden erklärt
+          {/* Button sitzt rechts neben dem Text im Vorschaubild */}
+          <span className="absolute left-[62%] top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 sm:h-20 sm:w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full bg-white text-zinc-900 shadow-2xl ring-4 ring-white/30 transition-transform group-hover:scale-110">
+            <Play className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 translate-x-0.5 fill-current" />
           </span>
         </button>
       )}
