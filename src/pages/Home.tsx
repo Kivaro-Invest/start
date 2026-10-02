@@ -13,16 +13,20 @@ const faqs = [
     answer: "Wir arbeiten direkt mit dem Bauträger zusammen und werden von der Verkäuferseite vergütet. Für dich als Käufer fällt keine Käuferprovision an."
   },
   {
-    question: "Was genau sind Off-Market-Immobilien?",
-    answer: "Off-Market-Immobilien sind Wohnungen, die nicht öffentlich auf Immobilienportalen angeboten werden. Du erfährst davon über uns, bevor oder ohne dass sie öffentlich vermarktet werden."
+    question: "Brauche ich Eigenkapital?",
+    answer: "Nicht zwingend. Je nach Bonität ist eine Finanzierung auch ohne Eigenkapital möglich. Eigenkapital kann deine monatliche Rate senken. Was in deinem Fall sinnvoll ist, klärt unsere Finanzierungspartnerin mit dir."
   },
   {
     question: "Wie wirkt sich eine vermietete Wohnung auf meine Steuer aus?",
-    answer: "Zinsen, die Abschreibung des Gebäudes (AfA) und laufende Kosten sind Werbungskosten. Übersteigen sie die Mieteinnahmen, mindert der Verlust dein zu versteuerndes Einkommen und damit deine Lohn- und Einkommensteuer. Wie viel das bei dir ausmacht, rechnen wir im Gespräch mit deinen Zahlen durch. Die steuerliche Beurteilung im Einzelfall übernimmt dein Steuerberater; wir stellen ihm die Unterlagen zusammen."
+    answer: "Zinsen, die Abschreibung des Gebäudes (AfA) und laufende Kosten sind Werbungskosten. Übersteigen sie die Mieteinnahmen, mindert der Verlust dein zu versteuerndes Einkommen und damit deine Lohn- und Einkommensteuer. Wie viel das bei dir ausmacht, rechnen wir im weiteren Verlauf mit deinen Zahlen durch. Die steuerliche Beurteilung im Einzelfall übernimmt dein Steuerberater; wir stellen ihm die Unterlagen zusammen."
   },
   {
-    question: "Wer kümmert sich um die Vermietung und Verwaltung?",
-    answer: "Auf Wunsch bekommst du ein komplettes 'Rundum-Sorglos-Paket'. Das beinhaltet eine professionelle Hausverwaltung, die sich um alle Mieterangelegenheiten, Nebenkostenabrechnungen und Instandhaltungen kümmert."
+    question: "Wer kümmert sich um Mieter und Reparaturen?",
+    answer: "Zu unseren Objekten bietet der Bauträger eine professionelle Hausverwaltung an. Sie kümmert sich um Mieterangelegenheiten, Nebenkostenabrechnungen und Reparaturen – du musst dich um den Alltag nicht selbst kümmern."
+  },
+  {
+    question: "Was passiert, wenn die Wohnung mal leer steht?",
+    answer: "Bei vielen Objekten gibt der Bauträger eine Mietgarantie: Steht die Wohnung leer, bekommst du trotzdem die vereinbarte Miete. Umfang und Laufzeit hängen vom jeweiligen Objekt ab – wir legen dir die Bedingungen vorab schriftlich vor."
   },
   {
     question: "Muss ich mich um die Sanierung kümmern?",
@@ -275,7 +279,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
             >
-              Schau dir in 60 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dir später allein gehört – und warum du dabei oft sogar Steuern sparst.
+              Schau dir in 60 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
             </motion.p>
           </div>
 
@@ -313,9 +317,9 @@ export default function Home() {
               </p>
               <ul className="hidden lg:block space-y-4">
                 {[
-                  'Hausverwaltung inklusive – sie kümmert sich um Mieter und Reparaturen',
-                  'Je nach Objekt mit Mietgarantie des Bauträgers',
-                  '0 € Käuferprovision für dich',
+                  'Start auch ohne Eigenkapital – je nach Bonität',
+                  'Mieteinnahmen und Steuervorteile zahlen deine Rate mit',
+                  'Kein Aufwand: Die Hausverwaltung kümmert sich um Mieter und Reparaturen',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-zinc-700">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
@@ -404,7 +408,7 @@ export default function Home() {
                   "Hausverwaltung über den Bauträger inklusive",
                   "Kontakt zu unserer Finanzierungspartnerin",
                   "Sanierung vor Übergabe durch den Verkäufer",
-                  "Unterstützung bei steuerlichen Abschreibungen",
+                  "Je nach Objekt mit Mietgarantie des Bauträgers",
                   "Inklusive Unterlagen für den Steuerberater"
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-4 text-zinc-300">

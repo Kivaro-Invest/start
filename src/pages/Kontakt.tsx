@@ -87,9 +87,9 @@ export default function Kontakt() {
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <CheckCircle2 className="w-32 h-32" />
                 </div>
-                <h3 className="text-xl font-bold mb-4 relative z-10">Sichere dir Zugriff auf Off-Market-Immobilien.</h3>
+                <h3 className="text-xl font-bold mb-4 relative z-10">Persönlich begleitet – vom Erstgespräch bis zum Notartermin.</h3>
                 <p className="text-zinc-400 text-sm leading-relaxed relative z-10">
-                  Unsere Objekte werden nicht auf öffentlichen Portalen angeboten. Profitiere von unserem Netzwerk.
+                  Wir arbeiten direkt mit Bauträgern zusammen. Für dich fällt keine Käuferprovision an.
                 </p>
               </div>
             </motion.div>
