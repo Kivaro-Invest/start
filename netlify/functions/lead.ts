@@ -124,11 +124,14 @@ export const handler: Handler = async (event) => {
   const answerLines = visibleQuestions(answers).map((q) => ({ frage: q.title, antwort: labelFor(q.id, answers[q.id]) }));
 
   const results = { monday: false, mail: false };
+  // Kurzer Diagnose-Hinweis ohne Geheimnisse (hilft bei der Fehlersuche, Nutzer sieht ihn nicht)
+  let mondayInfo = 'kein Token';
 
   // ---------------- monday.com ----------------
   const token = process.env.MONDAY_API_TOKEN;
   const boardId = process.env.MONDAY_BOARD_ID || MONDAY_BOARD_ID_DEFAULT;
   if (token && boardId) {
+    mondayInfo = 'gestartet';
     try {
       const c = MONDAY_COLUMNS;
       const values: Record<string, unknown> = {};
@@ -162,9 +165,15 @@ export const handler: Handler = async (event) => {
         }),
       });
       const data = await res.json();
-      if (data?.data?.create_item?.id) results.monday = true;
-      else console.error('monday error', JSON.stringify(data).slice(0, 500));
+      if (data?.data?.create_item?.id) {
+        results.monday = true;
+        mondayInfo = 'ok';
+      } else {
+        mondayInfo = `fehler ${res.status}: ${String(data?.errors?.[0]?.message || data?.error_message || data?.error_code || '').slice(0, 160)}`;
+        console.error('monday error', JSON.stringify(data).slice(0, 500));
+      }
     } catch (err) {
+      mondayInfo = 'netzwerkfehler';
       console.error('monday request failed', err);
     }
   }
@@ -256,5 +265,5 @@ https://kivaro-invest.de/impressum`,
     console.error('Lead konnte nirgends gespeichert werden', { firstName, score });
     return json(500, { error: 'Speichern fehlgeschlagen' });
   }
-  return json(200, { success: true });
+  return json(200, { success: true, saved: { ...results, mondayInfo } });
 };
