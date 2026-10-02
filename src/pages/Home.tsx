@@ -470,23 +470,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section className="py-24 lg:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 lg:mb-24">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Unsere Referenzobjekte</h2>
-            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-6">Einblicke in unser Portfolio</h3>
-            <p className="text-zinc-600 max-w-3xl mx-auto leading-relaxed text-lg">
-              Viele unserer Objekte werden diskret (Off-Market) an vorgemerkte Kunden vermittelt. Hier siehst du eine Auswahl abgeschlossener Projekte. Mach den Investment-Check, um aktuelle Angebote zu bekommen, bevor sie öffentlich vermarktet werden.
-            </p>
-          </div>
-
-          <div className="space-y-32">
-            {projects.map((p, index) => <ProjectCard key={p.id} project={p} index={index} />)}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section className="py-24 lg:py-32 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

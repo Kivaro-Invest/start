@@ -23,7 +23,6 @@ export function Header() {
 
   const navLinks = [
     { name: 'Startseite', path: '/' },
-    { name: 'Investment-Check', path: '/#investment-check' },
     { name: 'Downloads', path: '/downloads' },
     { name: 'Kontakt', path: '/kontakt' },
   ];
