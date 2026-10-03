@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pong 1 gegen 1</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  canvas { background: #000; border: 2px solid #444; max-width: 100%; }
+  p { margin: 0; font-size: 14px; color: #aaa; text-align: center; }
+</style>
+</head>
+<body>
+<canvas id="c" width="800" height="500"></canvas>
+<p>Spieler 1: <b>W / S</b> &nbsp;·&nbsp; Spieler 2: <b>↑ / ↓</b> &nbsp;·&nbsp; <b>Leertaste</b>: Start / Pause &nbsp;·&nbsp; Erster mit 7 Punkten gewinnt</p>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const W = c.width, H = c.height, PW = 12, PH = 90, R = 8, WIN = 7;
+const keys = {};
+let p1, p2, ball, s1, s2, running, winner;
+
+function reset() { s1 = s2 = 0; winner = null; p1 = p2 = (H - PH) / 2; serve(1); running = false; }
+function serve(dir) {
+  const a = (Math.random() - 0.5) * Math.PI / 3;
+  ball = { x: W / 2, y: H / 2, vx: Math.cos(a) * 6 * dir, vy: Math.sin(a) * 6 };
+}
+
+addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  if (e.key === ' ') { e.preventDefault(); if (winner) reset(); running = !running; }
+  if (e.key.startsWith('Arrow')) e.preventDefault();
+});
+addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+function hit(px, py) {
+  // Abprallwinkel hängt davon ab, wo der Ball den Schläger trifft
+  const rel = (ball.y - (py + PH / 2)) / (PH / 2);
+  const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.05, 16);
+  const ang = rel * Math.PI / 3.5;
+  const dir = px < W / 2 ? 1 : -1;
+  ball.vx = Math.cos(ang) * speed * dir;
+  ball.vy = Math.sin(ang) * speed;
+}
+
+function update() {
+  const sp = 7;
+  if (keys['w']) p1 -= sp; if (keys['s']) p1 += sp;
+  if (keys['arrowup']) p2 -= sp; if (keys['arrowdown']) p2 += sp;
+  p1 = Math.max(0, Math.min(H - PH, p1)); p2 = Math.max(0, Math.min(H - PH, p2));
+
+  ball.x += ball.vx; ball.y += ball.vy;
+  if (ball.y < R || ball.y > H - R) { ball.vy *= -1; ball.y = Math.max(R, Math.min(H - R, ball.y)); }
+
+  if (ball.vx < 0 && ball.x - R < 20 + PW && ball.x > 20 && ball.y > p1 && ball.y < p1 + PH) hit(20, p1);
+  if (ball.vx > 0 && ball.x + R > W - 20 - PW && ball.x < W - 20 && ball.y > p2 && ball.y < p2 + PH) hit(W - 20, p2);
+
+  if (ball.x < -R) { s2++; serve(-1); }
+  if (ball.x > W + R) { s1++; serve(1); }
+  if (s1 >= WIN || s2 >= WIN) { winner = s1 > s2 ? 'Spieler 1' : 'Spieler 2'; running = false; }
+}
+
+function draw() {
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#333';
+  for (let y = 0; y < H; y += 30) ctx.fillRect(W / 2 - 2, y, 4, 18);
+  ctx.fillStyle = '#4fc3f7'; ctx.fillRect(20, p1, PW, PH);
+  ctx.fillStyle = '#ff8a65'; ctx.fillRect(W - 20 - PW, p2, PW, PH);
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ball.x, ball.y, R, 0, Math.PI * 2); ctx.fill();
+  ctx.font = 'bold 48px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(s1, W / 4, 60); ctx.fillText(s2, W * 3 / 4, 60);
+  if (!running) {
+    ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(0, H / 2 - 50, W, 100);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 32px system-ui';
+    ctx.fillText(winner ? `${winner} gewinnt! Leertaste = neues Spiel` : 'Leertaste drücken zum Starten', W / 2, H / 2 + 11);
+  }
+}
+
+function loop() { if (running) update(); draw(); requestAnimationFrame(loop); }
+reset(); loop();
+</script>
+</body>
+</html>
