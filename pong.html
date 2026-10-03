@@ -1,83 +1,182 @@
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pong 1 gegen 1</title>
+<title>Pong Duell</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&display=swap">
 <style>
-  html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: system-ui, sans-serif; }
-  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
-  canvas { background: #000; border: 2px solid #444; max-width: 100%; }
-  p { margin: 0; font-size: 14px; color: #aaa; text-align: center; }
+  /* Layout: one full-screen table, phone flat between two players; P1 bottom, P2 top (upside down) */
+  :root {
+    --table: #0f1a2e;
+    --line: #26375a;
+    --p1: #ffb547;
+    --p2: #6ec1ff;
+    --ball: #f4f7ff;
+    --text: #f4f7ff;
+    --font: "Chakra Petch", ui-rounded, system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: var(--table); }
+  body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 </style>
-</head>
-<body>
-<canvas id="c" width="800" height="500"></canvas>
-<p>Spieler 1: <b>W / S</b> &nbsp;·&nbsp; Spieler 2: <b>↑ / ↓</b> &nbsp;·&nbsp; <b>Leertaste</b>: Start / Pause &nbsp;·&nbsp; Erster mit 7 Punkten gewinnt</p>
+<canvas id="c" aria-label="Pong Spielfeld"></canvas>
 <script>
 const c = document.getElementById('c'), ctx = c.getContext('2d');
-const W = c.width, H = c.height, PW = 12, PH = 90, R = 8, WIN = 7;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { table: css('--table'), line: css('--line'), p1: css('--p1'), p2: css('--p2'), ball: css('--ball'), text: css('--text') };
+const FONT = css('--font');
+const WIN = 7;
+let W, H, PW, PH, M, R;
+let p1x, p2x, ball, s1, s2, state = 'ready', winner = null, serveTimer = 0, lastServeDir = 1;
 const keys = {};
-let p1, p2, ball, s1, s2, running, winner;
 
-function reset() { s1 = s2 = 0; winner = null; p1 = p2 = (H - PH) / 2; serve(1); running = false; }
-function serve(dir) {
-  const a = (Math.random() - 0.5) * Math.PI / 3;
-  ball = { x: W / 2, y: H / 2, vx: Math.cos(a) * 6 * dir, vy: Math.sin(a) * 6 };
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const oldW = W;
+  W = c.clientWidth; H = c.clientHeight;
+  c.width = W * dpr; c.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  PW = Math.max(70, W * 0.24); PH = 14; M = Math.max(28, H * 0.05); R = Math.max(7, W * 0.022);
+  if (oldW && ball) { const k = W / oldW; p1x *= k; p2x *= k; ball.x *= k; }
 }
 
+function newGame() { s1 = s2 = 0; winner = null; p1x = p2x = (W - PW) / 2; serve(1); }
+function serve(dir) {
+  lastServeDir = dir;
+  const a = (Math.random() - 0.5) * Math.PI / 3;
+  const sp = H * 0.55; // Pixel pro Sekunde
+  ball = { x: W / 2, y: H / 2, vx: Math.sin(a) * sp, vy: Math.cos(a) * sp * dir };
+  serveTimer = 0.8;
+}
+
+// Touch: jeder Finger steuert den Schläger in seiner Spielfeldhälfte
+function onTouch(e) {
+  e.preventDefault();
+  if (state !== 'play') {
+    if (e.type === 'touchstart' || e.type === 'pointerdown') start();
+    return;
+  }
+  const rect = c.getBoundingClientRect();
+  for (const t of e.touches || [e]) {
+    const x = t.clientX - rect.left - PW / 2, y = t.clientY - rect.top;
+    if (y > H / 2) p1x = x; else p2x = x;
+  }
+}
+c.addEventListener('touchstart', onTouch, { passive: false });
+c.addEventListener('touchmove', onTouch, { passive: false });
+c.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') onTouch(e); });
+c.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' && e.buttons) onTouch(e); });
+
+// Tastatur als Ersatz am Computer: P1 ← →, P2 A D
 addEventListener('keydown', e => {
   keys[e.key.toLowerCase()] = true;
-  if (e.key === ' ') { e.preventDefault(); if (winner) reset(); running = !running; }
-  if (e.key.startsWith('Arrow')) e.preventDefault();
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (state !== 'play') start(); }
 });
 addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-function hit(px, py) {
-  // Abprallwinkel hängt davon ab, wo der Ball den Schläger trifft
-  const rel = (ball.y - (py + PH / 2)) / (PH / 2);
-  const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.05, 16);
-  const ang = rel * Math.PI / 3.5;
-  const dir = px < W / 2 ? 1 : -1;
-  ball.vx = Math.cos(ang) * speed * dir;
-  ball.vy = Math.sin(ang) * speed;
+function start() {
+  if (state === 'over') newGame();
+  state = 'play';
+  if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(() => {});
 }
 
-function update() {
-  const sp = 7;
-  if (keys['w']) p1 -= sp; if (keys['s']) p1 += sp;
-  if (keys['arrowup']) p2 -= sp; if (keys['arrowdown']) p2 += sp;
-  p1 = Math.max(0, Math.min(H - PH, p1)); p2 = Math.max(0, Math.min(H - PH, p2));
+function hit(px, dir) {
+  const rel = Math.max(-1, Math.min(1, (ball.x - (px + PW / 2)) / (PW / 2)));
+  const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.06, H * 1.6);
+  const ang = rel * Math.PI / 3.2;
+  ball.vx = Math.sin(ang) * speed;
+  ball.vy = Math.cos(ang) * speed * dir;
+  if (navigator.vibrate) navigator.vibrate(12);
+}
 
-  ball.x += ball.vx; ball.y += ball.vy;
-  if (ball.y < R || ball.y > H - R) { ball.vy *= -1; ball.y = Math.max(R, Math.min(H - R, ball.y)); }
+function update(dt) {
+  const ks = W * 1.4 * dt;
+  if (keys['arrowleft']) p1x -= ks; if (keys['arrowright']) p1x += ks;
+  if (keys['a']) p2x -= ks; if (keys['d']) p2x += ks;
+  p1x = Math.max(0, Math.min(W - PW, p1x)); p2x = Math.max(0, Math.min(W - PW, p2x));
 
-  if (ball.vx < 0 && ball.x - R < 20 + PW && ball.x > 20 && ball.y > p1 && ball.y < p1 + PH) hit(20, p1);
-  if (ball.vx > 0 && ball.x + R > W - 20 - PW && ball.x < W - 20 && ball.y > p2 && ball.y < p2 + PH) hit(W - 20, p2);
+  if (serveTimer > 0) { serveTimer -= dt; return; }
+  ball.x += ball.vx * dt; ball.y += ball.vy * dt;
+  if (ball.x < R) { ball.x = R; ball.vx = Math.abs(ball.vx); }
+  if (ball.x > W - R) { ball.x = W - R; ball.vx = -Math.abs(ball.vx); }
 
-  if (ball.x < -R) { s2++; serve(-1); }
-  if (ball.x > W + R) { s1++; serve(1); }
-  if (s1 >= WIN || s2 >= WIN) { winner = s1 > s2 ? 'Spieler 1' : 'Spieler 2'; running = false; }
+  const yB = H - M - PH, yT = M + PH;
+  if (ball.vy > 0 && ball.y + R >= yB && ball.y - R <= yB + PH && ball.x + R > p1x && ball.x - R < p1x + PW) { ball.y = yB - R; hit(p1x, -1); }
+  if (ball.vy < 0 && ball.y - R <= yT && ball.y + R >= yT - PH && ball.x + R > p2x && ball.x - R < p2x + PW) { ball.y = yT + R; hit(p2x, 1); }
+
+  if (ball.y > H + R) { s2++; point(-1); }
+  else if (ball.y < -R) { s1++; point(1); }
+}
+
+function point(dir) {
+  if (navigator.vibrate) navigator.vibrate([40, 40, 40]);
+  if (s1 >= WIN || s2 >= WIN) { winner = s1 > s2 ? 1 : 2; state = 'over'; return; }
+  serve(dir);
+}
+
+function text(str, x, y, size, color, flip) {
+  ctx.save(); ctx.translate(x, y); if (flip) ctx.rotate(Math.PI);
+  ctx.fillStyle = color; ctx.font = `700 ${size}px ${FONT}`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(str, 0, 0); ctx.restore();
 }
 
 function draw() {
-  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#333';
-  for (let y = 0; y < H; y += 30) ctx.fillRect(W / 2 - 2, y, 4, 18);
-  ctx.fillStyle = '#4fc3f7'; ctx.fillRect(20, p1, PW, PH);
-  ctx.fillStyle = '#ff8a65'; ctx.fillRect(W - 20 - PW, p2, PW, PH);
-  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ball.x, ball.y, R, 0, Math.PI * 2); ctx.fill();
-  ctx.font = 'bold 48px system-ui'; ctx.textAlign = 'center';
-  ctx.fillText(s1, W / 4, 60); ctx.fillText(s2, W * 3 / 4, 60);
-  if (!running) {
-    ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(0, H / 2 - 50, W, 100);
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 32px system-ui';
-    ctx.fillText(winner ? `${winner} gewinnt! Leertaste = neues Spiel` : 'Leertaste drücken zum Starten', W / 2, H / 2 + 11);
+  ctx.fillStyle = COL.table; ctx.fillRect(0, 0, W, H);
+  // Mittellinie und Mittelkreis
+  ctx.strokeStyle = COL.line; ctx.lineWidth = 3;
+  ctx.setLineDash([14, 12]); ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(W / 2, H / 2, Math.min(W, H) * 0.12, 0, Math.PI * 2); ctx.stroke();
+
+  // Punktestand: jeder liest seinen eigenen von seiner Seite
+  const big = Math.min(W, H) * 0.16;
+  ctx.globalAlpha = 0.35;
+  text(s1, W / 2, H * 0.75, big, COL.p1, false);
+  text(s2, W / 2, H * 0.25, big, COL.p2, true);
+  ctx.globalAlpha = 1;
+
+  // Schläger
+  ctx.fillStyle = COL.p1; roundRect(p1x, H - M - PH, PW, PH);
+  ctx.fillStyle = COL.p2; roundRect(p2x, M, PW, PH);
+
+  // Ball
+  if (state === 'play' && serveTimer > 0 && Math.floor(serveTimer * 6) % 2) {} else {
+    ctx.fillStyle = COL.ball; ctx.beginPath(); ctx.arc(ball.x, ball.y, R, 0, Math.PI * 2); ctx.fill();
+  }
+
+  if (state !== 'play') {
+    ctx.fillStyle = 'rgba(15,26,46,0.78)'; ctx.fillRect(0, 0, W, H);
+    const fs = Math.min(W * 0.075, 34), sub = fs * 0.6;
+    if (state === 'ready') {
+      text('Tippen zum Starten', W / 2, H * 0.68, fs, COL.p1, false);
+      text('Finger unten bewegt deinen Schläger', W / 2, H * 0.68 + fs * 1.2, sub, COL.text, false);
+      text('Tippen zum Starten', W / 2, H * 0.32, fs, COL.p2, true);
+      text('Finger oben bewegt deinen Schläger', W / 2, H * 0.32 - fs * 1.2, sub, COL.text, true);
+      text(`Wer zuerst ${WIN} Punkte hat, gewinnt`, W / 2, H / 2, sub, COL.text, false);
+    } else {
+      text(winner === 1 ? 'Gewonnen!' : 'Verloren', W / 2, H * 0.68, fs * 1.3, COL.p1, false);
+      text(winner === 2 ? 'Gewonnen!' : 'Verloren', W / 2, H * 0.32, fs * 1.3, COL.p2, true);
+      text(`${s1} : ${s2}  ·  Tippen für neue Runde`, W / 2, H * 0.68 + fs * 1.4, sub, COL.text, false);
+      text(`${s2} : ${s1}  ·  Tippen für neue Runde`, W / 2, H * 0.32 - fs * 1.4, sub, COL.text, true);
+    }
   }
 }
 
-function loop() { if (running) update(); draw(); requestAnimationFrame(loop); }
-reset(); loop();
+function roundRect(x, y, w, h) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, h / 2); else ctx.rect(x, y, w, h);
+  ctx.fill();
+}
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.033, (now - last) / 1000); last = now;
+  if (state === 'play') update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+addEventListener('resize', resize);
+resize(); newGame();
+if (document.fonts) document.fonts.ready.then(draw);
+requestAnimationFrame(loop);
 </script>
-</body>
-</html>
