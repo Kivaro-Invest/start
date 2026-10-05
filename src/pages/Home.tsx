@@ -247,7 +247,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
             >
-              Schau dir in 60 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
+              Schau dir in 90 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
             </motion.p>
           </div>
 

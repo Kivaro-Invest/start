@@ -43,7 +43,7 @@ export default function ExplainerVideo({ onCta }: Props) {
           type="button"
           onClick={play}
           className="group absolute inset-0 bg-transparent hover:bg-zinc-900/10 transition-colors"
-          aria-label="Erklärvideo abspielen (60 Sekunden)"
+          aria-label="Erklärvideo abspielen (90 Sekunden)"
         >
           {/* Button sitzt rechts neben dem Text im Vorschaubild */}
           <span className="absolute left-[62%] top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 sm:h-20 sm:w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full bg-white text-zinc-900 shadow-2xl ring-4 ring-white/30 transition-transform group-hover:scale-110">
