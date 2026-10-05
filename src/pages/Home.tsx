@@ -31,10 +31,6 @@ const faqs = [
   {
     question: "Muss ich mich um die Sanierung kümmern?",
     answer: "Nein. Bei unseren Objekten wird die Sanierung in der Regel bereits vor der Übergabe durch den Bauträger abgeschlossen – ohne versteckte Zusatzkosten für dich. Du übernimmst eine schlüsselfertige, vermietbare Immobilie."
-  },
-  {
-    question: "Welche Risiken gibt es?",
-    answer: "Mietausfall, Leerstand, Instandhaltung und Zinsänderungen nach Ablauf der Zinsbindung. Eine Immobilie ist langfristig gebunden und nicht kurzfristig verkäuflich. Wir sprechen diese Punkte im Erstgespräch offen mit dir an."
   }
 ];
 
@@ -85,7 +81,7 @@ type Projekt = {
 const projekte: Projekt[] = [
   {
     ort: 'Schweinfurt',
-    lage: 'Theresienstraße · Zentrum',
+    lage: 'Zentrale Lage',
     titel: 'Modernisierter Altbau im Zentrum',
     bilder: [
       { src: '/objekte/schweinfurt-fassade.webp', alt: 'Fassade des Objekts in Schweinfurt' },
@@ -102,7 +98,7 @@ const projekte: Projekt[] = [
   },
   {
     ort: 'Plattling',
-    lage: 'Straubinger Straße · Landkreis Deggendorf',
+    lage: 'Landkreis Deggendorf',
     titel: 'Charmanter Altbau in zentraler Lage',
     bilder: [
       { src: '/objekte/plattling-fassade.webp', alt: 'Fassade des Objekts in Plattling' },
