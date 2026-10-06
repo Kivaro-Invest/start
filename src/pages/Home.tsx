@@ -84,7 +84,7 @@ const projekte: Projekt[] = [
     lage: 'Zentrale Lage',
     titel: 'Modernisierter Altbau im Zentrum',
     bilder: [
-      { src: '/objekte/schweinfurt-fassade.webp', alt: 'Fassade des Objekts in Schweinfurt' },
+      { src: '/objekte/schweinfurt-zimmer.webp', alt: 'Eingerichtete Beispielwohnung nach Modernisierung' },
       { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
       { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
     ],
@@ -101,9 +101,9 @@ const projekte: Projekt[] = [
     lage: 'Landkreis Deggendorf',
     titel: 'Charmanter Altbau in zentraler Lage',
     bilder: [
-      { src: '/objekte/plattling-fassade.webp', alt: 'Fassade des Objekts in Plattling' },
       { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
       { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
+      { src: '/objekte/plattling-stadt.webp', alt: 'Altes Rathaus in Plattling' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
