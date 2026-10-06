@@ -84,7 +84,6 @@ const projekte: Projekt[] = [
     lage: 'Zentrale Lage',
     titel: 'Modernisierter Altbau im Zentrum',
     bilder: [
-      { src: '/objekte/schweinfurt-zimmer.webp', alt: 'Eingerichtete Beispielwohnung nach Modernisierung' },
       { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
       { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
     ],
@@ -103,7 +102,6 @@ const projekte: Projekt[] = [
     bilder: [
       { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
       { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
-      { src: '/objekte/plattling-stadt.webp', alt: 'Altes Rathaus in Plattling' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
@@ -118,16 +116,13 @@ const projekte: Projekt[] = [
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
   return (
     <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
-      <div className="relative">
-        <img src={p.bilder[0].src} alt={p.bilder[0].alt} className="w-full aspect-[3/2] object-cover" loading="lazy" />
+      <div className="relative grid grid-cols-2 gap-1 bg-white">
+        {p.bilder.map((b) => (
+          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/5] object-cover" loading="lazy" />
+        ))}
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
         </span>
-      </div>
-      <div className="grid grid-cols-2 gap-1 bg-white">
-        {p.bilder.slice(1).map((b) => (
-          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/3] object-cover" loading="lazy" />
-        ))}
       </div>
       <div className="p-6 sm:p-8 flex flex-col flex-1">
         <p className="text-sm text-zinc-500">{p.lage}</p>
