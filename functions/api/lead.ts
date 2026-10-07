@@ -11,7 +11,7 @@ import {
   visibleQuestions,
   type Answers,
 } from '../../src/lib/investmentCheck';
-import { clip, esc, json, sendMails, type Env } from '../../server/shared';
+import { clip, esc, json, lastSmtpError, sendMails, type Env } from '../../server/shared';
 
 // monday.com – Board „Leads – Investment-Check“ (Workspace „Kivaro“)
 // https://greenjobsgmbh.monday.com/boards/5105369698
@@ -218,8 +218,16 @@ https://kivaro-invest.de/impressum`,
   // Ohne monday ist die Benachrichtigungsmail der einzige Speicherort → abwarten
   const [notifyOk] = await sendMails(env, [notifyMail, confirmMail]);
   if (!notifyOk) {
-    console.error('Lead konnte nirgends gespeichert werden', { firstName, score, mondayInfo });
-    return json(500, { error: 'Speichern fehlgeschlagen' });
+    console.error('Lead konnte nirgends gespeichert werden', { firstName, score, mondayInfo, lastSmtpError });
+    // Diagnose ohne Geheimnisse – zeigt nur, WAS fehlt
+    return json(500, {
+      error: 'Speichern fehlgeschlagen',
+      diagnose: {
+        monday: mondayInfo,
+        mail: lastSmtpError || 'unbekannt',
+        gesetzt: ['MONDAY_API_TOKEN', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'SMTP_PORT'].filter((k) => Boolean((env as Record<string, unknown>)[k])),
+      },
+    });
   }
   return json(200, { success: true, saved: { monday: false, mail: true, mondayInfo } });
 };

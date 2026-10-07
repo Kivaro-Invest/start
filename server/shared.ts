@@ -45,8 +45,14 @@ export type Mail = {
  * Port 465 = direkt verschlüsselt, 587 = STARTTLS. Port 25 ist bei Cloudflare gesperrt.
  * Gibt pro Mail zurück, ob sie rausging.
  */
+export let lastSmtpError = '';
+
 export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
-  if (!smtpConfigured(env)) return mails.map(() => false);
+  lastSmtpError = '';
+  if (!smtpConfigured(env)) {
+    lastSmtpError = 'SMTP nicht konfiguriert';
+    return mails.map(() => false);
+  }
   const port = parseInt(env.SMTP_PORT || '465', 10);
   let mailer: WorkerMailer | null = null;
   const results: boolean[] = [];
@@ -63,6 +69,7 @@ export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
     });
   } catch (err) {
     console.error('SMTP-Verbindung fehlgeschlagen', err);
+    lastSmtpError = `Verbindung: ${String((err as Error)?.message || err).slice(0, 160)}`;
     return mails.map(() => false);
   }
   for (const m of mails) {
@@ -78,6 +85,7 @@ export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
       results.push(true);
     } catch (err) {
       console.error('Mailversand fehlgeschlagen', m.subject, err);
+      lastSmtpError = `Versand: ${String((err as Error)?.message || err).slice(0, 160)}`;
       results.push(false);
     }
   }
