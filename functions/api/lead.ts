@@ -102,6 +102,11 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     `Seite: ${clip(body.pageUrl, 300)}`,
   ].join('\n');
 
+  // STRATO blockt Mails mit Links auf manche Domains (z. B. *.pages.dev) als Spam („B-URL“).
+  // In der Mail steht die Seite deshalb ohne klickbaren Link; in monday bleibt die volle Adresse.
+  const pageForMail = clip(body.pageUrl, 300).replace(/^https?:\/\//i, '').replace(/^([^/?#]+)/, (h) => h.replace(/\./g, '[.]'));
+  const consentProofMail = consentProof.replace(/^Seite: .*$/m, `Seite: ${pageForMail}`);
+
   const answerLines = visibleQuestions(answers).map((q) => ({ frage: q.title, antwort: labelFor(q.id, answers[q.id]) }));
 
   // ---------------- monday.com ----------------
@@ -176,7 +181,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       `Quelle: ${quelle}${kampagne ? ` (${kampagne})` : ''}`,
       '',
       '--- Einwilligungsnachweis ---',
-      consentProof,
+      consentProofMail,
     ].join('\n'),
     html: `
 <h2 style="font-family:Arial,sans-serif">${esc(prio)}: ${esc(firstName)}</h2>
@@ -187,7 +192,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 </p>
 <table style="font-family:Arial,sans-serif;font-size:14px;border-collapse:collapse">${rows}</table>
 <h3 style="font-family:Arial,sans-serif;margin-top:24px">Einwilligungsnachweis</h3>
-<pre style="font-size:12px;white-space:pre-wrap;background:#f4f4f5;padding:12px;border-radius:8px">${esc(consentProof)}</pre>
+<pre style="font-size:12px;white-space:pre-wrap;background:#f4f4f5;padding:12px;border-radius:8px">${esc(consentProofMail)}</pre>
 <p style="font-family:Arial,sans-serif;font-size:12px;color:#71717a">Diese E-Mail als Nachweis 5 Jahre aufbewahren (§ 7a UWG).</p>`,
   };
 
