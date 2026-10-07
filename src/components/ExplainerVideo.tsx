@@ -26,7 +26,7 @@ export default function ExplainerVideo({ onCta }: Props) {
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover"
-        src="/video/kivaro-erklaerfilm.mp4"
+        src="/video/kivaro-erklaerfilm-v8.mp4"
         poster="/video/kivaro-erklaerfilm-poster.jpg"
         preload="metadata"
         playsInline
