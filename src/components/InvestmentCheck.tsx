@@ -57,19 +57,35 @@ export default function InvestmentCheck() {
     }
   }, [stepIndex, status]);
 
+  // Schutz gegen Doppeltipps: Solange zur nächsten Frage gewechselt wird, zählen weitere Tipps nicht.
+  // Sonst würde eine Frage übersprungen und der Server lehnt den Check als unvollständig ab.
+  const advancing = useRef(false);
+  const currentIdRef = useRef<QuestionId | null>(null);
+  currentIdRef.current = stepIndex < questions.length ? questions[stepIndex].id : null;
+
   const choose = (id: QuestionId, value: string) => {
+    if (advancing.current || currentIdRef.current !== id) return;
+    advancing.current = true;
     const next: Answers = { ...answers, [id]: value };
     // Probezeit-Antwort verwerfen, wenn jemand nicht (mehr) angestellt ist
     if (id === 'beruf' && value !== 'angestellt') delete next.probezeit;
     setAnswers(next);
     setDirection(1);
-    window.setTimeout(() => setStepIndex((i) => Math.min(i + 1, visibleQuestions(next).length)), 220);
+    const target = visibleQuestions(next).findIndex((q) => q.id === id) + 1;
+    window.setTimeout(() => {
+      setStepIndex(target);
+      advancing.current = false;
+    }, 220);
   };
 
   const back = () => {
+    if (advancing.current) return;
     setDirection(-1);
     setStepIndex((i) => Math.max(0, i - 1));
   };
+
+  // Erste Frage ohne gültige Antwort (Sicherheitsnetz vor dem Absenden)
+  const firstMissing = questions.findIndex((q) => !q.options.some((o) => o.value === answers[q.id]));
 
   const firstNameOk = contact.firstName.trim().length >= 2;
   const phoneOk = phoneLooksValid(contact.phone);
@@ -78,6 +94,12 @@ export default function InvestmentCheck() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (firstMissing >= 0) {
+      // Eine Frage ist offen geblieben → direkt dorthin springen statt einen Fehler zu zeigen
+      setDirection(-1);
+      setStepIndex(firstMissing);
+      return;
+    }
     setTouched(true);
     if (!formOk || status === 'submitting' || status === 'finishing') return;
     setStatus('submitting');
