@@ -3,18 +3,29 @@ import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CONTACT_CONSENT_TEXT, CONTACT_CONSENT_VERSION } from '../lib/investmentCheck';
 
 export default function Kontakt() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [consent, setConsent] = useState(false);
+  const [consentMissing, setConsentMissing] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      setConsentMissing(true);
+      return;
+    }
     setFormState('submitting');
     setErrorMessage('');
-    
+
     const formData = new FormData(e.target as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
+    const data = {
+      ...Object.fromEntries(formData.entries()),
+      consent: { given: consent, version: CONTACT_CONSENT_VERSION },
+      pageUrl: window.location.href,
+    };
 
     try {
       const response = await fetch('/api/contact', {
@@ -27,6 +38,7 @@ export default function Kontakt() {
 
       if (response.ok) {
         setFormState('success');
+        setConsent(false);
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('Server error:', errorData);
@@ -188,6 +200,25 @@ export default function Kontakt() {
                   ></textarea>
                 </div>
 
+                <label className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${consentMissing && !consent ? 'border-red-300 bg-red-50' : 'border-zinc-200 bg-white hover:bg-zinc-100'}`}>
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => {
+                      setConsent(e.target.checked);
+                      if (e.target.checked) setConsentMissing(false);
+                    }}
+                    className="mt-1 w-5 h-5 shrink-0 rounded accent-emerald-600"
+                  />
+                  <span className="text-sm text-zinc-600 leading-relaxed">
+                    {CONTACT_CONSENT_TEXT} Mehr dazu in der{' '}
+                    <Link to="/datenschutz" target="_blank" className="underline hover:text-zinc-900">Datenschutzerklärung</Link>.
+                  </span>
+                </label>
+                {consentMissing && !consent && (
+                  <p className="-mt-3 text-sm text-red-600">Bitte bestätige, dass wir dich kontaktieren dürfen – sonst können wir dir nicht antworten.</p>
+                )}
+
                 <button 
                   type="submit" 
                   disabled={formState === 'submitting'}
@@ -196,10 +227,6 @@ export default function Kontakt() {
                   {formState === 'submitting' ? 'Wird gesendet...' : 'Nachricht absenden'}
                   {!formState && <Send className="w-4 h-4" />}
                 </button>
-                
-                <p className="text-xs text-zinc-500 text-center mt-4">
-                  Informationen zur Verarbeitung deiner Daten findest du in unserer <Link to="/datenschutz" className="underline hover:text-zinc-900">Datenschutzerklärung</Link>.
-                </p>
               </form>
             )}
           </motion.div>

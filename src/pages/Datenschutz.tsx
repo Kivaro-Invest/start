@@ -92,6 +92,9 @@ export default function Datenschutz() {
               <p>
                 Wenn du uns über das Kontaktformular oder per E-Mail schreibst, verarbeiten wir deine Angaben (Name, E-Mail-Adresse, ggf. Telefonnummer, deine Nachricht), um deine Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit deine Anfrage auf eine Zusammenarbeit abzielt, ansonsten unser berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Wir löschen die Daten, sobald die Anfrage erledigt ist und keine Aufbewahrungspflichten entgegenstehen.
               </p>
+              <p>
+                Im Kontaktformular willigst du außerdem ausdrücklich ein, dass wir dich zu deiner Anfrage und zu Immobilien als Kapitalanlage telefonisch und per E-Mail kontaktieren. Rechtsgrundlage dafür ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 7 Abs. 2 Nr. 1 UWG), die du jederzeit widerrufen kannst. Den Nachweis deiner Einwilligung (Zeitpunkt, Wortlaut und Version des Textes, IP-Adresse, Browserkennung) bewahren wir gemäß § 7a UWG fünf Jahre auf.
+              </p>
             </Section>
 
             <Section title="7. Wer bekommt deine Daten?">

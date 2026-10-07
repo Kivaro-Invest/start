@@ -137,3 +137,8 @@ export function scoreLead(a: Answers): 'A' | 'B' | 'C' {
 export const CONSENT_VERSION = '2026-10-02-v1';
 export const CONSENT_TEXT =
   'Ich willige ein, dass mich die Kivaro Invest UG (haftungsbeschränkt) zu meinem Investment-Check und zu Immobilien als Kapitalanlage telefonisch und per E-Mail kontaktiert. Diese Einwilligung kann ich jederzeit mit Wirkung für die Zukunft widerrufen, z. B. per E-Mail an kontakt@kivaro-invest.de.';
+
+// Einwilligung im Kontaktformular (eigene Version, gleiche Nachweispflicht)
+export const CONTACT_CONSENT_VERSION = '2026-10-07-k1';
+export const CONTACT_CONSENT_TEXT =
+  'Ich willige ein, dass mich die Kivaro Invest UG (haftungsbeschränkt) zu meiner Anfrage und zu Immobilien als Kapitalanlage telefonisch und per E-Mail kontaktiert. Diese Einwilligung kann ich jederzeit mit Wirkung für die Zukunft widerrufen, z. B. per E-Mail an kontakt@kivaro-invest.de.';
