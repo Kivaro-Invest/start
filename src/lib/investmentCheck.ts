@@ -1,4 +1,4 @@
-// Gemeinsame Definition des Investment-Checks – wird von der Seite UND der Netlify Function genutzt.
+// Gemeinsame Definition des Investment-Checks – wird von der Seite UND der Cloudflare-Funktion (functions/api/lead.ts) genutzt.
 // Fragen hier ändern, dann passt sich beides an.
 
 export type Option = { value: string; label: string };

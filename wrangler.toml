@@ -1,0 +1,6 @@
+# Cloudflare Pages – Einstellungen für kivaro-invest.de
+# Geheimnisse (MONDAY_API_TOKEN, SMTP_*) werden NICHT hier, sondern im Cloudflare-Dashboard hinterlegt.
+name = "kivaro-invest"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]

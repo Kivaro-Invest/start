@@ -46,10 +46,10 @@ export default function Datenschutz() {
 
             <Section title="3. Hosting und Server-Logfiles">
               <p>
-                Unsere Website wird bei Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, USA gehostet. Beim Aufruf der Website verarbeitet Netlify technisch notwendige Daten: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, übertragene Datenmenge, Browser und Betriebssystem sowie die zuvor besuchte Seite (Referrer). Das ist erforderlich, um die Website sicher und stabil auszuliefern.
+                Unsere Website wird bei Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA gehostet (Dienst „Cloudflare Pages“). Cloudflare stellt die Website über ein weltweites Servernetz bereit und schützt sie vor Angriffen. Beim Aufruf der Website verarbeitet Cloudflare technisch notwendige Daten: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, übertragene Datenmenge, Browser und Betriebssystem sowie die zuvor besuchte Seite (Referrer). Das ist erforderlich, um die Website sicher und stabil auszuliefern.
               </p>
               <p>
-                Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und funktionsfähigen Webauftritt (Art. 6 Abs. 1 lit. f DSGVO). Mit Netlify besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO). Netlify ist unter dem EU-US Data Privacy Framework zertifiziert; ergänzend gelten die EU-Standardvertragsklauseln.
+                Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und funktionsfähigen Webauftritt (Art. 6 Abs. 1 lit. f DSGVO). Mit Cloudflare besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO). Cloudflare ist unter dem EU-US Data Privacy Framework zertifiziert; ergänzend gelten die EU-Standardvertragsklauseln.
               </p>
             </Section>
 
@@ -97,7 +97,7 @@ export default function Datenschutz() {
             <Section title="7. Wer bekommt deine Daten?">
               <p>Deine Daten verkaufen wir nicht. Wir nutzen folgende Dienstleister, die in unserem Auftrag und nach unseren Weisungen arbeiten (Art. 28 DSGVO):</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Netlify, Inc.</strong> (USA) – Hosting der Website und Verarbeitung der Formulare.</li>
+                <li><strong>Cloudflare, Inc.</strong> (USA) – Hosting der Website und Verarbeitung der Formulare.</li>
                 <li><strong>monday.com Ltd.</strong>, 6 Yitzhak Sadeh St., Tel Aviv, Israel – Verwaltung unserer Interessenten- und Kundenkontakte. Für Israel besteht ein Angemessenheitsbeschluss der EU-Kommission.</li>
                 <li><strong>STRATO GmbH</strong>, Otto-Ostrowski-Straße 7, 10249 Berlin – Versand und Empfang von E-Mails.</li>
               </ul>
@@ -108,7 +108,7 @@ export default function Datenschutz() {
 
             <Section title="8. Übermittlung in Drittländer">
               <p>
-                Bei Netlify (USA) können Daten in die USA übertragen werden. Die Übermittlung stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework (Art. 45 DSGVO) und ergänzend auf EU-Standardvertragsklauseln (Art. 46 DSGVO).
+                Bei Cloudflare (USA) können Daten in die USA übertragen werden. Die Übermittlung stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework (Art. 45 DSGVO) und ergänzend auf EU-Standardvertragsklauseln (Art. 46 DSGVO).
               </p>
             </Section>
 
