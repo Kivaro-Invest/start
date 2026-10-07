@@ -154,7 +154,7 @@ export const onRequestPost = async ({ request, env, waitUntil }: { request: Requ
   }
 
   // ---------------- E-Mails ----------------
-  const prio = score === 'A' ? '🔥 A-Lead' : score === 'B' ? 'B-Lead' : 'C-Lead';
+  const prio = score === 'A' ? 'A-Lead' : score === 'B' ? 'B-Lead' : 'C-Lead';
   const rows = answerLines
     .map((l) => `<tr><td style="padding:4px 12px 4px 0;color:#71717a">${esc(l.frage)}</td><td style="padding:4px 0"><b>${esc(l.antwort)}</b></td></tr>`)
     .join('');
@@ -163,7 +163,7 @@ export const onRequestPost = async ({ request, env, waitUntil }: { request: Requ
     fromName: 'Kivaro Investment-Check',
     to: env.LEAD_NOTIFY_TO || 'kontakt@kivaro-invest.de',
     reply: email,
-    subject: `${prio}: ${firstName} – Investment-Check (Quelle: ${quelle})`,
+    subject: `[${prio}] ${firstName} - Investment-Check (Quelle: ${quelle})`,
     text: [
       `Neuer Lead aus dem Investment-Check – Einstufung ${score}`,
       '',

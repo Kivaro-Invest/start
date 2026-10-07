@@ -47,6 +47,27 @@ export type Mail = {
  */
 export let lastSmtpError = '';
 
+/**
+ * Betreff RFC-2047-konform kodieren: mehrere kurze Base64-Wörter (max. 75 Zeichen je Wort),
+ * gefaltet auf mehrere Zeilen. Die Bibliothek würde sonst ein einziges, überlanges Wort bauen,
+ * das manche Mailserver (u. a. Spamfilter) verwerfen.
+ */
+export function encodeSubject(subject: string): string {
+  if (!/[^\x20-\x7E]/.test(subject)) return subject;
+  const enc = new TextEncoder();
+  const words: string[] = [];
+  let chunk = '';
+  for (const ch of Array.from(subject)) {
+    if (enc.encode(chunk + ch).length > 45) {
+      words.push(chunk);
+      chunk = ch;
+    } else chunk += ch;
+  }
+  if (chunk) words.push(chunk);
+  const b64 = (t: string) => btoa(String.fromCharCode(...enc.encode(t)));
+  return words.map((w) => `=?UTF-8?B?${b64(w)}?=`).join('\r\n ');
+}
+
 export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
   lastSmtpError = '';
   if (!smtpConfigured(env)) {
@@ -79,6 +100,7 @@ export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
         to: m.to,
         reply: m.reply,
         subject: m.subject,
+        headers: { Subject: encodeSubject(m.subject) },
         text: m.text,
         html: m.html,
       });
