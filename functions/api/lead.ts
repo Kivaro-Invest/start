@@ -45,7 +45,7 @@ type LeadBody = {
   website?: string; // Honeypot
 };
 
-export const onRequestPost = async ({ request, env, waitUntil }: { request: Request; env: Env; waitUntil: (p: Promise<unknown>) => void }) => {
+export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
   const raw = await request.text();
   if (raw.length > 10_000) return json(413, { error: 'Anfrage zu groß' });
 
@@ -209,27 +209,22 @@ Kivaro Invest UG (haftungsbeschränkt) · Tölzer Str. 1 · 82031 Grünwald
 https://kivaro-invest.de/impressum`,
   };
 
-  if (mondayOk) {
-    // Lead ist sicher gespeichert → Mails im Hintergrund, Antwort sofort an den Besucher
-    waitUntil(sendMails(env, [notifyMail, confirmMail]));
-    return json(200, { success: true, saved: { monday: true, mondayInfo } });
-  }
+  // Mails direkt verschicken (nicht im Hintergrund), damit Fehler sichtbar werden
+  const [notifyOk, confirmOk] = await sendMails(env, [notifyMail, confirmMail]);
+  const mail = { benachrichtigung: notifyOk, bestaetigung: confirmOk, fehler: lastSmtpError || undefined };
 
-  // Ohne monday ist die Benachrichtigungsmail der einzige Speicherort → abwarten
-  const [notifyOk] = await sendMails(env, [notifyMail, confirmMail]);
-  if (!notifyOk) {
+  if (!mondayOk && !notifyOk) {
     console.error('Lead konnte nirgends gespeichert werden', { firstName, score, mondayInfo, lastSmtpError });
-    // Diagnose ohne Geheimnisse – zeigt nur, WAS fehlt
     return json(500, {
       error: 'Speichern fehlgeschlagen',
       diagnose: {
         monday: mondayInfo,
-        mail: lastSmtpError || 'unbekannt',
+        mail,
         gesetzt: ['MONDAY_API_TOKEN', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'SMTP_PORT'].filter((k) => Boolean((env as Record<string, unknown>)[k])),
       },
     });
   }
-  return json(200, { success: true, saved: { monday: false, mail: true, mondayInfo } });
+  return json(200, { success: true, saved: { monday: mondayOk, mondayInfo, mail } });
 };
 
 export const onRequest = () => json(405, { error: 'Method Not Allowed' });

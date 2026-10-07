@@ -85,8 +85,8 @@ export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
       startTls: port !== 465,
       credentials: { username: env.SMTP_USER!, password: env.SMTP_PASS! },
       authType: ['plain', 'login'],
-      socketTimeoutMs: 10_000,
-      responseTimeoutMs: 10_000,
+      socketTimeoutMs: 8_000,
+      responseTimeoutMs: 8_000,
     });
   } catch (err) {
     console.error('SMTP-Verbindung fehlgeschlagen', err);
@@ -107,7 +107,7 @@ export async function sendMails(env: Env, mails: Mail[]): Promise<boolean[]> {
       results.push(true);
     } catch (err) {
       console.error('Mailversand fehlgeschlagen', m.subject, err);
-      lastSmtpError = `Versand: ${String((err as Error)?.message || err).slice(0, 160)}`;
+      lastSmtpError += `[${m.subject.slice(0, 20)}] ${String((err as Error)?.message || err).slice(0, 200)} `;
       results.push(false);
     }
   }
