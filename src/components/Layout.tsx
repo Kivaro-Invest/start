@@ -158,6 +158,9 @@ export function Footer() {
             Immobilienmakler mit Erlaubnis nach § 34c GewO
           </p>
         </div>
+        <p className="mt-6 text-xs text-zinc-600 leading-relaxed max-w-4xl">
+          Alle Angaben dienen der allgemeinen Information und sind keine Rechts-, Steuer- oder Anlageberatung. Renditen und Steuervorteile sind Beispielrechnungen ohne Gewähr. Jede Kapitalanlage ist mit Risiken verbunden. Für die steuerliche Beurteilung im Einzelfall wende dich an deinen Steuerberater.
+        </p>
       </div>
     </footer>
   );
