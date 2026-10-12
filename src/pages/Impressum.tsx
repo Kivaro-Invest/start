@@ -69,6 +69,14 @@ export default function Impressum() {
             <section>
               <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 mb-6 mt-10 sm:mt-12">Haftungsausschluss:</h2>
               
+              <h3 className="text-lg sm:text-xl font-semibold text-zinc-900 mb-3 mt-6 sm:mt-8">Keine Rechts-, Steuer- oder Anlageberatung</h3>
+              <p>
+                Die Inhalte dieser Website dienen ausschließlich der allgemeinen Information und stellen keine Rechts-, Steuer- oder Anlageberatung dar. Kivaro Invest ist weder eine Steuerberatungs- noch eine Rechtsanwaltskanzlei und erbringt keine Steuer- oder Rechtsberatung. Für verbindliche Auskünfte zu deiner individuellen steuerlichen oder rechtlichen Situation wende dich bitte an einen Steuerberater bzw. Rechtsanwalt.
+              </p>
+              <p className="mt-4">
+                Angaben zu Renditen, Mieteinnahmen, Steuervorteilen und Finanzierung sind Beispielrechnungen und keine Zusicherung. Jede Kapitalanlage in Immobilien ist mit Risiken verbunden, zum Beispiel Leerstand, Mietausfall, Zinsänderungen und Wertschwankungen, bis hin zum Verlust des eingesetzten Kapitals.
+              </p>
+
               <h3 className="text-lg sm:text-xl font-semibold text-zinc-900 mb-3 mt-6 sm:mt-8">Haftung für Inhalte</h3>
               <p>
                 Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
