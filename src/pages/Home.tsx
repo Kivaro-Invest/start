@@ -212,16 +212,6 @@ export default function Home() {
       <section className="relative pt-10 pb-16 lg:pt-20 lg:pb-24 overflow-hidden bg-zinc-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-zinc-200 shadow-sm mb-6"
-            >
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">Kapitalanlage-Immobilien</span>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
