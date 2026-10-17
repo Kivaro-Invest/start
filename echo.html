@@ -1,0 +1,210 @@
+<title>Echo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Sora:wght@400;600&display=swap">
+<style>
+  /* Layout: one full-screen night field; you, a goal, and every earlier run of yours replaying as a ghost */
+  :root {
+    --field: #15121f;
+    --grid: #221d33;
+    --you: #fff1d0;
+    --ghost: #9b8cff;
+    --goal: #ff6b5a;
+    --text: #efeaff;
+    --muted: #9a93b8;
+    --display: "Unbounded", system-ui, sans-serif;
+    --body: "Sora", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: var(--field); }
+  body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+</style>
+<canvas id="c" aria-label="Echo Spielfeld"></canvas>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = { field: css('--field'), grid: css('--grid'), you: css('--you'), ghost: css('--ghost'), goal: css('--goal'), text: css('--text'), muted: css('--muted') };
+const DISPLAY = css('--display'), BODY = css('--body');
+const LIMIT = 5;          // Sekunden pro Runde
+const GRACE = 0.35;       // Sekunden ohne Kollision am Rundenstart
+let W, H, S, R;           // S = Bezugsgröße, R = Radius (in Pixeln)
+
+// Positionen sind normiert (0..1), damit Drehen/Größenänderung nichts kaputt macht
+let state = 'title', round, ghosts, rec, you, start, goal, t, deadAt = 0, cause = '', best = 0;
+try { best = +localStorage.getItem('echo-best') || 0; } catch (e) {}
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  W = c.clientWidth; H = c.clientHeight;
+  c.width = W * dpr; c.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  S = Math.min(W, H); R = Math.max(9, S * 0.03);
+}
+const px = p => ({ x: p.x * W, y: p.y * H });
+
+function randomGoal(from) {
+  // Ziel weit genug weg vom Start, aber nicht am Rand
+  for (let i = 0; i < 50; i++) {
+    const g = { x: 0.12 + Math.random() * 0.76, y: 0.15 + Math.random() * 0.72 };
+    if (Math.hypot((g.x - from.x) * W, (g.y - from.y) * H) > S * 0.55) return g;
+  }
+  return { x: 1 - from.x, y: 1 - from.y };
+}
+
+function newGame() {
+  round = 1; ghosts = [];
+  start = { x: 0.5, y: 0.8 };
+  goal = { x: 0.5, y: 0.22 };
+  readyRound();
+}
+function readyRound() {
+  you = { ...start }; rec = [{ t: 0, x: you.x, y: you.y }]; t = 0;
+  state = 'ready';
+}
+
+// Steuerung: relatives Ziehen, damit der Finger den Punkt nicht verdeckt
+let lastTouch = null;
+function down(x, y) {
+  if (state === 'title') { newGame(); return; }
+  if (state === 'dead') { if (performance.now() - deadAt > 700) newGame(); return; }
+  if (state === 'ready') state = 'play';
+  lastTouch = { x, y };
+}
+function move(x, y) {
+  if (!lastTouch || state !== 'play') { lastTouch = { x, y }; return; }
+  you.x = Math.max(0, Math.min(1, you.x + (x - lastTouch.x) / W));
+  you.y = Math.max(0, Math.min(1, you.y + (y - lastTouch.y) / H));
+  lastTouch = { x, y };
+}
+const pos = e => { const r = c.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+c.addEventListener('touchstart', e => { e.preventDefault(); down(...pos(e.touches[0])); }, { passive: false });
+c.addEventListener('touchmove', e => { e.preventDefault(); move(...pos(e.touches[0])); }, { passive: false });
+c.addEventListener('touchend', e => { e.preventDefault(); lastTouch = null; }, { passive: false });
+c.addEventListener('mousedown', e => down(...pos(e)));
+c.addEventListener('mousemove', e => { if (e.buttons) move(...pos(e)); });
+c.addEventListener('mouseup', () => lastTouch = null);
+
+function ghostAt(g, time) {
+  // Position eines Echos zur Zeit t (linear zwischen Aufnahmepunkten)
+  const p = g.path;
+  if (time >= p[p.length - 1].t) return null;  // Echo ist am Ziel angekommen und verschwunden
+  while (g.i < p.length - 2 && p[g.i + 1].t <= time) g.i++;
+  const a = p[g.i], b = p[g.i + 1], k = (time - a.t) / ((b.t - a.t) || 1);
+  return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
+}
+
+function die(why) {
+  state = 'dead'; cause = why; deadAt = performance.now();
+  if (round - 1 > best) { best = round - 1; try { localStorage.setItem('echo-best', best); } catch (e) {} }
+  if (navigator.vibrate) navigator.vibrate([60, 40, 120]);
+}
+
+function update(dt) {
+  t += dt;
+  rec.push({ t, x: you.x, y: you.y });
+  const yp = px(you);
+  if (t > GRACE) for (const g of ghosts) {
+    const gp = g.now; if (!gp) continue;
+    const q = px(gp);
+    if (Math.hypot(q.x - yp.x, q.y - yp.y) < R * 1.7) { g.hit = true; die('Du hast dein Echo aus Runde ' + g.round + ' berührt.'); return; }
+  }
+  const gp = px(goal);
+  if (Math.hypot(gp.x - yp.x, gp.y - yp.y) < R * 2.2) {
+    ghosts.push({ path: rec, round, i: 0, now: null });
+    if (navigator.vibrate) navigator.vibrate(20);
+    round++; start = { ...goal }; goal = randomGoal(start);
+    readyRound(); return;
+  }
+  if (t >= LIMIT) die('Die Zeit ist abgelaufen.');
+}
+
+function txt(s, x, y, size, color, font = BODY, weight = 400, align = 'center') {
+  ctx.fillStyle = color; ctx.font = `${weight} ${size}px ${font}`;
+  ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y);
+}
+function dot(p, r, color) { ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill(); }
+
+function draw() {
+  ctx.fillStyle = COL.field; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = COL.grid; ctx.lineWidth = 1;
+  const step = S / 8;
+  for (let x = step / 2; x < W; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = step / 2; y < H; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+  if (state === 'title') return drawTitle();
+
+  // Spuren aller Echos, damit man den Weg planen kann
+  ctx.strokeStyle = COL.ghost; ctx.lineWidth = 2; ctx.globalAlpha = 0.18; ctx.lineJoin = 'round';
+  for (const g of ghosts) {
+    ctx.beginPath();
+    g.path.forEach((p, i) => { const q = px(p); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); });
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Ziel mit Zeitring
+  const gp = px(goal);
+  ctx.strokeStyle = COL.goal; ctx.lineWidth = 3;
+  ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.arc(gp.x, gp.y, R * 2.2, 0, Math.PI * 2); ctx.stroke();
+  ctx.globalAlpha = 1; ctx.beginPath();
+  ctx.arc(gp.x, gp.y, R * 2.2, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - Math.min(t, LIMIT) / LIMIT)); ctx.stroke();
+  dot(gp, R * 0.7, COL.goal);
+
+  // Echos: in der Bereitschaft stehen sie an ihrem Start, im Spiel laufen sie
+  const ghostTime = state === 'ready' ? 0 : t;
+  for (const g of ghosts) {
+    if (state !== 'dead') { g.i = state === 'ready' ? 0 : g.i; g.now = ghostAt(g, ghostTime); }
+    if (!g.now) continue;
+    const fade = state === 'play' && t < GRACE ? t / GRACE : (state === 'ready' ? 0.35 : 1);
+    ctx.globalAlpha = 0.75 * fade;
+    dot(px(g.now), R, g.hit ? COL.goal : COL.ghost);
+  }
+  ctx.globalAlpha = 1;
+
+  // Du
+  const yp = px(you);
+  dot(yp, R * 1.6, 'rgba(255,241,208,0.12)');
+  dot(yp, R, COL.you);
+
+  // Kopfzeile
+  const fs = Math.max(13, S * 0.04);
+  txt('Runde ' + round, 16, fs * 1.4, fs * 1.2, COL.text, DISPLAY, 800, 'left');
+  txt(ghosts.length + (ghosts.length === 1 ? ' Echo' : ' Echos') + '  ·  Rekord ' + best, 16, fs * 2.8, fs * 0.8, COL.muted, BODY, 400, 'left');
+
+  if (state === 'ready') {
+    const msg = round === 1 ? 'Finger aufs Feld, dann zum roten Ziel ziehen' : 'Finger aufs Feld, die Runde startet sofort';
+    txt(msg, W / 2, Math.min(H - 40, yp.y + R * 4) > H - 40 ? yp.y - R * 4 : yp.y + R * 4, fs * 0.85, COL.text);
+  }
+  if (state === 'dead') drawDead();
+}
+
+function drawTitle() {
+  const big = Math.min(W * 0.2, 96), fs = Math.max(14, S * 0.042);
+  txt('ECHO', W / 2, H * 0.3, big, COL.you, DISPLAY, 800);
+  const lines = ['Zieh deinen Punkt ins rote Ziel.', 'Jeder Versuch läuft danach als Echo mit.', 'Berühr keins deiner Echos.', 'Fünf Sekunden pro Runde.'];
+  lines.forEach((l, i) => txt(l, W / 2, H * 0.45 + i * fs * 1.7, fs, i === 2 ? COL.ghost : COL.text));
+  if (best) txt('Rekord: ' + best + ' Runden', W / 2, H * 0.45 + 4.6 * fs * 1.7, fs * 0.85, COL.muted);
+  const pulse = 0.8 + 0.2 * Math.sin(performance.now() / 300);
+  ctx.globalAlpha = pulse; txt('Tippen zum Starten', W / 2, H * 0.82, fs * 1.2, COL.goal, DISPLAY, 600); ctx.globalAlpha = 1;
+}
+
+function drawDead() {
+  ctx.fillStyle = 'rgba(21,18,31,0.82)'; ctx.fillRect(0, 0, W, H);
+  const fs = Math.max(14, S * 0.042), n = round - 1;
+  txt(n + (n === 1 ? ' Runde' : ' Runden'), W / 2, H * 0.36, Math.min(W * 0.12, 60), COL.you, DISPLAY, 800);
+  txt(cause, W / 2, H * 0.36 + fs * 2.6, fs * 0.9, COL.text);
+  txt(n >= best && n > 0 ? 'Neuer Rekord!' : 'Rekord: ' + best, W / 2, H * 0.36 + fs * 4.2, fs, n >= best && n > 0 ? COL.goal : COL.muted, BODY, 600);
+  if (performance.now() - deadAt > 700) txt('Tippen für neues Spiel', W / 2, H * 0.72, fs * 1.1, COL.goal, DISPLAY, 600);
+}
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.033, (now - last) / 1000); last = now;
+  if (state === 'play') update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+addEventListener('resize', resize);
+resize();
+requestAnimationFrame(loop);
+</script>
