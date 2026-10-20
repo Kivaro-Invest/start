@@ -27,6 +27,14 @@ export function Header() {
     { name: 'Kontakt', path: '/kontakt' },
   ];
 
+  const goToCheck = (e: { preventDefault: () => void }) => {
+    setMobileMenuOpen(false);
+    if (location.pathname === '/') {
+      e.preventDefault();
+      document.getElementById('investment-check-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-zinc-200/50 shadow-sm py-3 lg:py-5' : 'bg-white py-3 md:py-6 lg:py-12'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,6 +56,7 @@ export function Header() {
             ))}
             <Link
               to="/#investment-check"
+              onClick={goToCheck}
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               Investment-Check
@@ -55,13 +64,26 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            className="md:hidden p-2 text-zinc-600 hover:text-zinc-900"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobil: kleiner Check-Button oben (erscheint beim Scrollen) + Menü */}
+          <div className="md:hidden flex items-center gap-1">
+            <Link
+              to="/#investment-check"
+              onClick={goToCheck}
+              tabIndex={isScrolled ? 0 : -1}
+              aria-hidden={!isScrolled}
+              className={`inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-300 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'}`}
+            >
+              Check starten
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button
+              className="p-2 text-zinc-600 hover:text-zinc-900"
+              aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -85,6 +107,7 @@ export function Header() {
             <div className="pt-4 px-4">
               <Link
                 to="/#investment-check"
+                onClick={goToCheck}
                 className="flex w-full items-center justify-center gap-2 px-5 py-3 text-base font-semibold text-white bg-emerald-600 rounded-xl shadow-md"
               >
                 Kostenloser Investment-Check

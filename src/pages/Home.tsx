@@ -263,52 +263,6 @@ function scrollToCheck() {
   document.getElementById('investment-check-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function MobileStickyCta({ checkRef }: { checkRef: RefObject<HTMLElement | null> }) {
-  // Ruhig statt hektisch: erscheint erst, wenn man am Investment-Check vorbei ist,
-  // und verschwindet, solange ein anderer Check-Button oder der Check selbst im Bild ist.
-  const [pastCheck, setPastCheck] = useState(false);
-  const [othersVisible, setOthersVisible] = useState(0);
-
-  useEffect(() => {
-    const visible = new Set<Element>();
-    const obs = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.target === checkRef.current) setPastCheck(!e.isIntersecting && e.boundingClientRect.top < 0);
-        if (e.isIntersecting) visible.add(e.target);
-        else visible.delete(e.target);
-      }
-      setOthersVisible(visible.size);
-    }, { threshold: 0 });
-    if (checkRef.current) obs.observe(checkRef.current);
-    document.querySelectorAll('[data-cta], footer').forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, [checkRef]);
-
-  const show = pastCheck && othersVisible === 0;
-
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 24 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="fixed inset-x-0 bottom-0 z-40 md:hidden px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-6 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none"
-        >
-          <button
-            type="button"
-            onClick={scrollToCheck}
-            className="pointer-events-auto flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-900/20"
-          >
-            Jetzt Investment-Check starten <ArrowRight className="w-5 h-5" />
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
 const gruende = [
   { icon: <Wallet className="w-6 h-6" />, title: 'Mieteinnahmen', text: 'Dein Mieter zahlt jeden Monat Miete. Sie fließt direkt in die Finanzierung deiner Wohnung.' },
   { icon: <Percent className="w-6 h-6" />, title: 'Steuervorteile', text: 'Zinsen, Abschreibung (AfA) und laufende Kosten setzt du als Werbungskosten ab. Das kann deine Lohn- und Einkommensteuer senken.', dark: true },
@@ -634,7 +588,6 @@ export default function Home() {
         </div>
       </section>
 
-      <MobileStickyCta checkRef={checkRef} />
     </div>
   );
 }
