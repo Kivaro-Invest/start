@@ -35,7 +35,7 @@ const faqs = [
 ];
 
 // ---------- Gestaltung (angelehnt an vermietermacher.de, in Kivaro-Farben) ----------
-const darkGradient = 'bg-[linear-gradient(90deg,#06110d_0%,#0f3d30_50%,#06110d_100%)]';
+const darkGradient = 'bg-[linear-gradient(90deg,#062a4f_0%,#0a3c6e_50%,#062a4f_100%)]';
 const lightGradient = 'bg-[linear-gradient(180deg,#f1f5f9_0%,#ffffff_100%)]';
 const card = 'bg-white rounded-2xl shadow-[0_10px_35px_-15px_rgba(15,23,42,0.22)] ring-1 ring-zinc-900/5';
 
@@ -61,8 +61,8 @@ function CtaButton({ dark = false, note = true, short = false, className = '' }:
         onClick={scrollToCheck}
         className={`inline-flex w-full sm:w-auto justify-center items-center gap-2 sm:whitespace-nowrap px-5 sm:px-7 py-4 text-base sm:text-lg font-semibold rounded-xl transition-all hover:-translate-y-0.5 ${
           dark
-            ? 'text-zinc-950 bg-emerald-400 hover:bg-emerald-300 shadow-lg shadow-emerald-500/20'
-            : 'text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/25'
+            ? 'text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-black/25'
+            : 'text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-700/25'
         }`}
       >
         <span className="sm:hidden">{short ? 'Investment-Check starten' : 'Jetzt Investment-Check starten'}</span>
@@ -281,7 +281,7 @@ export default function Home() {
     <div className="w-full">
       {/* Einstieg: Geschäftsführer + Investment-Check */}
       <section className={`relative overflow-hidden text-white ${darkGradient}`}>
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(52,211,153,0.16),transparent_55%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(23,131,193,0.28),transparent_55%)]" />
         <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-10 pb-12 sm:pt-16 sm:pb-16 lg:pt-36 lg:pb-28">
           <div className="grid lg:grid-cols-[1fr_1.12fr] gap-8 lg:gap-16 xl:gap-20 items-center">
             <div className="min-w-0 flex flex-col items-start">

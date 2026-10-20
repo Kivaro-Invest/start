@@ -95,7 +95,7 @@ export default function Kontakt() {
                 </div>
               </div>
 
-              <div className="mt-16 p-8 bg-[linear-gradient(90deg,#06110d_0%,#0f3d30_50%,#06110d_100%)] rounded-3xl text-white shadow-2xl relative overflow-hidden">
+              <div className="mt-16 p-8 bg-[linear-gradient(90deg,#062a4f_0%,#0a3c6e_50%,#062a4f_100%)] rounded-3xl text-white shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <CheckCircle2 className="w-32 h-32" />
                 </div>

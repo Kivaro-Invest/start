@@ -122,7 +122,7 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="bg-zinc-950 text-zinc-400 py-16 lg:py-24 border-t border-zinc-900">
+    <footer className="bg-zinc-950 text-zinc-400 py-16 lg:py-24 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           
@@ -173,15 +173,15 @@ export function Footer() {
 
         </div>
         
-        <div className="mt-16 pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-zinc-600">
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-zinc-400">
             &copy; {new Date().getFullYear()} Kivaro Invest UG (haftungsbeschränkt). Alle Rechte vorbehalten.
           </p>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-zinc-400">
             Immobilienmakler mit Erlaubnis nach § 34c GewO
           </p>
         </div>
-        <p className="mt-6 text-xs text-zinc-600 leading-relaxed max-w-4xl">
+        <p className="mt-6 text-xs text-zinc-400 leading-relaxed max-w-4xl">
           Alle Angaben dienen der allgemeinen Information und sind keine Rechts-, Steuer- oder Anlageberatung. Renditen und Steuervorteile sind Beispielrechnungen ohne Gewähr. Jede Kapitalanlage ist mit Risiken verbunden. Für die steuerliche Beurteilung im Einzelfall wende dich an deinen Steuerberater.
         </p>
       </div>
