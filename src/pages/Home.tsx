@@ -125,8 +125,9 @@ const projekte: Projekt[] = [
     lage: 'Zentrale Lage',
     titel: 'Modernisierter Altbau im Zentrum',
     bilder: [
-      { src: '/objekte/schweinfurt-wohnraum.webp', alt: 'Wohnraum nach Modernisierung' },
-      { src: '/objekte/schweinfurt-bad.webp', alt: 'Modernisiertes Bad' },
+      { src: '/objekte/schweinfurt-wohnraum-2.webp', alt: 'Heller Wohnraum mit zwei Fenstern' },
+      { src: '/objekte/schweinfurt-zimmer-2.webp', alt: 'Zimmer mit neuem Boden' },
+      { src: '/objekte/schweinfurt-bad-2.webp', alt: 'Modernisiertes Bad mit Dusche' },
     ],
     fakten: [
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
@@ -157,9 +158,15 @@ const projekte: Projekt[] = [
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
   return (
     <div className={`${card} overflow-hidden flex flex-col`}>
-      <div className="relative grid grid-cols-2 gap-1 bg-white">
-        {p.bilder.map((b) => (
-          <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/5] object-cover" loading="lazy" />
+      <div className={`relative grid aspect-[3/2] gap-1 bg-white ${p.bilder.length === 3 ? 'grid-cols-3 grid-rows-2' : 'grid-cols-2'}`}>
+        {p.bilder.map((b, i) => (
+          <img
+            key={b.src}
+            src={b.src}
+            alt={b.alt}
+            className={`h-full w-full object-cover ${p.bilder.length === 3 && i === 0 ? 'col-span-2 row-span-2' : ''}`}
+            loading="lazy"
+          />
         ))}
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
@@ -282,7 +289,7 @@ export default function Home() {
       {/* Einstieg: Geschäftsführer + Investment-Check */}
       <section className={`relative overflow-hidden text-white ${darkGradient}`}>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(23,131,193,0.28),transparent_55%)]" />
-        <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-10 pb-12 sm:pt-16 sm:pb-16 lg:pt-36 lg:pb-28">
+        <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-20 lg:pb-24">
           <div className="grid lg:grid-cols-[1fr_1.12fr] gap-8 lg:gap-16 xl:gap-20 items-center">
             <div className="min-w-0 flex flex-col items-start">
               <motion.div
@@ -503,7 +510,7 @@ export default function Home() {
             <div className={`rounded-2xl p-6 sm:p-8 lg:p-10 text-white shadow-2xl ${darkGradient}`}>
               <h3 className="mb-8 flex items-center justify-center gap-3 text-2xl font-bold">
                 Mit
-                <img src="/white-transparent.svg" alt="Kivaro Invest" className="h-28 w-auto -my-10" />
+                <img src="/logo-kivaro-weiss.svg" alt="Kivaro Invest" className="h-10 w-auto" />
               </h3>
               <ul className="space-y-5">
                 {[

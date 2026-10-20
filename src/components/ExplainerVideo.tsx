@@ -47,7 +47,7 @@ export default function ExplainerVideo({ onCta }: Props) {
         >
           <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(90deg,#062a4f_0%,#0a3c6e_36%,rgba(10,60,110,0.6)_56%,rgba(10,60,110,0)_74%)]" />
           <span className="absolute inset-y-0 left-0 flex w-[56%] flex-col justify-center pl-5 pr-2 sm:pl-10 lg:pl-14">
-            <img src="/white-transparent.svg" alt="" aria-hidden="true" className="hidden sm:block h-20 lg:h-28 w-auto self-start -ml-3 -my-5 lg:-my-7 mb-0 lg:mb-1" />
+            <img src="/logo-kivaro-weiss.svg" alt="" aria-hidden="true" className="hidden sm:block h-10 lg:h-14 w-auto self-start mb-4 lg:mb-6" />
             <span className="hidden sm:inline-flex self-start items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-3 py-1 lg:px-4 lg:py-1.5 text-xs lg:text-sm font-semibold uppercase tracking-wider text-white mb-3 lg:mb-5">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
               Erklärvideo · 90 Sekunden

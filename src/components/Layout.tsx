@@ -36,33 +36,35 @@ export function Header() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-zinc-200/50 shadow-sm py-3 lg:py-5' : 'bg-white py-3 md:py-6 lg:py-12'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${isScrolled ? 'shadow-[0_2px_16px_-6px_rgba(15,23,42,0.18)]' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2 group">
-            <img src="/black-transparent-2.svg" alt="Kivaro Invest" className={`w-auto group-hover:scale-105 transition-all duration-300 ${isScrolled ? 'h-16 md:h-20 lg:h-24 -my-2 md:-my-4 lg:-my-6' : 'h-24 md:h-32 lg:h-40 -my-4 md:-my-8 lg:-my-12'}`} referrerPolicy="no-referrer" />
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors ${location.pathname + location.hash === link.path ? 'text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'}`}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <Link
-              to="/#investment-check"
-              onClick={goToCheck}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            >
-              Investment-Check
-              <ArrowRight className="w-4 h-4" />
+        <div className="flex h-[72px] lg:h-[88px] items-center justify-between">
+          <div className="flex items-center gap-10 xl:gap-14">
+            <Link to="/" className="flex items-center shrink-0" aria-label="Kivaro Invest – zur Startseite">
+              <img src="/logo-kivaro.svg" alt="Kivaro Invest" width={254} height={164} className="h-11 lg:h-16 w-auto" />
             </Link>
-          </nav>
+
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-8 lg:gap-10">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`text-base font-medium transition-colors ${location.pathname + location.hash === link.path ? 'text-emerald-700' : 'text-zinc-900 hover:text-emerald-700'}`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <Link
+            to="/#investment-check"
+            onClick={goToCheck}
+            className="hidden md:inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-colors shadow-sm"
+          >
+            Investment-Check
+          </Link>
 
           {/* Mobil: kleiner Check-Button oben (erscheint beim Scrollen) + Menü */}
           <div className="md:hidden flex items-center gap-1">
@@ -71,17 +73,17 @@ export function Header() {
               onClick={goToCheck}
               tabIndex={isScrolled ? 0 : -1}
               aria-hidden={!isScrolled}
-              className={`inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-300 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'}`}
+              className={`inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-300 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'}`}
             >
               Check starten
               <ArrowRight className="w-4 h-4" />
             </Link>
             <button
-              className="p-2 text-zinc-600 hover:text-zinc-900"
+              className="p-2 text-zinc-900"
               aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
             </button>
           </div>
         </div>
@@ -129,7 +131,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
-              <img src="/white-transparent.svg" alt="Kivaro Invest" className="h-24 md:h-32 lg:h-40 w-auto -mt-4 md:-mt-8 lg:-mt-12 -mb-4 md:-mb-8 lg:-mb-12" referrerPolicy="no-referrer" />
+              <img src="/logo-kivaro-weiss.svg" alt="Kivaro Invest" width={254} height={164} className="h-16 lg:h-20 w-auto" />
             </Link>
             <p className="text-sm leading-relaxed max-w-xs">
               Intelligent investieren, Steuern sparen und Vermögen aufbauen. Dein Partner für Kapitalanlage-Immobilien in Deutschland.
@@ -193,7 +195,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
       <Header />
-      <main className="flex-grow pt-20">
+      <main className="flex-grow pt-[72px] lg:pt-[88px]">
         {children}
       </main>
       <Footer />
