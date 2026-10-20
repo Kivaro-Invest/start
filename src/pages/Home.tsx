@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
+import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, MinusCircle, TrendingUp, ShieldCheck, Building, Users, FileText, MapPin, Plus, Wallet, Percent, PiggyBank } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -34,21 +34,62 @@ const faqs = [
   }
 ];
 
+// ---------- Gestaltung (angelehnt an vermietermacher.de, in Kivaro-Farben) ----------
+const darkGradient = 'bg-[linear-gradient(90deg,#06110d_0%,#0f3d30_50%,#06110d_100%)]';
+const lightGradient = 'bg-[linear-gradient(180deg,#f1f5f9_0%,#ffffff_100%)]';
+const card = 'bg-white rounded-2xl shadow-[0_10px_35px_-15px_rgba(15,23,42,0.22)] ring-1 ring-zinc-900/5';
+
+function SectionHeading({ eyebrow, title, text, dark = false }: { eyebrow?: string; title: ReactNode; text?: ReactNode; dark?: boolean }) {
+  return (
+    <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
+      {eyebrow && <p className={`text-sm font-semibold tracking-wider uppercase mb-3 ${dark ? 'text-emerald-400' : 'text-emerald-600'}`}>{eyebrow}</p>}
+      <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-balance ${dark ? 'text-white' : 'text-zinc-900'}`}>{title}</h2>
+      {text && <p className={`mt-5 text-lg leading-relaxed ${dark ? 'text-zinc-300' : 'text-zinc-600'}`}>{text}</p>}
+    </div>
+  );
+}
+
+function Hl({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
+  return <span className={dark ? 'text-emerald-400' : 'text-emerald-600'}>{children}</span>;
+}
+
+function CtaButton({ dark = false, note = true, short = false, className = '' }: { dark?: boolean; note?: boolean; short?: boolean; className?: string }) {
+  return (
+    <div className={`flex flex-col items-center gap-2.5 ${className}`}>
+      <button
+        type="button"
+        onClick={scrollToCheck}
+        className={`inline-flex w-full sm:w-auto justify-center items-center gap-2 sm:whitespace-nowrap px-5 sm:px-7 py-4 text-base sm:text-lg font-semibold rounded-xl transition-all hover:-translate-y-0.5 ${
+          dark
+            ? 'text-zinc-950 bg-emerald-400 hover:bg-emerald-300 shadow-lg shadow-emerald-500/20'
+            : 'text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/25'
+        }`}
+      >
+        <span className="sm:hidden">{short ? 'Investment-Check starten' : 'Jetzt Investment-Check starten'}</span>
+        <span className="hidden sm:inline">Kostenlosen Investment-Check starten</span>
+        <ArrowRight className="w-5 h-5" />
+      </button>
+      {note && <p className={`text-sm ${dark ? 'text-zinc-400' : 'text-zinc-500'}`}>1 Minute · kostenlos · unverbindlich</p>}
+    </div>
+  );
+}
+
 function FAQItem({ question, answer, isOpen, onClick }: { key?: number, question: string, answer: string, isOpen: boolean, onClick: () => void }) {
   return (
-    <div className="border-b border-zinc-200 last:border-0">
+    <div className={`${card} overflow-hidden`}>
       <button
-        className="flex w-full items-center justify-between py-6 text-left focus:outline-none group"
+        className="flex w-full items-center justify-between gap-6 px-6 sm:px-8 py-5 sm:py-6 text-left focus:outline-none group"
         onClick={onClick}
+        aria-expanded={isOpen}
       >
-        <span className="text-lg font-semibold text-zinc-900 group-hover:text-emerald-600 transition-colors pr-8">{question}</span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
+        <span className="text-base sm:text-lg font-semibold text-zinc-900 group-hover:text-emerald-700 transition-colors">{question}</span>
+        <motion.span
+          animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.2 }}
-          className="flex-shrink-0 text-zinc-400 group-hover:text-emerald-500 transition-colors"
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${isOpen ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700'}`}
         >
-          <ChevronDown className="w-5 h-5" />
-        </motion.div>
+          <Plus className="w-5 h-5" />
+        </motion.span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -59,7 +100,7 @@ function FAQItem({ question, answer, isOpen, onClick }: { key?: number, question
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-zinc-600 leading-relaxed pr-12">
+            <p className="px-6 sm:px-8 pb-6 text-zinc-600 leading-relaxed">
               {answer}
             </p>
           </motion.div>
@@ -115,7 +156,7 @@ const projekte: Projekt[] = [
 
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
   return (
-    <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
+    <div className={`${card} overflow-hidden flex flex-col`}>
       <div className="relative grid grid-cols-2 gap-1 bg-white">
         {p.bilder.map((b) => (
           <img key={b.src} src={b.src} alt={b.alt} className="w-full aspect-[4/5] object-cover" loading="lazy" />
@@ -126,7 +167,7 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
       </div>
       <div className="p-6 sm:p-8 flex flex-col flex-1">
         <p className="text-sm text-zinc-500">{p.lage}</p>
-        <h4 className="mt-1 text-2xl font-bold text-zinc-900">{p.titel}</h4>
+        <h3 className="mt-1 text-2xl font-bold text-zinc-900">{p.titel}</h3>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-zinc-200 py-6">
           {p.fakten.map((f) => (
             <div key={f.label}>
@@ -145,9 +186,11 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
         <button
           type="button"
           onClick={scrollToCheck}
-          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-4 font-semibold text-white hover:bg-zinc-800 transition-colors"
+          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 font-semibold text-white hover:bg-emerald-700 transition-colors"
         >
-          Interesse? Investment-Check starten <ArrowRight className="w-5 h-5" />
+          <span className="sm:hidden">Investment-Check starten</span>
+          <span className="hidden sm:inline">Interesse? Investment-Check starten</span>
+          <ArrowRight className="w-5 h-5" />
         </button>
       </div>
     </div>
@@ -157,17 +200,18 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
 function HeroPhoto() {
   return (
     <figure className="relative">
+      <div aria-hidden="true" className="absolute -inset-3 sm:-inset-4 rounded-[2rem] bg-gradient-to-br from-emerald-400/25 via-emerald-400/5 to-transparent blur-xl" />
       <img
         src="/team/geschaeftsfuehrer-1500.webp"
         srcSet="/team/geschaeftsfuehrer-900.webp 900w, /team/geschaeftsfuehrer-1500.webp 1500w"
-        sizes="(min-width: 1024px) 600px, 100vw"
+        sizes="(min-width: 1024px) 720px, 100vw"
         width={1500}
         height={1042}
         alt="Die Geschäftsführer von Kivaro Invest"
         fetchPriority="high"
-        className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-white/10"
+        className="relative w-full h-auto rounded-2xl lg:rounded-3xl shadow-2xl ring-1 ring-white/10"
       />
-      <figcaption className="absolute left-3 bottom-3 rounded-lg bg-zinc-950/70 backdrop-blur px-3 py-1.5 text-xs sm:text-sm font-medium text-white">
+      <figcaption className="absolute left-3 bottom-3 lg:left-5 lg:bottom-5 rounded-lg bg-zinc-950/70 backdrop-blur px-3 py-1.5 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium text-white">
         Die Geschäftsführer von Kivaro Invest
       </figcaption>
     </figure>
@@ -179,7 +223,7 @@ function scrollToCheck() {
 }
 
 function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLDivElement | null>; checkRef: RefObject<HTMLElement | null> }) {
-  // Erst einblenden, wenn der Button unter dem Video nach OBEN aus dem Bild gescrollt wurde
+  // Erst einblenden, wenn der Button im Einstieg nach OBEN aus dem Bild gescrollt wurde
   const [pastHeroCta, setPastHeroCta] = useState(false);
   const [checkVisible, setCheckVisible] = useState(false);
 
@@ -210,7 +254,7 @@ function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLD
           <button
             type="button"
             onClick={scrollToCheck}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-4 text-base font-semibold text-white shadow-lg"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 text-base font-semibold text-white shadow-lg"
           >
             Jetzt Investment-Check starten <ArrowRight className="w-5 h-5" />
           </button>
@@ -220,6 +264,15 @@ function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLD
   );
 }
 
+const gruende = [
+  { icon: <Wallet className="w-6 h-6" />, title: 'Mieteinnahmen', text: 'Dein Mieter zahlt jeden Monat Miete. Sie fließt direkt in die Finanzierung deiner Wohnung.' },
+  { icon: <Percent className="w-6 h-6" />, title: 'Steuervorteile', text: 'Zinsen, Abschreibung (AfA) und laufende Kosten setzt du als Werbungskosten ab. Das kann deine Lohn- und Einkommensteuer senken.', dark: true },
+  { icon: <Landmark className="w-6 h-6" />, title: 'Hebel durch die Bank', text: 'Du kaufst mit dem Geld der Bank und baust Vermögen auf, ohne dafür jahrelang sparen zu müssen.' },
+  { icon: <PiggyBank className="w-6 h-6" />, title: 'Vorsorge fürs Alter', text: 'Ist die Wohnung abbezahlt, bleibt dir die Miete als zusätzliches Einkommen – neben deiner Rente.' },
+  { icon: <ShieldCheck className="w-6 h-6" />, title: 'Sachwert statt Sparbuch', text: 'Eine Wohnung ist ein echter Sachwert. Mieten und Preise können langfristig mit der Inflation steigen.' },
+  { icon: <Building className="w-6 h-6" />, title: 'Kein Aufwand im Alltag', text: 'Die Hausverwaltung kümmert sich um Mieter, Nebenkosten und Reparaturen.' },
+];
+
 export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const heroCtaRef = useRef<HTMLDivElement>(null);
@@ -228,17 +281,17 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      {/* Hero: Geschäftsführer + Investment-Check */}
-      <section className="relative overflow-hidden bg-zinc-950 text-white">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(16,185,129,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(16,185,129,0.10),transparent_50%)]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12 sm:pt-16 sm:pb-16 lg:pt-32 lg:pb-24">
-          <div className="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-14 items-center">
+      {/* Einstieg: Geschäftsführer + Investment-Check */}
+      <section className={`relative overflow-hidden text-white ${darkGradient}`}>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(52,211,153,0.16),transparent_55%)]" />
+        <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-12 pb-12 sm:pt-16 sm:pb-16 lg:pt-36 lg:pb-28">
+          <div className="grid lg:grid-cols-[1fr_1.12fr] gap-8 lg:gap-16 xl:gap-20 items-center">
             <div className="min-w-0 flex flex-col items-start">
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 rounded-lg bg-white/10 border border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-100 mb-5 lg:mb-6"
+                className="inline-flex items-center gap-2 rounded-lg bg-white/10 border border-white/10 px-3 py-1.5 lg:px-4 lg:py-2 text-xs sm:text-sm lg:text-base font-medium text-zinc-100 mb-5 lg:mb-7"
               >
                 <KeyRound className="w-4 h-4 text-emerald-400" />
                 Start auch ohne Eigenkapital – je nach Bonität
@@ -248,7 +301,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-[2.15rem] sm:text-5xl font-bold tracking-tight leading-[1.08] mb-5 lg:mb-8"
+                className="text-[2.15rem] sm:text-5xl lg:text-[3.6rem] xl:text-[4rem] font-bold tracking-tight leading-[1.06] text-balance mb-5 lg:mb-9"
               >
                 Dein Mieter zahlt.<br />
                 <span className="text-emerald-400">Du baust Vermögen auf.</span>
@@ -267,17 +320,17 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="order-last lg:order-none mt-8 lg:mt-0 lg:mb-10 space-y-3 lg:space-y-4"
+                className="order-last lg:order-none mt-8 lg:mt-0 lg:mb-11 space-y-3 lg:space-y-4"
               >
                 {[
                   'Vermögensaufbau mit dem Geld der Bank',
                   'Dein Mieter zahlt die Rate mit',
                   'Steuervorteile durch Vermietung nutzen',
                   '0 € Käuferprovision',
-                  'Persönliche Begleitung bis zum Notartermin',
+                  'Persönliche Begleitung',
                 ].map((t) => (
-                  <li key={t} className="flex items-center gap-3 text-base sm:text-lg font-medium text-zinc-100">
-                    <Check className="w-5 h-5 shrink-0 text-emerald-400" strokeWidth={3} />
+                  <li key={t} className="flex items-center gap-3 text-base sm:text-lg lg:text-xl font-medium text-zinc-100">
+                    <Check className="w-5 h-5 lg:w-6 lg:h-6 shrink-0 text-emerald-400" strokeWidth={3} />
                     {t}
                   </li>
                 ))}
@@ -288,18 +341,9 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="w-full flex flex-col items-stretch sm:items-start gap-2.5"
+                className="w-full"
               >
-                <button
-                  type="button"
-                  onClick={scrollToCheck}
-                  className="inline-flex w-full sm:w-auto justify-center items-center gap-2 sm:whitespace-nowrap px-6 sm:px-7 py-4 text-base sm:text-lg font-semibold text-zinc-950 bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5"
-                >
-                  <span className="sm:hidden">Jetzt Investment-Check starten</span>
-                  <span className="hidden sm:inline">Kostenlosen Investment-Check starten</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-                <p className="text-sm text-zinc-400 text-center sm:text-left sm:pl-1">1 Minute · kostenlos · unverbindlich</p>
+                <CtaButton dark className="sm:items-start" />
               </motion.div>
             </div>
 
@@ -310,51 +354,35 @@ export default function Home() {
               className="hidden lg:block"
             >
               <HeroPhoto />
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-400">
-                <span className="inline-flex items-center gap-2"><BadgeCheck className="w-4 h-4 text-emerald-400" />Zugelassen nach § 34c GewO</span>
-                <span className="inline-flex items-center gap-2"><Handshake className="w-4 h-4 text-emerald-400" />Direkt mit Bauträgern</span>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-base text-zinc-300">
+                <span className="inline-flex items-center gap-2"><BadgeCheck className="w-5 h-5 text-emerald-400" />Zugelassen nach § 34c GewO</span>
+                <span className="inline-flex items-center gap-2"><Handshake className="w-5 h-5 text-emerald-400" />Direkt mit Bauträgern</span>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Erklärvideo */}
-      <section className="relative pt-12 pb-16 lg:pt-20 lg:pb-24 overflow-hidden bg-zinc-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">So funktioniert's</h2>
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-900 mb-4">In 90 Sekunden erklärt</p>
-            <p className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10">
-              Schau dir an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
-            </p>
-          </div>
-
+      {/* Erklärvideo + Vertrauensleiste */}
+      <section className={`pt-16 pb-10 lg:pt-28 lg:pb-16 ${lightGradient}`}>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="So funktioniert's"
+            title={<>In 90 Sekunden <Hl>erklärt</Hl></>}
+            text="Schau dir an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive."
+          />
           <ExplainerVideo onCta={scrollToCheck} />
+          <CtaButton className="mt-10" />
 
-          <div className="mt-8 flex flex-col items-center gap-3">
-            <button
-              type="button"
-              onClick={scrollToCheck}
-              className="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-            >
-              <span className="sm:hidden">Jetzt Investment-Check starten</span>
-              <span className="hidden sm:inline">Kostenlosen Investment-Check starten</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-            <p className="text-sm text-zinc-500">1 Minute · kostenlos · unverbindlich</p>
-          </div>
-
-          {/* Vertrauensleiste */}
-          <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
-              { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Offizielle Erlaubnis als Immobilienmakler' },
+              { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Offizielle Erlaubnis als Immobilienmakler' },
               { icon: <Landmark className="w-6 h-6" />, title: 'Passende Finanzierung', text: 'Über zugelassene Finanzierungsexperten' },
               { icon: <BadgeEuro className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Wir arbeiten direkt mit Bauträgern' },
-              { icon: <Handshake className="w-6 h-6" />, title: 'Persönliche Begleitung', text: 'Vom Erstgespräch bis zum Notartermin' },
+              { icon: <Handshake className="w-6 h-6" />, title: 'Persönliche Begleitung', text: 'Vom ersten Gespräch an an deiner Seite' },
             ].map((t) => (
-              <div key={t.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-2xl bg-white border border-zinc-200 p-4 sm:p-5">
-                <div className="w-10 h-10 shrink-0 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">{t.icon}</div>
+              <div key={t.title} className={`${card} flex flex-col sm:flex-row items-start gap-3 p-4 sm:p-5`}>
+                <div className="w-11 h-11 shrink-0 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">{t.icon}</div>
                 <div>
                   <p className="text-sm font-semibold text-zinc-900 leading-snug">{t.title}</p>
                   <p className="text-xs text-zinc-500 leading-snug mt-0.5">{t.text}</p>
@@ -365,13 +393,39 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Warum Immobilien */}
+      <section className="pt-12 pb-16 lg:pt-20 lg:pb-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title={<>Warum <Hl>Immobilien</Hl> als Kapitalanlage?</>}
+            text="Eine vermietete Wohnung arbeitet für dich – mit dem Geld der Bank, der Miete deines Mieters und den Vorteilen beim Finanzamt."
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            {gruende.map((g) => (
+              <div
+                key={g.title}
+                className={g.dark
+                  ? `rounded-2xl p-7 lg:p-8 text-white shadow-xl ${darkGradient}`
+                  : `${card} p-7 lg:p-8`}
+              >
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-5 ${g.dark ? 'bg-emerald-400/15 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>{g.icon}</div>
+                <h3 className={`text-xl font-bold mb-2 ${g.dark ? 'text-white' : 'text-zinc-900'}`}>{g.title}</h3>
+                <p className={`leading-relaxed ${g.dark ? 'text-zinc-300' : 'text-zinc-600'}`}>{g.text}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-center text-xs text-zinc-500">Mieteinnahmen, Wertentwicklung und steuerliche Vorteile sind nicht garantiert und hängen von deiner persönlichen Situation ab.</p>
+          <CtaButton className="mt-10" />
+        </div>
+      </section>
+
       {/* Investment-Check */}
-      <section id="investment-check" ref={checkRef} className="scroll-mt-24 py-10 sm:py-16 lg:py-28 bg-white">
+      <section id="investment-check" ref={checkRef} className={`scroll-mt-24 py-12 sm:py-16 lg:py-28 ${lightGradient}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
             <div className="lg:col-span-2 lg:sticky lg:top-32">
-              <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Investment-Check</h2>
-              <h3 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-4 lg:mb-6">Finde heraus, was mit Immobilien für dich möglich ist.</h3>
+              <p className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Investment-Check</p>
+              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight text-balance mb-4 lg:mb-6">Finde heraus, was mit <Hl>Immobilien</Hl> für dich möglich ist.</h2>
               <p className="text-base sm:text-lg text-zinc-600 leading-relaxed lg:mb-8">
                 Beantworte ein paar kurze Fragen. Danach melden wir uns bei dir und zeigen dir in einem kostenlosen Erstgespräch, wie der Weg zu deiner eigenen Kapitalanlage aussieht.
               </p>
@@ -396,14 +450,14 @@ export default function Home() {
       </section>
 
       {/* Aktuelle Projekte */}
-      <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
+      <section className="py-16 lg:py-28 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14 lg:mb-20">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Aktuelle Projekte</h2>
-            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Wohnungen aus der Region</h3>
-            <p className="mt-6 text-lg text-zinc-600">Saniert, vermietbar und mit Hausverwaltung – so sehen Objekte aus, die wir vermitteln.</p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8">
+          <SectionHeading
+            eyebrow="Aktuelle Projekte"
+            title={<>Wohnungen aus der <Hl>Region</Hl></>}
+            text="Saniert, vermietbar und mit Hausverwaltung – so sehen Objekte aus, die wir vermitteln."
+          />
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {projekte.map((p) => <ProjektKarte key={p.ort} p={p} />)}
           </div>
           <p className="mt-8 text-center text-xs text-zinc-500">Angaben laut Bauträger, ohne Gewähr. Bilder teilweise Beispielwohnungen. Verfügbarkeit auf Anfrage.</p>
@@ -412,15 +466,12 @@ export default function Home() {
 
       {/* Team – erscheint automatisch, sobald Fotos hinterlegt sind (src/lib/team.ts) */}
       {teamWithPhotos.length > 0 && (
-        <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
+        <section className={`py-16 lg:py-28 ${lightGradient}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Wer hinter Kivaro steht</h2>
-              <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Persönlich statt anonym.</h3>
-            </div>
+            <SectionHeading eyebrow="Wer hinter Kivaro steht" title={<>Persönlich statt <Hl>anonym</Hl>.</>} />
             <div className="grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
               {teamWithPhotos.map((m) => (
-                <div key={m.name} className="bg-white rounded-3xl overflow-hidden border border-zinc-200 shadow-sm">
+                <div key={m.name} className={`${card} overflow-hidden`}>
                   <img src={m.photo} alt={m.name} className="w-full aspect-square object-cover" loading="lazy" />
                   <div className="p-6">
                     <p className="text-xl font-bold text-zinc-900">{m.name}</p>
@@ -434,50 +485,41 @@ export default function Home() {
         </section>
       )}
 
-      {/* Comparison Section */}
-      <section className="py-24 lg:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der smarte Vergleich</h2>
-            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Allein kaufen oder begleitet kaufen?</h3>
-            <p className="mt-6 text-lg text-zinc-600">Ein Kauf in Eigenregie ist oft mühsam und fehleranfällig. Mit Kivaro Invest hast du einen Ansprechpartner, der dich vom ersten Gespräch bis zum Notartermin begleitet.</p>
-          </div>
+      {/* Vergleich */}
+      <section className={`py-16 lg:py-28 ${lightGradient}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="Der smarte Vergleich"
+            title={<>Allein kaufen oder <Hl>begleitet</Hl> kaufen?</>}
+            text="Ein Kauf in Eigenregie ist mühsam und fehleranfällig. Mit Kivaro Invest hast du einen Ansprechpartner, der dich persönlich begleitet – vom ersten Gespräch an."
+          />
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-            <div className="bg-zinc-50 rounded-3xl p-8 lg:p-12 border border-zinc-100 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-5">
-                <XCircle className="w-32 h-32" />
-              </div>
-              <h4 className="text-2xl font-bold text-zinc-400 mb-8 flex items-center gap-3">
-                <XCircle className="w-6 h-6 text-red-400" />
-                Ohne Kivaro
-              </h4>
-              <ul className="space-y-6 relative z-10">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+            <div className={`${card} p-6 sm:p-8 lg:p-10`}>
+              <h3 className="text-2xl font-bold text-zinc-900 mb-8 text-center">Allein</h3>
+              <ul className="space-y-5">
                 {[
-                  "Käuferprovision von oft rund 3,5 Prozent",
+                  "Käuferprovision, in Bayern üblich 3,57 % des Kaufpreises",
                   "Suche auf Portalen, viele Mitbewerber je Objekt",
                   "Mühsame Suche nach einer passenden Bank",
-                  "Steuerliche Vorteile bleiben oft ungenutzt",
+                  "Steuerliche Vorteile kennst du nur, wenn du dich selbst einarbeitest",
                   "Sanierungsrisiken, Handwerker schwer zu finden",
                   "Viel Zeitaufwand für die Mietersuche"
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 text-zinc-500">
-                    <XCircle className="w-5 h-5 text-red-300 shrink-0 mt-0.5" />
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-zinc-600">
+                    <MinusCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                     <span className="leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-zinc-900 rounded-3xl p-8 lg:p-12 shadow-2xl relative overflow-hidden text-white">
-              <div className="absolute top-0 right-0 p-8 opacity-5">
-                <CheckCircle2 className="w-32 h-32" />
-              </div>
-              <h4 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                Mit Kivaro
-              </h4>
-              <ul className="space-y-6 relative z-10">
+            <div className={`rounded-2xl p-6 sm:p-8 lg:p-10 text-white shadow-2xl ${darkGradient}`}>
+              <h3 className="mb-8 flex items-center justify-center gap-3 text-2xl font-bold">
+                Mit
+                <img src="/white-transparent.svg" alt="Kivaro Invest" className="h-28 w-auto -my-10" />
+              </h3>
+              <ul className="space-y-5">
                 {[
                   "0 € Käuferprovision",
                   "Hausverwaltung über den Bauträger inklusive",
@@ -485,79 +527,55 @@ export default function Home() {
                   "Sanierung vor Übergabe durch den Bauträger",
                   "Je nach Objekt mit Mietgarantie des Bauträgers",
                   "Inklusive Unterlagen für den Steuerberater"
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 text-zinc-300">
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="leading-relaxed text-white font-medium">{item}</span>
+                    <span className="leading-relaxed font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
-
-              <div className="mt-12 pt-8 border-t border-zinc-800 relative z-10">
-                <button type="button" onClick={scrollToCheck} className="inline-flex w-full justify-center items-center gap-2 px-6 py-4 text-sm font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-xl transition-colors">
-                  Investment-Check starten
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+              <div className="mt-10 pt-8 border-t border-white/10">
+                <CtaButton dark note={false} short />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-24 lg:py-32 bg-zinc-50 border-y border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">Der Ablauf</h2>
-            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Auf Augenhöhe zur eigenen Immobilie.</h3>
-            <p className="mt-6 text-lg text-zinc-600">Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet dich transparent und persönlich durch jeden Schritt.</p>
-          </div>
-
-
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200"></div>
-
+      {/* Ablauf */}
+      <section className={`py-16 lg:py-28 text-white ${darkGradient}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            dark
+            eyebrow="Der Ablauf"
+            title={<><Hl dark>Dein Weg</Hl> zur eigenen Immobilie</>}
+            text="Nicht nur kaufen, sondern verstehen: Kivaro Invest begleitet dich transparent und persönlich durch jeden Schritt."
+          />
+          <div className="grid md:grid-cols-3 gap-5 lg:gap-6">
             {[
-              {
-                step: "01",
-                title: "Investment-Check & Gespräch",
-                desc: "Du machst den Check, wir melden uns bei dir und lernen dich und deine Ziele in einem kostenlosen Erstgespräch kennen.",
-                icon: <Users className="w-6 h-6" />
-              },
-              {
-                step: "02",
-                title: "Finanzierung",
-                desc: "Wir bringen dich mit zugelassenen Finanzierungsexperten zusammen, die mit dir die passende Finanzierung erarbeiten.",
-                icon: <FileText className="w-6 h-6" />
-              },
-              {
-                step: "03",
-                title: "Deine Immobilie",
-                desc: "Du bekommst Zugang zu passenden Objekten und wir begleiten dich bis zum Notartermin und darüber hinaus.",
-                icon: <TrendingUp className="w-6 h-6" />
-              }
+              { title: 'Investment-Check & Gespräch', desc: 'Du machst den Check, wir melden uns bei dir und lernen dich und deine Ziele in einem kostenlosen Erstgespräch kennen.', icon: <Users className="w-6 h-6" /> },
+              { title: 'Finanzierung', desc: 'Wir bringen dich mit zugelassenen Finanzierungsexperten zusammen, die mit dir die passende Finanzierung erarbeiten.', icon: <FileText className="w-6 h-6" /> },
+              { title: 'Deine Immobilie', desc: 'Du bekommst Zugang zu passenden Objekten. Wir begleiten dich beim Kauf – und sind auch danach für dich da.', icon: <TrendingUp className="w-6 h-6" /> },
             ].map((item, i) => (
-              <div key={i} className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-white border-4 border-zinc-50 shadow-xl flex items-center justify-center mb-8 relative">
-                  <span className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-zinc-900 text-white text-xs font-bold flex items-center justify-center shadow-md">{item.step}</span>
-                  <div className="text-zinc-400">{item.icon}</div>
+              <div key={item.title} className="rounded-2xl bg-white/[0.06] ring-1 ring-white/10 p-7 lg:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-5xl font-bold text-emerald-400 leading-none">{i + 1}.</span>
+                  <span className="w-12 h-12 rounded-full bg-emerald-400/15 text-emerald-300 flex items-center justify-center">{item.icon}</span>
                 </div>
-                <h4 className="text-xl font-bold text-zinc-900 mb-4">{item.title}</h4>
-                <p className="text-zinc-600 leading-relaxed">{item.desc}</p>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-zinc-300 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
+          <CtaButton dark className="mt-12" />
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 lg:py-32 bg-white">
+      {/* FAQ */}
+      <section className={`py-16 lg:py-28 ${lightGradient}`}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 lg:mb-24">
-            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">FAQ</h2>
-            <h3 className="text-3xl lg:text-5xl font-bold text-zinc-900 tracking-tight">Häufig gestellte Fragen</h3>
-          </div>
-          <div className="border-y border-zinc-200">
+          <SectionHeading eyebrow="FAQ" title={<>Häufig gestellte <Hl>Fragen</Hl></>} />
+          <div className="space-y-4">
             {faqs.map((faq, index) => (
               <FAQItem
                 key={index}
@@ -568,28 +586,21 @@ export default function Home() {
               />
             ))}
           </div>
+          <CtaButton className="mt-12" />
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 lg:py-32 bg-zinc-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-zinc-900 rounded-[2.5rem] p-8 sm:p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl">
-            <img src="/objekte/plattling-isar.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-zinc-950/75"></div>
-            <div className="relative z-10">
-              <h2 className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-6">
-                Bereit für dein erstes Investment?
-              </h2>
-              <p className="text-lg text-zinc-400 mb-10 max-w-2xl mx-auto">
-                Mach den kostenlosen Investment-Check und finde heraus, was eine Kapitalanlage-Immobilie für dich bringt.
-              </p>
-              <button type="button" onClick={scrollToCheck} className="inline-flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-zinc-900 bg-white hover:bg-zinc-100 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                Investment-Check starten
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
+      {/* Abschluss */}
+      <section className={`relative overflow-hidden text-white ${darkGradient}`}>
+        <img src="/objekte/plattling-isar.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-20" loading="lazy" />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+          <h2 className="text-3xl lg:text-5xl font-bold tracking-tight text-balance mb-6">
+            Bereit für dein <Hl dark>erstes Investment</Hl>?
+          </h2>
+          <p className="text-lg text-zinc-300 mb-10 max-w-2xl mx-auto">
+            Mach den kostenlosen Investment-Check und finde heraus, was eine Kapitalanlage-Immobilie für dich bringt.
+          </p>
+          <CtaButton dark />
         </div>
       </section>
 

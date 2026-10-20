@@ -360,7 +360,7 @@ export default function InvestmentCheck() {
                 <button
                   type="submit"
                   disabled={status === 'submitting'}
-                  className="w-full flex justify-center items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex justify-center items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {status === 'submitting' ? 'Wird gesendet …' : 'Investment-Check abschließen'}
                   {status !== 'submitting' && <ArrowRight className="w-5 h-5" />}

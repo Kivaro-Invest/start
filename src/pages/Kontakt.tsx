@@ -95,11 +95,11 @@ export default function Kontakt() {
                 </div>
               </div>
 
-              <div className="mt-16 p-8 bg-zinc-900 rounded-3xl text-white shadow-2xl relative overflow-hidden">
+              <div className="mt-16 p-8 bg-[linear-gradient(90deg,#06110d_0%,#0f3d30_50%,#06110d_100%)] rounded-3xl text-white shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                   <CheckCircle2 className="w-32 h-32" />
                 </div>
-                <h3 className="text-xl font-bold mb-4 relative z-10">Persönlich begleitet – vom Erstgespräch bis zum Notartermin.</h3>
+                <h3 className="text-xl font-bold mb-4 relative z-10">Persönlich begleitet – vom ersten Gespräch an.</h3>
                 <p className="text-zinc-400 text-sm leading-relaxed relative z-10">
                   Wir arbeiten direkt mit Bauträgern zusammen. Für dich fällt keine Käuferprovision an.
                 </p>
@@ -222,7 +222,7 @@ export default function Kontakt() {
                 <button 
                   type="submit" 
                   disabled={formState === 'submitting'}
-                  className="w-full flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex justify-center items-center gap-2 px-8 py-4 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {formState === 'submitting' ? 'Wird gesendet...' : 'Nachricht absenden'}
                   {!formState && <Send className="w-4 h-4" />}

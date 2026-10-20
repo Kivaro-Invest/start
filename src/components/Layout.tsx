@@ -48,7 +48,7 @@ export function Header() {
             ))}
             <Link
               to="/#investment-check"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               Investment-Check
               <ArrowRight className="w-4 h-4" />
@@ -85,7 +85,7 @@ export function Header() {
             <div className="pt-4 px-4">
               <Link
                 to="/#investment-check"
-                className="flex w-full items-center justify-center gap-2 px-5 py-3 text-base font-medium text-white bg-zinc-900 rounded-xl shadow-md"
+                className="flex w-full items-center justify-center gap-2 px-5 py-3 text-base font-semibold text-white bg-emerald-600 rounded-xl shadow-md"
               >
                 Kostenloser Investment-Check
               </Link>
