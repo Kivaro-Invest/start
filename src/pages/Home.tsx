@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
+import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, XCircle, TrendingUp, ShieldCheck, Clock, Building, Users, FileText, ChevronDown, ChevronLeft, ChevronRight, Star, MapPin, Plus, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -154,6 +154,26 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
   );
 }
 
+function HeroPhoto() {
+  return (
+    <figure className="relative">
+      <img
+        src="/team/geschaeftsfuehrer-1500.webp"
+        srcSet="/team/geschaeftsfuehrer-900.webp 900w, /team/geschaeftsfuehrer-1500.webp 1500w"
+        sizes="(min-width: 1024px) 600px, 100vw"
+        width={1500}
+        height={1042}
+        alt="Die Geschäftsführer von Kivaro Invest"
+        fetchPriority="high"
+        className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-white/10"
+      />
+      <figcaption className="absolute left-3 bottom-3 rounded-lg bg-zinc-950/70 backdrop-blur px-3 py-1.5 text-xs sm:text-sm font-medium text-white">
+        Die Geschäftsführer von Kivaro Invest
+      </figcaption>
+    </figure>
+  );
+}
+
 function scrollToCheck() {
   document.getElementById('investment-check-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -192,7 +212,7 @@ function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLD
             onClick={scrollToCheck}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-4 text-base font-semibold text-white shadow-lg"
           >
-            Kostenlosen Investment-Check starten <ArrowRight className="w-5 h-5" />
+            Jetzt Investment-Check starten <ArrowRight className="w-5 h-5" />
           </button>
         </motion.div>
       )}
@@ -208,45 +228,118 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      {/* Hero mit Erklärvideo */}
-      <section className="relative pt-10 pb-16 lg:pt-20 lg:pb-24 overflow-hidden bg-zinc-50">
+      {/* Hero: Geschäftsführer + Investment-Check */}
+      <section className="relative overflow-hidden bg-zinc-950 text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(16,185,129,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(16,185,129,0.10),transparent_50%)]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12 sm:pt-16 sm:pb-16 lg:pt-32 lg:pb-24">
+          <div className="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-14 items-center">
+            <div className="min-w-0 flex flex-col items-start">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 rounded-lg bg-white/10 border border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-100 mb-5 lg:mb-6"
+              >
+                <KeyRound className="w-4 h-4 text-emerald-400" />
+                Start auch ohne Eigenkapital – je nach Bonität
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-[2.15rem] sm:text-5xl font-bold tracking-tight leading-[1.08] mb-5 lg:mb-8"
+              >
+                Dein Mieter zahlt.<br />
+                <span className="text-emerald-400">Du baust Vermögen auf.</span>
+              </motion.h1>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="lg:hidden w-full mb-5"
+              >
+                <HeroPhoto />
+              </motion.div>
+
+              <motion.ul
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="order-last lg:order-none mt-8 lg:mt-0 lg:mb-10 space-y-3 lg:space-y-4"
+              >
+                {[
+                  'Vermögensaufbau mit dem Geld der Bank',
+                  'Dein Mieter zahlt die Rate mit',
+                  'Steuervorteile durch Vermietung nutzen',
+                  '0 € Käuferprovision',
+                  'Persönliche Begleitung bis zum Notartermin',
+                ].map((t) => (
+                  <li key={t} className="flex items-center gap-3 text-base sm:text-lg font-medium text-zinc-100">
+                    <Check className="w-5 h-5 shrink-0 text-emerald-400" strokeWidth={3} />
+                    {t}
+                  </li>
+                ))}
+              </motion.ul>
+
+              <motion.div
+                ref={heroCtaRef}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="w-full flex flex-col items-stretch sm:items-start gap-2.5"
+              >
+                <button
+                  type="button"
+                  onClick={scrollToCheck}
+                  className="inline-flex w-full sm:w-auto justify-center items-center gap-2 sm:whitespace-nowrap px-6 sm:px-7 py-4 text-base sm:text-lg font-semibold text-zinc-950 bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5"
+                >
+                  <span className="sm:hidden">Jetzt Investment-Check starten</span>
+                  <span className="hidden sm:inline">Kostenlosen Investment-Check starten</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <p className="text-sm text-zinc-400 text-center sm:text-left sm:pl-1">1 Minute · kostenlos · unverbindlich</p>
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="hidden lg:block"
+            >
+              <HeroPhoto />
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-400">
+                <span className="inline-flex items-center gap-2"><BadgeCheck className="w-4 h-4 text-emerald-400" />Zugelassen nach § 34c GewO</span>
+                <span className="inline-flex items-center gap-2"><Handshake className="w-4 h-4 text-emerald-400" />Direkt mit Bauträgern</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Erklärvideo */}
+      <section className="relative pt-12 pb-16 lg:pt-20 lg:pb-24 overflow-hidden bg-zinc-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-5"
-            >
-              Dein Mieter zahlt.<br />
-              <span className="text-zinc-400">Du baust Vermögen auf.</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10"
-            >
-              Schau dir in 90 Sekunden an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
-            </motion.p>
+            <h2 className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-3">So funktioniert's</h2>
+            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-900 mb-4">In 90 Sekunden erklärt</p>
+            <p className="text-lg lg:text-xl text-zinc-600 leading-relaxed mb-8 lg:mb-10">
+              Schau dir an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive.
+            </p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <ExplainerVideo onCta={scrollToCheck} />
-          </motion.div>
+          <ExplainerVideo onCta={scrollToCheck} />
 
-          <div ref={heroCtaRef} className="mt-8 flex flex-col items-center gap-3">
+          <div className="mt-8 flex flex-col items-center gap-3">
             <button
               type="button"
               onClick={scrollToCheck}
               className="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-8 py-4 text-base sm:text-lg font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
-              Kostenlosen Investment-Check starten
+              <span className="sm:hidden">Jetzt Investment-Check starten</span>
+              <span className="hidden sm:inline">Kostenlosen Investment-Check starten</span>
               <ArrowRight className="w-5 h-5" />
             </button>
             <p className="text-sm text-zinc-500">1 Minute · kostenlos · unverbindlich</p>
