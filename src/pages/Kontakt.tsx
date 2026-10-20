@@ -101,7 +101,7 @@ export default function Kontakt() {
                 </div>
                 <h3 className="text-xl font-bold mb-4 relative z-10">Persönlich begleitet – vom ersten Gespräch an.</h3>
                 <p className="text-zinc-400 text-sm leading-relaxed relative z-10">
-                  Wir arbeiten direkt mit Bauträgern zusammen. Für dich fällt keine Käuferprovision an.
+                  Wir sind direkt an Bauträger angebunden. Für dich fällt keine Käuferprovision an.
                 </p>
               </div>
             </motion.div>

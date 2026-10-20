@@ -202,11 +202,11 @@ function HeroPhoto() {
     <figure className="relative">
       <div aria-hidden="true" className="absolute -inset-3 sm:-inset-4 rounded-[2rem] bg-gradient-to-br from-emerald-400/25 via-emerald-400/5 to-transparent blur-xl" />
       <img
-        src="/team/geschaeftsfuehrer-1500.webp"
-        srcSet="/team/geschaeftsfuehrer-900.webp 900w, /team/geschaeftsfuehrer-1500.webp 1500w"
+        src="/team/geschaeftsfuehrer-v2-1500.webp"
+        srcSet="/team/geschaeftsfuehrer-v2-900.webp 900w, /team/geschaeftsfuehrer-v2-1500.webp 1500w"
         sizes="(min-width: 1024px) 720px, 100vw"
         width={1500}
-        height={1042}
+        height={1043}
         alt="Die Geschäftsführer von Kivaro Invest"
         fetchPriority="high"
         className="relative w-full h-auto rounded-2xl lg:rounded-3xl shadow-2xl ring-1 ring-white/10"
@@ -215,6 +215,15 @@ function HeroPhoto() {
         Die Geschäftsführer von Kivaro Invest
       </figcaption>
     </figure>
+  );
+}
+
+function HeroTrust({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex flex-wrap items-center justify-center gap-x-6 lg:gap-x-8 gap-y-2 text-sm lg:text-base text-zinc-300 ${className}`}>
+      <span className="inline-flex items-center gap-2"><BadgeCheck className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400" />Zugelassen nach § 34c GewO</span>
+      <span className="inline-flex items-center gap-2"><Handshake className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400" />Direkte Anbindung an Bauträger</span>
+    </div>
   );
 }
 
@@ -345,6 +354,8 @@ export default function Home() {
               >
                 <CtaButton dark className="sm:items-start" />
               </motion.div>
+
+              <HeroTrust className="lg:hidden w-full mt-6" />
             </div>
 
             <motion.div
@@ -354,10 +365,7 @@ export default function Home() {
               className="hidden lg:block"
             >
               <HeroPhoto />
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-base text-zinc-300">
-                <span className="inline-flex items-center gap-2"><BadgeCheck className="w-5 h-5 text-emerald-400" />Zugelassen nach § 34c GewO</span>
-                <span className="inline-flex items-center gap-2"><Handshake className="w-5 h-5 text-emerald-400" />Direkt mit Bauträgern</span>
-              </div>
+              <HeroTrust className="mt-7" />
             </motion.div>
           </div>
         </div>
@@ -378,7 +386,7 @@ export default function Home() {
             {[
               { icon: <BadgeCheck className="w-6 h-6" />, title: 'Zugelassen nach § 34c GewO', text: 'Offizielle Erlaubnis als Immobilienmakler' },
               { icon: <Landmark className="w-6 h-6" />, title: 'Passende Finanzierung', text: 'Über zugelassene Finanzierungsexperten' },
-              { icon: <BadgeEuro className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Wir arbeiten direkt mit Bauträgern' },
+              { icon: <BadgeEuro className="w-6 h-6" />, title: '0 € Käuferprovision', text: 'Dank direkter Anbindung an Bauträger' },
               { icon: <Handshake className="w-6 h-6" />, title: 'Persönliche Begleitung', text: 'Vom ersten Gespräch an an deiner Seite' },
             ].map((t) => (
               <div key={t.title} className={`${card} flex flex-col sm:flex-row items-start gap-3 p-4 sm:p-5`}>
