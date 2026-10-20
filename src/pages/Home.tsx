@@ -125,9 +125,9 @@ type Projekt = {
 const projekte: Projekt[] = [
   {
     ort: 'Schweinfurt',
-    lage: 'Zentrum Schweinfurt',
+    lage: 'Unterfranken',
     titel: 'Wohnquartier im Zentrum',
-    hinweis: 'Noch 4 von 12 Einheiten verfügbar',
+    hinweis: 'Noch wenige Einheiten verfügbar',
     bilder: [
       { src: '/objekte/schweinfurt-aussen-3.webp', alt: 'Mehrfamilienhaus von außen' },
       { src: '/objekte/schweinfurt-wohnraum-3.webp', alt: 'Heller Wohnraum mit zwei Fenstern' },
@@ -136,19 +136,16 @@ const projekte: Projekt[] = [
     ],
     fakten: [
       { label: 'Objektart', wert: 'Mehrfamilienhaus' },
-      { label: 'Verfügbare Einheiten', wert: '4 von 12' },
+      { label: 'Einheiten', wert: '12' },
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
       { label: 'Wohnfläche', wert: '53 – 70 m²' },
-      { label: 'Rendite', wert: '4 %' },
       { label: 'Mietgarantie', wert: '60 Monate' },
+      { label: 'Abschreibung (AfA)', wert: '4,17 % p. a.' },
       { label: 'Baujahr', wert: '1927 – 1947' },
       { label: 'Modernisierung', wert: '2026' },
-      { label: 'Abschreibung (AfA)', wert: '4,17 % p. a.' },
-      { label: 'Energieverbrauch', wert: '90,8 kWh/(m²·a)' },
     ],
-    beschreibung:
-      'Drei Häuser im Zentrum von Schweinfurt mit insgesamt 12 Wohneinheiten von 53 bis 70 m². Baujahr 1927, Modernisierung 2026. Zu mehreren Wohnungen gehören Garagen bzw. Stellplätze. Für die Einheiten besteht eine Mietgarantie über 60 Monate. Die Abschreibung basiert auf einem Restnutzungsdauer-Gutachten mit 4,17 % p. a.',
-    highlights: ['60 Monate Mietgarantie', '5 Garagen & 2 Stellplätze', 'Zentrale Lage, Bahnhof & Innenstadt schnell erreichbar', 'Starke Arbeitgeber wie Schaeffler & ZF'],
+    beschreibung: 'Das Quartier besteht aus drei Häusern. Die Abschreibung basiert auf einem Restnutzungsdauer-Gutachten.',
+    highlights: ['Bahnhof & Innenstadt schnell erreichbar', 'Starke Arbeitgeber wie Schaeffler & ZF'],
   },
   {
     ort: 'Plattling',
@@ -162,16 +159,16 @@ const projekte: Projekt[] = [
     // Platzhalter – die echten Angaben stehen bewusst nicht im Quelltext, solange das Projekt nicht freigegeben ist
     fakten: [
       { label: 'Objektart', wert: 'Altbau' },
-      { label: 'Einheiten', wert: '00 von 00' },
+      { label: 'Einheiten', wert: '00' },
       { label: 'Kaufpreis', wert: '000.000 – 000.000 €' },
       { label: 'Wohnfläche', wert: '00 – 000 m²' },
-      { label: 'Rendite', wert: '0,0 %' },
       { label: 'Mietgarantie', wert: '00 Monate' },
+      { label: 'Abschreibung (AfA)', wert: '0,00 % p. a.' },
       { label: 'Baujahr', wert: '0000' },
       { label: 'Sanierung', wert: '0000' },
     ],
     beschreibung: 'Details zu diesem Projekt folgen in Kürze. Lage, Ausstattung und Konditionen werden gerade abgestimmt und hier veröffentlicht, sobald alles feststeht.',
-    highlights: ['Gute Verkehrsanbindung', 'Starke Arbeitgeber in der Region', 'Garagen & Stellplätze'],
+    highlights: ['Gute Verkehrsanbindung', 'Starke Arbeitgeber in der Region'],
   },
 ];
 
