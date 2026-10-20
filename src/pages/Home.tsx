@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, MinusCircle, TrendingUp, ShieldCheck, Building, Users, FileText, MapPin, Plus, Wallet, Percent, PiggyBank, Clock } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, MinusCircle, TrendingUp, ShieldCheck, Building, Users, FileText, MapPin, Plus, Wallet, Percent, PiggyBank, Clock, Expand, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -125,7 +126,7 @@ type Projekt = {
 const projekte: Projekt[] = [
   {
     ort: 'Schweinfurt',
-    lage: 'Unterfranken',
+    lage: 'Bayern',
     titel: 'Wohnquartier im Zentrum',
     hinweis: 'Noch wenige Einheiten verfügbar',
     bilder: [
@@ -139,12 +140,10 @@ const projekte: Projekt[] = [
       { label: 'Einheiten', wert: '12' },
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
       { label: 'Wohnfläche', wert: '53 – 70 m²' },
-      { label: 'Mietgarantie', wert: '60 Monate' },
-      { label: 'Abschreibung (AfA)', wert: '4,17 % p. a.' },
       { label: 'Baujahr', wert: '1927 – 1947' },
       { label: 'Modernisierung', wert: '2026' },
     ],
-    beschreibung: 'Das Quartier besteht aus drei Häusern. Die Abschreibung basiert auf einem Restnutzungsdauer-Gutachten.',
+    beschreibung: 'Die Abschreibung von 4,17 % pro Jahr basiert auf einem Restnutzungsdauer-Gutachten.',
     highlights: ['Bahnhof & Innenstadt schnell erreichbar', 'Starke Arbeitgeber wie Schaeffler & ZF'],
   },
   {
@@ -162,8 +161,6 @@ const projekte: Projekt[] = [
       { label: 'Einheiten', wert: '00' },
       { label: 'Kaufpreis', wert: '000.000 – 000.000 €' },
       { label: 'Wohnfläche', wert: '00 – 000 m²' },
-      { label: 'Mietgarantie', wert: '00 Monate' },
-      { label: 'Abschreibung (AfA)', wert: '0,00 % p. a.' },
       { label: 'Baujahr', wert: '0000' },
       { label: 'Sanierung', wert: '0000' },
     ],
@@ -172,29 +169,130 @@ const projekte: Projekt[] = [
   },
 ];
 
+function BildKachel({ p, i, onOpen, className = '' }: { key?: number; p: Projekt; i: number; onOpen: (i: number) => void; className?: string }) {
+  const b = p.bilder[i];
+  const img = (
+    <img
+      src={b.src}
+      alt={b.alt}
+      draggable={false}
+      loading="lazy"
+      className={`h-full w-full object-cover ${p.bald ? 'scale-110' : 'transition-transform duration-300 group-hover:scale-[1.03]'}`}
+    />
+  );
+  if (p.bald) return <div className={`overflow-hidden ${className}`}>{img}</div>;
+  return (
+    <button type="button" onClick={() => onOpen(i)} className={`group relative overflow-hidden cursor-zoom-in ${className}`} aria-label={`Bild ${i + 1} von ${p.bilder.length} vergrößern: ${b.alt}`}>
+      {img}
+    </button>
+  );
+}
+
+// Großansicht (Lightbox): Wischen oder Pfeile zum Blättern, Tippen auf den Hintergrund oder X zum Schließen
+function Grossansicht({ bilder, index, onIndex, onClose }: { bilder: { src: string; alt: string }[]; index: number; onIndex: (i: number) => void; onClose: () => void }) {
+  const startX = useRef<number | null>(null);
+  const n = bilder.length;
+  const geh = (d: number) => onIndex((index + d + n) % n);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') geh(1);
+      if (e.key === 'ArrowLeft') geh(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    const alt = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = alt; };
+  });
+
+  return createPortal(
+    <motion.div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Bilder in Großansicht"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95"
+      onClick={onClose}
+      onTouchStart={(e) => { startX.current = e.touches[0].clientX; }}
+      onTouchEnd={(e) => {
+        if (startX.current === null) return;
+        const dx = e.changedTouches[0].clientX - startX.current;
+        startX.current = null;
+        if (Math.abs(dx) > 45) geh(dx < 0 ? 1 : -1);
+      }}
+    >
+      <img
+        key={bilder[index].src}
+        src={bilder[index].src}
+        alt={bilder[index].alt}
+        className="max-h-[82vh] max-w-[94vw] rounded-lg object-contain shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
+      <button type="button" onClick={onClose} aria-label="Schließen" className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+        <X className="h-6 w-6" />
+      </button>
+      {n > 1 && (
+        <>
+          <button type="button" onClick={(e) => { e.stopPropagation(); geh(-1); }} aria-label="Vorheriges Bild" className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button type="button" onClick={(e) => { e.stopPropagation(); geh(1); }} aria-label="Nächstes Bild" className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+            <ChevronRight className="h-6 w-6" />
+          </button>
+          <p className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-0 right-0 text-center text-sm text-zinc-300">
+            {index + 1} / {n} · {bilder[index].alt}
+          </p>
+        </>
+      )}
+    </motion.div>,
+    document.body,
+  );
+}
+
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
+  const [offen, setOffen] = useState<number | null>(null);
   const n = p.bilder.length;
   const grid = n === 4 ? 'grid-cols-3 grid-rows-3' : n === 3 ? 'grid-cols-3 grid-rows-2' : 'grid-cols-2';
   const gross = n === 4 ? 'col-span-2 row-span-3' : n === 3 ? 'col-span-2 row-span-2' : '';
   return (
     <div className={`${card} relative overflow-hidden flex flex-col`}>
-      <div className={`relative grid aspect-[3/2] overflow-hidden gap-1 bg-white ${grid}`} aria-hidden={p.bald || undefined}>
-        {p.bilder.map((b, i) => (
-          <img
-            key={b.src}
-            src={b.src}
-            alt={b.alt}
-            draggable={false}
-            className={`h-full w-full min-h-0 min-w-0 object-cover ${i === 0 ? gross : ''} ${p.bald ? 'scale-110' : ''}`}
-            loading="lazy"
-          />
-        ))}
-        <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
+      {/* Bilder: am Handy großes Hauptbild + Vorschaubilder, ab Tablet Raster. Antippen öffnet die Großansicht. */}
+      <div className="relative" aria-hidden={p.bald || undefined}>
+        {/* Handy */}
+        <div className="sm:hidden">
+          <div className="relative">
+            <BildKachel p={p} i={0} onOpen={setOffen} className="block w-full aspect-[4/3]" />
+            {p.hinweis && (
+              <span className="absolute bottom-3 left-3 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow pointer-events-none">{p.hinweis}</span>
+            )}
+          </div>
+          {n > 1 && (
+            <div className={`mt-1 grid gap-1 ${n - 1 === 1 ? 'grid-cols-1' : n - 1 === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              {p.bilder.slice(1).map((_, k) => (
+                <BildKachel key={k} p={p} i={k + 1} onOpen={setOffen} className="block w-full aspect-square" />
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Tablet & Computer */}
+        <div className={`relative hidden sm:grid aspect-[3/2] overflow-hidden gap-1 bg-white ${grid}`}>
+          {p.bilder.map((_, i) => (
+            <BildKachel key={i} p={p} i={i} onOpen={setOffen} className={`block h-full w-full min-h-0 min-w-0 ${i === 0 ? gross : ''}`} />
+          ))}
+          {p.hinweis && (
+            <span className="absolute bottom-4 left-4 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow pointer-events-none">{p.hinweis}</span>
+          )}
+        </div>
+        <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow pointer-events-none">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
         </span>
-        {p.hinweis && (
-          <span className="absolute bottom-4 left-4 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow">
-            {p.hinweis}
+        {!p.bald && n > 1 && (
+          <span className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-zinc-950/70 backdrop-blur px-3 py-1.5 text-xs font-semibold text-white pointer-events-none">
+            <Expand className="w-3.5 h-3.5" /> {n} Bilder
           </span>
         )}
       </div>
@@ -249,6 +347,12 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
           </div>
         </div>
       )}
+
+      <AnimatePresence>
+        {offen !== null && !p.bald && (
+          <Grossansicht bilder={p.bilder} index={offen} onIndex={setOffen} onClose={() => setOffen(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
