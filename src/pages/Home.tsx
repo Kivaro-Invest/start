@@ -55,7 +55,7 @@ function Hl({ children, dark = false }: { children: ReactNode; dark?: boolean })
 
 function CtaButton({ dark = false, note = true, short = false, className = '' }: { dark?: boolean; note?: boolean; short?: boolean; className?: string }) {
   return (
-    <div className={`flex flex-col items-center gap-2.5 ${className}`}>
+    <div data-cta className={`flex flex-col items-center gap-2.5 ${className}`}>
       <button
         type="button"
         onClick={scrollToCheck}
@@ -186,7 +186,7 @@ function ProjektKarte({ p }: { key?: string; p: Projekt }) {
         <button
           type="button"
           onClick={scrollToCheck}
-          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 px-6 py-3.5 font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
         >
           <span className="sm:hidden">Investment-Check starten</span>
           <span className="hidden sm:inline">Interesse? Investment-Check starten</span>
@@ -209,7 +209,16 @@ function HeroPhoto() {
         height={1043}
         alt="Die Geschäftsführer von Kivaro Invest"
         fetchPriority="high"
-        className="relative w-full h-auto rounded-2xl lg:rounded-3xl shadow-2xl ring-1 ring-white/10"
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        className="relative w-full h-auto rounded-2xl lg:rounded-3xl shadow-2xl ring-1 ring-white/10 select-none pointer-events-none [-webkit-touch-callout:none]"
+      />
+      {/* unsichtbare Schicht über dem Foto: kein Rechtsklick, kein langes Drücken zum Speichern, kein Ziehen */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 rounded-2xl lg:rounded-3xl select-none [-webkit-touch-callout:none] [touch-action:pan-y]"
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
       />
       <figcaption className="absolute left-3 bottom-3 lg:left-5 lg:bottom-5 rounded-lg bg-zinc-950/70 backdrop-blur px-3 py-1.5 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium text-white">
         Die Geschäftsführer von Kivaro Invest
@@ -254,39 +263,43 @@ function scrollToCheck() {
   document.getElementById('investment-check-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function MobileStickyCta({ heroCtaRef, checkRef }: { heroCtaRef: RefObject<HTMLDivElement | null>; checkRef: RefObject<HTMLElement | null> }) {
-  // Erst einblenden, wenn der Button im Einstieg nach OBEN aus dem Bild gescrollt wurde
-  const [pastHeroCta, setPastHeroCta] = useState(false);
-  const [checkVisible, setCheckVisible] = useState(false);
+function MobileStickyCta({ checkRef }: { checkRef: RefObject<HTMLElement | null> }) {
+  // Ruhig statt hektisch: erscheint erst, wenn man am Investment-Check vorbei ist,
+  // und verschwindet, solange ein anderer Check-Button oder der Check selbst im Bild ist.
+  const [pastCheck, setPastCheck] = useState(false);
+  const [othersVisible, setOthersVisible] = useState(0);
 
   useEffect(() => {
+    const visible = new Set<Element>();
     const obs = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (e.target === heroCtaRef.current) setPastHeroCta(!e.isIntersecting && e.boundingClientRect.top < 0);
-        if (e.target === checkRef.current) setCheckVisible(e.isIntersecting);
+        if (e.target === checkRef.current) setPastCheck(!e.isIntersecting && e.boundingClientRect.top < 0);
+        if (e.isIntersecting) visible.add(e.target);
+        else visible.delete(e.target);
       }
-    }, { threshold: 0.05 });
-    if (heroCtaRef.current) obs.observe(heroCtaRef.current);
+      setOthersVisible(visible.size);
+    }, { threshold: 0 });
     if (checkRef.current) obs.observe(checkRef.current);
+    document.querySelectorAll('[data-cta], footer').forEach((el) => obs.observe(el));
     return () => obs.disconnect();
-  }, [heroCtaRef, checkRef]);
+  }, [checkRef]);
 
-  const show = pastHeroCta && !checkVisible;
+  const show = pastCheck && othersVisible === 0;
 
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          exit={{ y: 100 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-zinc-200 bg-white/95 backdrop-blur-md px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 24 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="fixed inset-x-0 bottom-0 z-40 md:hidden px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-6 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none"
         >
           <button
             type="button"
             onClick={scrollToCheck}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 text-base font-semibold text-white shadow-lg"
+            className="pointer-events-auto flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-900/20"
           >
             Jetzt Investment-Check starten <ArrowRight className="w-5 h-5" />
           </button>
@@ -307,7 +320,6 @@ const gruende = [
 
 export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const heroCtaRef = useRef<HTMLDivElement>(null);
   const checkRef = useRef<HTMLElement>(null);
   const teamWithPhotos = team.filter((m) => m.photo);
 
@@ -316,7 +328,7 @@ export default function Home() {
       {/* Einstieg: Geschäftsführer + Investment-Check */}
       <section className={`relative overflow-hidden text-white ${darkGradient}`}>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(52,211,153,0.16),transparent_55%)]" />
-        <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-12 pb-12 sm:pt-16 sm:pb-16 lg:pt-36 lg:pb-28">
+        <div className="relative max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 pt-10 pb-12 sm:pt-16 sm:pb-16 lg:pt-36 lg:pb-28">
           <div className="grid lg:grid-cols-[1fr_1.12fr] gap-8 lg:gap-16 xl:gap-20 items-center">
             <div className="min-w-0 flex flex-col items-start">
               <motion.div
@@ -360,7 +372,6 @@ export default function Home() {
               </motion.ul>
 
               <motion.div
-                ref={heroCtaRef}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
@@ -405,7 +416,7 @@ export default function Home() {
                 <div className="w-11 h-11 shrink-0 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">{t.icon}</div>
                 <div>
                   <p className="text-sm font-semibold text-zinc-900 leading-snug">{t.title}</p>
-                  <p className="text-xs text-zinc-500 leading-snug mt-0.5">{t.text}</p>
+                  <p className="text-[0.8125rem] sm:text-xs text-zinc-500 leading-snug mt-0.5">{t.text}</p>
                 </div>
               </div>
             ))}
@@ -413,34 +424,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Warum Immobilien */}
-      <section className="pt-12 pb-16 lg:pt-20 lg:pb-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            title={<>Warum <Hl>Immobilien</Hl> als Kapitalanlage?</>}
-            text="Eine vermietete Wohnung arbeitet für dich – mit dem Geld der Bank, der Miete deines Mieters und den Vorteilen beim Finanzamt."
-          />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {gruende.map((g) => (
-              <div
-                key={g.title}
-                className={g.dark
-                  ? `rounded-2xl p-7 lg:p-8 text-white shadow-xl ${darkGradient}`
-                  : `${card} p-7 lg:p-8`}
-              >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-5 ${g.dark ? 'bg-emerald-400/15 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>{g.icon}</div>
-                <h3 className={`text-xl font-bold mb-2 ${g.dark ? 'text-white' : 'text-zinc-900'}`}>{g.title}</h3>
-                <p className={`leading-relaxed ${g.dark ? 'text-zinc-300' : 'text-zinc-600'}`}>{g.text}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-center text-xs text-zinc-500">Mieteinnahmen, Wertentwicklung und steuerliche Vorteile sind nicht garantiert und hängen von deiner persönlichen Situation ab.</p>
-          <CtaButton className="mt-10" />
-        </div>
-      </section>
-
       {/* Investment-Check */}
-      <section id="investment-check" ref={checkRef} className={`scroll-mt-24 py-12 sm:py-16 lg:py-28 ${lightGradient}`}>
+      <section id="investment-check" ref={checkRef} className="scroll-mt-24 pt-8 pb-14 sm:py-16 lg:pt-16 lg:pb-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-6 lg:gap-16 items-start">
             <div className="lg:col-span-2 lg:sticky lg:top-32">
@@ -466,6 +451,33 @@ export default function Home() {
               <InvestmentCheck />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Warum Immobilien */}
+      <section className={`py-16 lg:py-28 ${lightGradient}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title={<>Warum <Hl>Immobilien</Hl> als Kapitalanlage?</>}
+            text="Eine vermietete Wohnung arbeitet für dich – mit dem Geld der Bank, der Miete deines Mieters und den Vorteilen beim Finanzamt."
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            {gruende.map((g) => (
+              <div
+                key={g.title}
+                className={`flex sm:block items-start gap-4 p-5 sm:p-7 lg:p-8 ${g.dark
+                  ? `rounded-2xl text-white shadow-xl ${darkGradient}`
+                  : card}`}
+              >
+                <div className={`w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full flex items-center justify-center sm:mb-5 ${g.dark ? 'bg-emerald-400/15 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>{g.icon}</div>
+                <div>
+                  <h3 className={`text-lg sm:text-xl font-bold mb-1 sm:mb-2 ${g.dark ? 'text-white' : 'text-zinc-900'}`}>{g.title}</h3>
+                  <p className={`leading-relaxed ${g.dark ? 'text-zinc-300' : 'text-zinc-600'}`}>{g.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-center text-xs text-zinc-500">Mieteinnahmen, Wertentwicklung und steuerliche Vorteile sind nicht garantiert und hängen von deiner persönlichen Situation ab.</p>
         </div>
       </section>
 
@@ -587,7 +599,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <CtaButton dark className="mt-12" />
         </div>
       </section>
 
@@ -606,7 +617,6 @@ export default function Home() {
               />
             ))}
           </div>
-          <CtaButton className="mt-12" />
         </div>
       </section>
 
@@ -624,7 +634,7 @@ export default function Home() {
         </div>
       </section>
 
-      <MobileStickyCta heroCtaRef={heroCtaRef} checkRef={checkRef} />
+      <MobileStickyCta checkRef={checkRef} />
     </div>
   );
 }
