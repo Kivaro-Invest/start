@@ -354,7 +354,7 @@ export default function Home() {
           <SectionHeading
             eyebrow="So funktioniert's"
             title={<>In 90 Sekunden <Hl>erklärt</Hl></>}
-            text="Schau dir an, wie du mit dem Geld der Bank eine Wohnung kaufst, die dein Mieter mit abbezahlt und die am Ende dir gehört. Steuervorteile inklusive."
+            text="So kaufst du mit dem Geld der Bank eine Wohnung, die dein Mieter mit abbezahlt."
           />
           <ExplainerVideo onCta={scrollToCheck} />
           <CtaButton className="mt-10" />
