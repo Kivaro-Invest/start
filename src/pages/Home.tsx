@@ -218,11 +218,34 @@ function HeroPhoto() {
   );
 }
 
-function HeroTrust({ className = '' }: { className?: string }) {
+const vorteile = [
+  { icon: <BadgeCheck className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Zugelassen nach § 34c GewO' },
+  { icon: <BadgeEuro className="w-4 h-4 lg:w-5 lg:h-5" />, text: '0 € Käuferprovision' },
+  { icon: <Handshake className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Direkte Anbindung an Bauträger' },
+  { icon: <Landmark className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Finanzierung über zugelassene Experten' },
+  { icon: <KeyRound className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Ohne Eigenkapital möglich – je nach Bonität' },
+  { icon: <Building className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Hausverwaltung über den Bauträger' },
+  { icon: <Users className="w-4 h-4 lg:w-5 lg:h-5" />, text: 'Persönliche Begleitung' },
+];
+
+// Laufband unter dem Foto: läuft automatisch, pausiert beim Drüberfahren, steht still bei „Bewegung reduzieren“
+function HeroMarquee({ className = '' }: { className?: string }) {
+  const gruppe = (hidden: boolean) => (
+    <ul className="flex shrink-0 items-center gap-3 pr-3" aria-hidden={hidden || undefined}>
+      {vorteile.map((v) => (
+        <li key={v.text} className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white/[0.07] ring-1 ring-white/10 px-4 py-2 text-sm lg:text-base font-medium text-zinc-100">
+          <span className="text-emerald-400">{v.icon}</span>
+          {v.text}
+        </li>
+      ))}
+    </ul>
+  );
   return (
-    <div className={`flex flex-wrap items-center justify-center gap-x-6 lg:gap-x-8 gap-y-2 text-sm lg:text-base text-zinc-300 ${className}`}>
-      <span className="inline-flex items-center gap-2"><BadgeCheck className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400" />Zugelassen nach § 34c GewO</span>
-      <span className="inline-flex items-center gap-2"><Handshake className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400" />Direkte Anbindung an Bauträger</span>
+    <div className={`group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] ${className}`}>
+      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+        {gruppe(false)}
+        {gruppe(true)}
+      </div>
     </div>
   );
 }
@@ -310,26 +333,17 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-[2.15rem] sm:text-5xl lg:text-[3.6rem] xl:text-[4rem] font-bold tracking-tight leading-[1.06] text-balance mb-5 lg:mb-9"
+                className="text-[2.15rem] sm:text-5xl lg:text-[3.6rem] xl:text-[4rem] font-bold tracking-tight leading-[1.06] text-balance mb-6 lg:mb-9"
               >
                 Dein Mieter zahlt.<br />
                 <span className="text-emerald-400">Du baust Vermögen auf.</span>
               </motion.h1>
 
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="lg:hidden w-full mb-5"
-              >
-                <HeroPhoto />
-              </motion.div>
-
               <motion.ul
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="order-last lg:order-none mt-8 lg:mt-0 lg:mb-11 space-y-3 lg:space-y-4"
+                className="mb-8 lg:mb-11 space-y-3 lg:space-y-4"
               >
                 {[
                   'Vermögensaufbau mit dem Geld der Bank',
@@ -354,18 +368,16 @@ export default function Home() {
               >
                 <CtaButton dark className="sm:items-start" />
               </motion.div>
-
-              <HeroTrust className="lg:hidden w-full mt-6" />
             </div>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="hidden lg:block"
+              className="min-w-0 mt-2 lg:mt-0"
             >
               <HeroPhoto />
-              <HeroTrust className="mt-7" />
+              <HeroMarquee className="mt-5 lg:mt-7" />
             </motion.div>
           </div>
         </div>
