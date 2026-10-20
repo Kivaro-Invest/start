@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, MinusCircle, TrendingUp, ShieldCheck, Building, Users, FileText, MapPin, Plus, Wallet, Percent, PiggyBank } from 'lucide-react';
+import { Check, KeyRound, BadgeCheck, Landmark, Handshake, BadgeEuro, ArrowRight, CheckCircle2, MinusCircle, TrendingUp, ShieldCheck, Building, Users, FileText, MapPin, Plus, Wallet, Percent, PiggyBank, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ExplainerVideo from '../components/ExplainerVideo';
 import InvestmentCheck from '../components/InvestmentCheck';
@@ -114,92 +114,144 @@ type Projekt = {
   ort: string;
   lage: string;
   titel: string;
+  hinweis?: string; // kleines Etikett auf dem Bild, z. B. Verfügbarkeit
   bilder: { src: string; alt: string }[];
   fakten: { label: string; wert: string }[];
+  beschreibung?: string;
   highlights: string[];
+  bald?: boolean; // Projekt noch nicht freigegeben: Karte verschwommen mit „Bald verfügbar“
 };
 
 const projekte: Projekt[] = [
   {
     ort: 'Schweinfurt',
-    lage: 'Zentrale Lage',
-    titel: 'Modernisierter Altbau im Zentrum',
+    lage: 'Zentrum Schweinfurt',
+    titel: 'Wohnquartier im Zentrum',
+    hinweis: 'Noch 4 von 12 Einheiten verfügbar',
     bilder: [
-      { src: '/objekte/schweinfurt-wohnraum-2.webp', alt: 'Heller Wohnraum mit zwei Fenstern' },
-      { src: '/objekte/schweinfurt-zimmer-2.webp', alt: 'Zimmer mit neuem Boden' },
-      { src: '/objekte/schweinfurt-bad-2.webp', alt: 'Modernisiertes Bad mit Dusche' },
+      { src: '/objekte/schweinfurt-aussen-3.webp', alt: 'Mehrfamilienhaus von außen' },
+      { src: '/objekte/schweinfurt-wohnraum-3.webp', alt: 'Heller Wohnraum mit zwei Fenstern' },
+      { src: '/objekte/schweinfurt-zimmer-3.webp', alt: 'Zimmer mit neuem Boden' },
+      { src: '/objekte/schweinfurt-bad-3.webp', alt: 'Modernisiertes Bad mit Dusche' },
     ],
     fakten: [
+      { label: 'Objektart', wert: 'Mehrfamilienhaus' },
+      { label: 'Verfügbare Einheiten', wert: '4 von 12' },
       { label: 'Kaufpreis', wert: '205.000 – 264.000 €' },
-      { label: 'Wohnfläche', wert: '57 – 70 m²' },
-      { label: 'Beispiel-Rendite', wert: '4,0 %' },
-      { label: 'Zustand', wert: '2025 modernisiert' },
+      { label: 'Wohnfläche', wert: '53 – 70 m²' },
+      { label: 'Rendite', wert: '4 %' },
+      { label: 'Mietgarantie', wert: '60 Monate' },
+      { label: 'Baujahr', wert: '1927 – 1947' },
+      { label: 'Modernisierung', wert: '2026' },
+      { label: 'Abschreibung (AfA)', wert: '4,17 % p. a.' },
+      { label: 'Energieverbrauch', wert: '90,8 kWh/(m²·a)' },
     ],
-    highlights: ['Zentrale Lage, Bahnhof & Innenstadt schnell erreichbar', 'Garagen & Stellplätze', 'Starke Arbeitgeber wie Schaeffler & ZF'],
+    beschreibung:
+      'Drei Häuser im Zentrum von Schweinfurt mit insgesamt 12 Wohneinheiten von 53 bis 70 m². Baujahr 1927, Modernisierung 2026. Zu mehreren Wohnungen gehören Garagen bzw. Stellplätze. Für die Einheiten besteht eine Mietgarantie über 60 Monate. Die Abschreibung basiert auf einem Restnutzungsdauer-Gutachten mit 4,17 % p. a.',
+    highlights: ['60 Monate Mietgarantie', '5 Garagen & 2 Stellplätze', 'Zentrale Lage, Bahnhof & Innenstadt schnell erreichbar', 'Starke Arbeitgeber wie Schaeffler & ZF'],
   },
   {
     ort: 'Plattling',
     lage: 'Landkreis Deggendorf',
-    titel: 'Charmanter Altbau in zentraler Lage',
+    titel: 'Neues Projekt in Vorbereitung',
+    bald: true,
     bilder: [
-      { src: '/objekte/plattling-wohnraum.webp', alt: 'Wohnraum' },
-      { src: '/objekte/plattling-bad.webp', alt: 'Bad' },
+      { src: '/objekte/plattling-bald-1.webp', alt: '' },
+      { src: '/objekte/plattling-bald-2.webp', alt: '' },
     ],
+    // Platzhalter – die echten Angaben stehen bewusst nicht im Quelltext, solange das Projekt nicht freigegeben ist
     fakten: [
-      { label: 'Kaufpreis', wert: '250.000 – 450.000 €' },
-      { label: 'Wohnfläche', wert: '63 – 112 m²' },
-      { label: 'Sanierung', wert: '2026' },
-      { label: 'Lage', wert: 'Zentrum, 10 Min. zu Fuß' },
+      { label: 'Objektart', wert: 'Altbau' },
+      { label: 'Einheiten', wert: '00 von 00' },
+      { label: 'Kaufpreis', wert: '000.000 – 000.000 €' },
+      { label: 'Wohnfläche', wert: '00 – 000 m²' },
+      { label: 'Rendite', wert: '0,0 %' },
+      { label: 'Mietgarantie', wert: '00 Monate' },
+      { label: 'Baujahr', wert: '0000' },
+      { label: 'Sanierung', wert: '0000' },
     ],
-    highlights: ['ICE-Bahnhof & A92/A3 in der Nähe', 'Nähe BMW Dingolfing & TH Deggendorf', 'Garagen & Stellplätze'],
+    beschreibung: 'Details zu diesem Projekt folgen in Kürze. Lage, Ausstattung und Konditionen werden gerade abgestimmt und hier veröffentlicht, sobald alles feststeht.',
+    highlights: ['Gute Verkehrsanbindung', 'Starke Arbeitgeber in der Region', 'Garagen & Stellplätze'],
   },
 ];
 
 function ProjektKarte({ p }: { key?: string; p: Projekt }) {
+  const n = p.bilder.length;
+  const grid = n === 4 ? 'grid-cols-3 grid-rows-3' : n === 3 ? 'grid-cols-3 grid-rows-2' : 'grid-cols-2';
+  const gross = n === 4 ? 'col-span-2 row-span-3' : n === 3 ? 'col-span-2 row-span-2' : '';
   return (
-    <div className={`${card} overflow-hidden flex flex-col`}>
-      <div className={`relative grid aspect-[3/2] gap-1 bg-white ${p.bilder.length === 3 ? 'grid-cols-3 grid-rows-2' : 'grid-cols-2'}`}>
+    <div className={`${card} relative overflow-hidden flex flex-col`}>
+      <div className={`relative grid aspect-[3/2] overflow-hidden gap-1 bg-white ${grid}`} aria-hidden={p.bald || undefined}>
         {p.bilder.map((b, i) => (
           <img
             key={b.src}
             src={b.src}
             alt={b.alt}
-            className={`h-full w-full object-cover ${p.bilder.length === 3 && i === 0 ? 'col-span-2 row-span-2' : ''}`}
+            draggable={false}
+            className={`h-full w-full min-h-0 min-w-0 object-cover ${i === 0 ? gross : ''} ${p.bald ? 'scale-110' : ''}`}
             loading="lazy"
           />
         ))}
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 shadow">
           <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {p.ort}
         </span>
+        {p.hinweis && (
+          <span className="absolute bottom-4 left-4 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow">
+            {p.hinweis}
+          </span>
+        )}
       </div>
-      <div className="p-6 sm:p-8 flex flex-col flex-1">
+
+      <div className={`p-6 sm:p-8 flex flex-col flex-1 ${p.bald ? 'blur-[6px] select-none pointer-events-none' : ''}`} aria-hidden={p.bald || undefined}>
         <p className="text-sm text-zinc-500">{p.lage}</p>
         <h3 className="mt-1 text-2xl font-bold text-zinc-900">{p.titel}</h3>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-zinc-200 py-6">
           {p.fakten.map((f) => (
             <div key={f.label}>
               <dt className="text-xs text-zinc-500">{f.label}</dt>
-              <dd className="text-lg font-bold text-zinc-900">{f.wert}</dd>
+              <dd className="text-base sm:text-lg font-bold text-zinc-900">{f.wert}</dd>
             </div>
           ))}
         </dl>
-        <ul className="mt-6 space-y-2 flex-1">
+        {p.beschreibung && <p className={`mt-6 text-sm sm:text-base text-zinc-600 leading-relaxed ${p.bald ? 'hidden sm:block' : ''}`}>{p.beschreibung}</p>}
+        <ul className={`mt-6 space-y-2 flex-1 ${p.bald ? 'hidden sm:block' : ''}`}>
           {p.highlights.map((h) => (
             <li key={h} className="flex items-start gap-2 text-zinc-700">
               <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> {h}
             </li>
           ))}
         </ul>
-        <button
-          type="button"
-          onClick={scrollToCheck}
-          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 px-6 py-3.5 font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
-        >
-          <span className="sm:hidden">Investment-Check starten</span>
-          <span className="hidden sm:inline">Interesse? Investment-Check starten</span>
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        {!p.bald && (
+          <button
+            type="button"
+            onClick={scrollToCheck}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 px-6 py-3.5 font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
+          >
+            <span className="sm:hidden">Investment-Check starten</span>
+            <span className="hidden sm:inline">Interesse? Investment-Check starten</span>
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        )}
       </div>
+
+      {p.bald && (
+        <div className="absolute inset-0 flex items-center justify-center p-6 bg-white/30">
+          <div className="max-w-xs rounded-2xl bg-white/95 p-6 sm:p-7 text-center shadow-2xl ring-1 ring-zinc-900/5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+              <Clock className="w-3.5 h-3.5" /> Bald verfügbar
+            </span>
+            <p className="mt-4 text-xl font-bold text-zinc-900">Neues Projekt in {p.ort}</p>
+            <p className="mt-2 text-sm text-zinc-600 leading-relaxed">Die Details folgen in Kürze. Mach den Investment-Check, dann informieren wir dich als Erstes.</p>
+            <button
+              type="button"
+              onClick={scrollToCheck}
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors"
+            >
+              Vorab informiert werden <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
