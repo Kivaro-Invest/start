@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 
-const STAND = 'Oktober 2026';
+const STAND = '21. Oktober 2026';
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -37,7 +37,7 @@ export default function Datenschutz() {
 
             <Section title="2. Das Wichtigste in Kürze">
               <ul className="list-disc pl-6 space-y-2">
-                <li>Wir setzen <strong>keine Cookies</strong>, <strong>keine Analyse-Tools</strong> und <strong>keine Werbe-Pixel</strong> ein.</li>
+                <li>Ohne deine Zustimmung setzen wir <strong>keine Cookies</strong>, <strong>keine Analyse-Tools</strong> und <strong>keine Werbe-Pixel</strong> ein. Nur wenn du im Cookie-Banner zustimmst, laden wir den <strong>Meta Pixel</strong> (Abschnitt 7).</li>
                 <li>Video und Schriftarten liegen auf unserem eigenen Server – es werden keine Daten an YouTube oder Google übertragen.</li>
                 <li>Personenbezogene Daten verarbeiten wir nur, wenn du uns über den Investment-Check, das Kontaktformular oder per E-Mail schreibst.</li>
                 <li>Anrufen dürfen wir dich nur mit deiner ausdrücklichen Einwilligung. Die kannst du jederzeit widerrufen.</li>
@@ -97,11 +97,29 @@ export default function Datenschutz() {
               </p>
             </Section>
 
-            <Section title="7. Wer bekommt deine Daten?">
+            <Section title="7. Meta Pixel und Conversions API (nur mit deiner Einwilligung)">
+              <p>
+                Wenn du im Cookie-Banner „Akzeptieren“ wählst, nutzen wir den Meta Pixel und die Conversions API der Meta Platforms Ireland Limited, Merrion Road, Dublin 4, D04 X2K5, Irland („Meta“). Wir messen damit, ob unsere Anzeigen auf Instagram und Facebook dazu führen, dass Personen den Investment-Check ausfüllen, und verbessern so die Ausspielung unserer Werbung.
+              </p>
+              <p><strong>Welche Daten verarbeitet werden:</strong></p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Beim Besuch der Seite: IP-Adresse, Browser- und Geräteangaben, aufgerufene Seiten, Referrer sowie Kennungen in Cookies (<code>_fbp</code>, <code>_fbc</code>) und die Klick-Kennung aus der Anzeige (fbclid).</li>
+                <li>Beim Abschluss des Investment-Checks: das Ereignis „Lead“ sowie, vom Browser und zusätzlich von unserem Server (Conversions API), dein Vorname, deine E-Mail-Adresse und deine Telefonnummer in verschlüsselter Form (Hash). Daraus kann Meta dich einem Meta-Konto zuordnen, sofern du eines hast. Deine Antworten im Investment-Check (z. B. Einkommen, Ersparnisse) übermitteln wir nicht an Meta.</li>
+              </ul>
+              <p>
+                <strong>Rechtsgrundlage</strong> ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Ohne Einwilligung wird der Pixel nicht geladen und es werden keine Daten an Meta gesendet. Du kannst deine Entscheidung jederzeit mit Wirkung für die Zukunft ändern: Klicke im Footer auf „Cookie-Einstellungen“. Um deine Entscheidung zu merken, speichern wir einen Eintrag („zugestimmt“ oder „abgelehnt“) im lokalen Speicher deines Browsers.
+              </p>
+              <p>
+                Für die Erhebung der Daten und ihre Übermittlung an Meta sind wir und Meta gemeinsam verantwortlich (Art. 26 DSGVO). Für die weitere Verarbeitung bei Meta ist Meta allein verantwortlich; wie Meta mit Daten umgeht, steht in der Datenschutzrichtlinie von Meta. Ausführliche Informationen und die Vereinbarung zur gemeinsamen Verantwortlichkeit stellt Meta bereit. Meta kann Daten in die USA übermitteln; Meta ist unter dem EU-US Data Privacy Framework zertifiziert.
+              </p>
+            </Section>
+
+            <Section title="8. Wer bekommt deine Daten?">
               <p>Deine Daten verkaufen wir nicht. Wir nutzen folgende Dienstleister, die in unserem Auftrag und nach unseren Weisungen arbeiten (Art. 28 DSGVO):</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Cloudflare, Inc.</strong> (USA) – Hosting der Website und Verarbeitung der Formulare.</li>
                 <li><strong>monday.com Ltd.</strong>, 6 Yitzhak Sadeh St., Tel Aviv, Israel – Verwaltung unserer Interessenten- und Kundenkontakte. Für Israel besteht ein Angemessenheitsbeschluss der EU-Kommission.</li>
+                <li><strong>Meta Platforms Ireland Limited</strong> (Irland) – nur mit deiner Einwilligung und nicht als unser Auftragsverarbeiter, siehe Abschnitt 7.</li>
                 <li><strong>STRATO GmbH</strong>, Otto-Ostrowski-Straße 7, 10249 Berlin – Versand und Empfang von E-Mails.</li>
               </ul>
               <p>
@@ -109,13 +127,13 @@ export default function Datenschutz() {
               </p>
             </Section>
 
-            <Section title="8. Übermittlung in Drittländer">
+            <Section title="9. Übermittlung in Drittländer">
               <p>
-                Bei Cloudflare (USA) können Daten in die USA übertragen werden. Die Übermittlung stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework (Art. 45 DSGVO) und ergänzend auf EU-Standardvertragsklauseln (Art. 46 DSGVO).
+                Bei Cloudflare (USA) und, wenn du dem Meta Pixel zustimmst, bei Meta können Daten in die USA übertragen werden. Die Übermittlung stützt sich auf den Angemessenheitsbeschluss zum EU-US Data Privacy Framework (Art. 45 DSGVO) und ergänzend auf EU-Standardvertragsklauseln (Art. 46 DSGVO).
               </p>
             </Section>
 
-            <Section title="9. Deine Rechte">
+            <Section title="10. Deine Rechte">
               <p>Du hast jederzeit das Recht auf:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Auskunft über deine bei uns gespeicherten Daten (Art. 15 DSGVO),</li>
@@ -128,7 +146,7 @@ export default function Datenschutz() {
               </ul>
             </Section>
 
-            <Section title="10. Änderungen">
+            <Section title="11. Änderungen">
               <p>
                 Wir passen diese Datenschutzerklärung an, wenn sich unsere Website oder die Rechtslage ändert. Es gilt die jeweils hier veröffentlichte Fassung.
               </p>

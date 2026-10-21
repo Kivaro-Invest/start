@@ -11,6 +11,8 @@ import {
   type QuestionId,
 } from '../lib/investmentCheck';
 import { getAttribution } from '../lib/attribution';
+import { getConsent } from '../lib/consent';
+import { getFbIdentifiers, trackLead } from '../lib/metaPixel';
 
 type Status = 'idle' | 'submitting' | 'finishing' | 'success' | 'error';
 
@@ -105,6 +107,9 @@ export default function InvestmentCheck() {
     setStatus('submitting');
     setErrorMessage('');
     try {
+      const eventId = crypto.randomUUID();
+      const marketingConsent = getConsent() === 'granted';
+      const attribution = getAttribution();
       const minDelay = sleep(1600); // Ladeanzeige mindestens kurz zeigen
       const res = await fetch('/api/lead', {
         method: 'POST',
@@ -117,7 +122,10 @@ export default function InvestmentCheck() {
             email: contact.email.trim(),
           },
           consent: { given: consent, version: CONSENT_VERSION, text: CONSENT_TEXT },
-          attribution: getAttribution(),
+          attribution,
+          tracking: marketingConsent
+            ? { marketingConsent: true, eventId, ...getFbIdentifiers(attribution.fbclid) }
+            : { marketingConsent: false },
           pageUrl: window.location.href,
           secondsToComplete: Math.round((Date.now() - startedAt.current) / 1000),
           website: honeypot,
@@ -127,6 +135,7 @@ export default function InvestmentCheck() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || `Fehler ${res.status}`);
       }
+      if (marketingConsent) trackLead(eventId); // gleiche eventId wie in der Conversions API
       await minDelay;
       setStatus('finishing'); // Balken läuft auf 100 %
       await sleep(450);

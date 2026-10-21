@@ -7,6 +7,7 @@ export type Attribution = {
   utm_campaign?: string;
   utm_content?: string;
   utm_term?: string;
+  fbclid?: string;
   landingPage: string;
   referrer?: string;
 };
@@ -23,6 +24,8 @@ export function captureAttribution(): Attribution {
     const value = params.get(key);
     if (value) result[key] = value.slice(0, 100);
   }
+  const fbclid = params.get('fbclid');
+  if (fbclid) result.fbclid = fbclid.slice(0, 200);
   if (document.referrer && !document.referrer.startsWith(window.location.origin)) {
     result.referrer = document.referrer.slice(0, 200);
   }

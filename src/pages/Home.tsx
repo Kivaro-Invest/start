@@ -606,7 +606,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {projekte.map((p) => <ProjektKarte key={p.ort} p={p} />)}
           </div>
-          <p className="mt-8 text-center text-xs text-zinc-500">Angaben laut Bauträger, ohne Gewähr. Bilder teilweise Beispielwohnungen. Verfügbarkeit auf Anfrage.</p>
+          <p className="mt-8 text-center text-xs text-zinc-500">Angaben laut Bauträger, ohne Gewähr. Beispielrechnung, keine Anlageberatung. Bilder teilweise Beispielwohnungen. Verfügbarkeit auf Anfrage.</p>
         </div>
       </section>
 

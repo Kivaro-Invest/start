@@ -10,7 +10,17 @@ export type Env = {
   SMTP_PASS?: string;
   SMTP_PORT?: string;
   LEAD_NOTIFY_TO?: string;
+  MONDAY_AD_GROUP_ID?: string;
+  META_PIXEL_ID?: string;
+  META_CAPI_TOKEN?: string;
+  META_API_VERSION?: string;
+  META_TEST_EVENT_CODE?: string;
 };
+
+export async function sha256Hex(value: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
 
 export const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), {
