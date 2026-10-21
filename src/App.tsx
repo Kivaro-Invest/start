@@ -7,6 +7,7 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
+import CookieBanner from './components/CookieBanner';
 import { captureAttribution } from './lib/attribution';
 
 // Herkunft (z. B. Flyer-QR-Code mit utm_source) direkt beim ersten Aufruf merken
@@ -23,6 +24,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <CookieBanner />
       <Layout>
         <Suspense fallback={<div className="min-h-screen bg-zinc-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>}>
           <Routes>

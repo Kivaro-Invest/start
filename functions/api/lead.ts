@@ -11,11 +11,15 @@ import {
   visibleQuestions,
   type Answers,
 } from '../../src/lib/investmentCheck';
-import { clip, esc, json, lastSmtpError, sendMails, type Env } from '../../server/shared';
+import { clip, esc, json, lastSmtpError, sendMails, sha256Hex, type Env } from '../../server/shared';
 
 // monday.com – Board „Leads – Investment-Check“ (Workspace „Kivaro“)
 // https://greenjobsgmbh.monday.com/boards/5105369698
 const MONDAY_BOARD_ID_DEFAULT = '5105369698';
+// Gruppe „AD Kampagne“ im selben Board: hier landen Leads aus Meta-Anzeigen (utm_source=meta)
+const MONDAY_AD_GROUP_DEFAULT = 'group_mm8b56a8';
+const AD_SOURCES = new Set(['meta', 'facebook', 'fb', 'instagram', 'ig']);
+const META_PIXEL_DEFAULT = '1314697794095371';
 const MONDAY_COLUMNS = {
   status: 'color_mm7rwbk5',
   einstufung: 'color_mm7r87d2',
@@ -40,6 +44,7 @@ type LeadBody = {
   contact?: { firstName?: string; phone?: string; email?: string };
   consent?: { given?: boolean; version?: string };
   attribution?: Record<string, string | undefined>;
+  tracking?: { marketingConsent?: boolean; eventId?: string; fbp?: string; fbc?: string };
   pageUrl?: string;
   secondsToComplete?: number;
   website?: string; // Honeypot
@@ -138,10 +143,16 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: env.MONDAY_API_TOKEN, 'API-Version': '2024-10' },
         body: JSON.stringify({
-          query: `mutation ($board: ID!, $name: String!, $values: JSON!) {
-            create_item(board_id: $board, item_name: $name, column_values: $values, create_labels_if_missing: true) { id }
+          query: `mutation ($board: ID!, $name: String!, $values: JSON!, $group: String) {
+            create_item(board_id: $board, group_id: $group, item_name: $name, column_values: $values, create_labels_if_missing: true) { id }
           }`,
-          variables: { board: env.MONDAY_BOARD_ID || MONDAY_BOARD_ID_DEFAULT, name: `${firstName} (${score})`, values: JSON.stringify(values) },
+          variables: {
+            board: env.MONDAY_BOARD_ID || MONDAY_BOARD_ID_DEFAULT,
+            name: `${firstName} (${score})`,
+            values: JSON.stringify(values),
+            // Anzeigen-Leads in die Gruppe „AD Kampagne“, alles andere wie bisher in die oberste Gruppe
+            group: AD_SOURCES.has(quelle.toLowerCase()) ? env.MONDAY_AD_GROUP_ID || MONDAY_AD_GROUP_DEFAULT : null,
+          },
         }),
       });
       const data: any = await res.json().catch(() => ({}));
@@ -156,6 +167,53 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       mondayInfo = 'netzwerkfehler';
       console.error('monday request failed', err);
     }
+  }
+
+  // ---------------- Meta Conversions API (nur mit Einwilligung im Cookie-Banner) ----------------
+  let capiInfo = 'aus';
+  const tr = body.tracking;
+  if (tr?.marketingConsent === true && env.META_CAPI_TOKEN) {
+    try {
+      const intlDigits = (phone.startsWith('+') ? phone : phone.startsWith('00') ? phone.replace(/^00/, '+') : phone.replace(/^0/, '+49')).replace(/\D/g, '');
+      const userData: Record<string, unknown> = {
+        em: [await sha256Hex(email)],
+        ph: [await sha256Hex(intlDigits)],
+        fn: [await sha256Hex(firstName.toLowerCase())],
+        country: [await sha256Hex('de')],
+        client_ip_address: ip === 'unbekannt' ? undefined : ip,
+        client_user_agent: userAgent,
+        fbp: clip(tr.fbp, 200) || undefined,
+        fbc: clip(tr.fbc, 300) || undefined,
+      };
+      const payload: Record<string, unknown> = {
+        data: [
+          {
+            event_name: 'Lead',
+            event_time: Math.floor(now.getTime() / 1000),
+            event_id: clip(tr.eventId, 80) || undefined, // gleiche ID wie im Browser-Pixel → Deduplizierung
+            action_source: 'website',
+            event_source_url: clip(body.pageUrl, 300),
+            user_data: userData,
+          },
+        ],
+      };
+      if (env.META_TEST_EVENT_CODE) payload.test_event_code = env.META_TEST_EVENT_CODE;
+      const pixel = env.META_PIXEL_ID || META_PIXEL_DEFAULT;
+      const version = env.META_API_VERSION || 'v23.0';
+      const r = await fetch(`https://graph.facebook.com/${version}/${pixel}/events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.META_CAPI_TOKEN}` },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(4000),
+      });
+      capiInfo = r.ok ? 'ok' : `fehler ${r.status}`;
+      if (!r.ok) console.error('capi error', r.status, (await r.text()).slice(0, 300));
+    } catch (err) {
+      capiInfo = 'netzwerkfehler';
+      console.error('capi request failed', err);
+    }
+  } else if (tr?.marketingConsent === true) {
+    capiInfo = 'kein Token';
   }
 
   // ---------------- E-Mails ----------------
@@ -229,7 +287,7 @@ https://kivaro-invest.de/impressum`,
       },
     });
   }
-  return json(200, { success: true, saved: { monday: mondayOk, mondayInfo, mail } });
+  return json(200, { success: true, saved: { monday: mondayOk, mondayInfo, mail, capi: capiInfo } });
 };
 
 export const onRequest = () => json(405, { error: 'Method Not Allowed' });

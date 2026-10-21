@@ -1,3 +1,4 @@
+import { openConsentSettings } from '../lib/consent';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Menu, X, ArrowRight, ChevronRight, Phone, Mail, MapPin } from 'lucide-react';
@@ -155,6 +156,7 @@ export function Footer() {
             <ul className="space-y-4">
               <li><Link to="/impressum" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Impressum</Link></li>
               <li><Link to="/datenschutz" className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Datenschutzerklärung</Link></li>
+              <li><button type="button" onClick={openConsentSettings} className="text-sm hover:text-white transition-colors flex items-center gap-2"><ChevronRight className="w-3 h-3" /> Cookie-Einstellungen</button></li>
             </ul>
           </div>
 
