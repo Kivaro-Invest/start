@@ -362,11 +362,11 @@ function HeroPhoto() {
     <figure className="relative">
       <div aria-hidden="true" className="absolute -inset-3 sm:-inset-4 rounded-[2rem] bg-gradient-to-br from-emerald-400/25 via-emerald-400/5 to-transparent blur-xl" />
       <img
-        src="/team/geschaeftsfuehrer-v2-1500.webp"
-        srcSet="/team/geschaeftsfuehrer-v2-900.webp 900w, /team/geschaeftsfuehrer-v2-1500.webp 1500w"
+        src="/team/geschaeftsfuehrer-v3-1500.webp"
+        srcSet="/team/geschaeftsfuehrer-v3-900.webp 900w, /team/geschaeftsfuehrer-v3-1500.webp 1500w"
         sizes="(min-width: 1024px) 720px, 100vw"
         width={1500}
-        height={1043}
+        height={1120}
         alt="Die Geschäftsführer von Kivaro Invest"
         fetchPriority="high"
         draggable={false}
