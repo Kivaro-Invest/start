@@ -12,3 +12,11 @@
 
 /objekte/*
   Cache-Control: public, max-age=86400
+
+/content
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/content/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

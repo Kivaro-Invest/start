@@ -1,6 +1,18 @@
 # Cloudflare Pages – Einstellungen für kivaro-invest.de
-# Geheimnisse (MONDAY_API_TOKEN, SMTP_*) werden NICHT hier, sondern im Cloudflare-Dashboard hinterlegt.
+# Geheimnisse (MONDAY_API_TOKEN, SMTP_*, CONTENT_ADMIN_PASSWORD) werden NICHT hier, sondern im Cloudflare-Dashboard hinterlegt.
 name = "kivaro-invest"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
+
+# Content-Kalender: Beiträge, Automationen, Protokoll
+[[d1_databases]]
+binding = "CONTENT_DB"
+database_name = "kivaro-content"
+database_id = "0f9c8ea9-39d6-4ac1-9815-1269bbff4e00"
+migrations_dir = "migrations"
+
+# Content-Kalender: Bilder und Videos (öffentlich abrufbar über /media/<schlüssel>, damit Instagram sie laden kann)
+[[r2_buckets]]
+binding = "CONTENT_MEDIA"
+bucket_name = "kivaro-content-media"

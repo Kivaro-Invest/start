@@ -19,14 +19,29 @@ const Kontakt = lazy(() => import('./pages/Kontakt'));
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
 const InvestmentCheckPage = lazy(() => import('./pages/InvestmentCheckPage'));
+const ContentPage = lazy(() => import('./pages/content/ContentPage'));
+
+const spinner = <div className="min-h-screen bg-zinc-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <Routes>
+        {/* Interner Content-Kalender: eigenes Layout, kein Cookie-Banner, nicht indexiert */}
+        <Route path="/content/*" element={<Suspense fallback={spinner}><ContentPage /></Suspense>} />
+        <Route path="*" element={<PublicSite />} />
+      </Routes>
+    </Router>
+  );
+}
+
+function PublicSite() {
+  return (
+    <>
       <CookieBanner />
       <Layout>
-        <Suspense fallback={<div className="min-h-screen bg-zinc-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+        <Suspense fallback={spinner}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/investment-check" element={<InvestmentCheckPage />} />
@@ -40,6 +55,6 @@ export default function App() {
           </Routes>
         </Suspense>
       </Layout>
-    </Router>
+    </>
   );
 }
