@@ -15,6 +15,7 @@ export type Question = {
 export type QuestionId =
   | 'ziel'
   | 'beruf'
+  // Nicht mehr abgefragt (Kurzversion), bleiben für ältere Leads/monday-Spalten im Typ:
   | 'probezeit'
   | 'einkommen'
   | 'ersparnisse'
@@ -24,15 +25,17 @@ export type QuestionId =
 
 export type Answers = Partial<Record<QuestionId, string>>;
 
+// Kurz gehalten (3 Fragen + Kontakt): Für Werbe-Traffic zählt jede Hürde.
+// Probezeit, Ersparnisse, Immobilienbesitz, Alter und Startzeitpunkt klären wir im Telefonat.
 export const QUESTIONS: Question[] = [
   {
     id: 'ziel',
     title: 'Was ist dein wichtigstes Ziel?',
     options: [
-      { value: 'steuern', label: 'Steuern sparen' },
       { value: 'vermoegen', label: 'Vermögen aufbauen' },
       { value: 'altersvorsorge', label: 'Fürs Alter vorsorgen' },
       { value: 'passiv', label: 'Passives Einkommen' },
+      { value: 'steuern', label: 'Steuern sparen' },
     ],
   },
   {
@@ -45,15 +48,6 @@ export const QUESTIONS: Question[] = [
     ],
   },
   {
-    id: 'probezeit',
-    title: 'Bist du noch in der Probezeit?',
-    options: [
-      { value: 'nein', label: 'Nein' },
-      { value: 'ja', label: 'Ja' },
-    ],
-    showIf: (a) => a.beruf === 'angestellt',
-  },
-  {
     id: 'einkommen',
     title: 'Wie hoch ist dein Brutto-Jahreseinkommen?',
     hint: 'Eine grobe Einordnung reicht.',
@@ -62,42 +56,6 @@ export const QUESTIONS: Question[] = [
       { value: '45-60', label: '45.000 – 60.000 €' },
       { value: '60-80', label: '60.000 – 80.000 €' },
       { value: 'ue80', label: 'Über 80.000 €' },
-    ],
-  },
-  {
-    id: 'ersparnisse',
-    title: 'Hast du Ersparnisse, die du für deinen Vermögensaufbau einsetzen möchtest?',
-    options: [
-      { value: 'keine', label: 'Noch keine' },
-      { value: 'u15', label: 'Ja, unter 15.000 €' },
-      { value: 'ue15', label: 'Ja, 15.000 € oder mehr' },
-    ],
-  },
-  {
-    id: 'immobilien',
-    title: 'Besitzt du schon Immobilien?',
-    options: [
-      { value: 'keine', label: 'Noch keine' },
-      { value: '1-3', label: '1 – 3 Immobilien' },
-      { value: '4+', label: '4 oder mehr' },
-    ],
-  },
-  {
-    id: 'alter',
-    title: 'Wie alt bist du?',
-    options: [
-      { value: 'u40', label: 'Unter 40' },
-      { value: '40-60', label: '40 – 60' },
-      { value: 'ue60', label: 'Über 60' },
-    ],
-  },
-  {
-    id: 'start',
-    title: 'Wann möchtest du starten?',
-    options: [
-      { value: 'sofort', label: 'Am liebsten sofort' },
-      { value: '3-6', label: 'In 3 – 6 Monaten' },
-      { value: 'info', label: 'Erstmal informieren' },
     ],
   },
 ];
@@ -124,9 +82,8 @@ export function answersAreValid(answers: Answers): boolean {
  * A = sofort anrufen, B = normal, C = später / Info-Follow-up.
  */
 export function scoreLead(a: Answers): 'A' | 'B' | 'C' {
-  if (a.beruf === 'ohne' || a.start === 'info') return 'C';
-  const festAngestellt = a.beruf === 'angestellt' && a.probezeit === 'nein';
-  const stabil = festAngestellt || a.beruf === 'selbststaendig';
+  if (a.beruf === 'ohne') return 'C';
+  const stabil = a.beruf === 'angestellt' || a.beruf === 'selbststaendig';
   const gutesEinkommen = a.einkommen === '60-80' || a.einkommen === 'ue80';
   if (stabil && gutesEinkommen) return 'A';
   return 'B';

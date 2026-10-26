@@ -69,8 +69,6 @@ export default function InvestmentCheck() {
     if (advancing.current || currentIdRef.current !== id) return;
     advancing.current = true;
     const next: Answers = { ...answers, [id]: value };
-    // Probezeit-Antwort verwerfen, wenn jemand nicht (mehr) angestellt ist
-    if (id === 'beruf' && value !== 'angestellt') delete next.probezeit;
     setAnswers(next);
     setDirection(1);
     const target = visibleQuestions(next).findIndex((q) => q.id === id) + 1;
