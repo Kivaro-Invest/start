@@ -128,7 +128,8 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
         [c.email]: { email, text: email },
         [c.ziel]: labelFor('ziel', answers.ziel),
         [c.beruf]: labelFor('beruf', answers.beruf),
-        [c.probezeit]: labelFor('probezeit', answers.probezeit),
+        // Probezeit wird seit der Kurzversion in der Berufsfrage mit abgefragt
+        [c.probezeit]: answers.beruf === 'angestellt' ? 'Nein' : answers.beruf === 'angestellt-probezeit' ? 'Ja' : '–',
         [c.einkommen]: labelFor('einkommen', answers.einkommen),
         [c.ersparnisse]: labelFor('ersparnisse', answers.ersparnisse),
         [c.immobilien]: labelFor('immobilien', answers.immobilien),
