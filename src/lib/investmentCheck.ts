@@ -25,8 +25,8 @@ export type QuestionId =
 
 export type Answers = Partial<Record<QuestionId, string>>;
 
-// Kurz gehalten (4 Fragen + Kontakt): Für Werbe-Traffic zählt jede Hürde.
-// Probezeit steckt in der Berufsfrage; Ersparnisse, Immobilienbesitz und Alter klären wir im Telefonat.
+// Kurz gehalten (3 Fragen + Kontakt): Für Werbe-Traffic zählt jede Hürde.
+// Probezeit steckt in der Berufsfrage; Ersparnisse, Immobilienbesitz, Alter und Startzeitpunkt klären wir im Telefonat.
 export const QUESTIONS: Question[] = [
   {
     id: 'ziel',
@@ -59,15 +59,6 @@ export const QUESTIONS: Question[] = [
       { value: 'ue80', label: 'Über 80.000 €' },
     ],
   },
-  {
-    id: 'start',
-    title: 'Wann möchtest du starten?',
-    options: [
-      { value: 'sofort', label: 'Am liebsten sofort' },
-      { value: '3-6', label: 'In 3 – 6 Monaten' },
-      { value: 'info', label: 'Erstmal informieren' },
-    ],
-  },
 ];
 
 export function visibleQuestions(answers: Answers): Question[] {
@@ -92,7 +83,7 @@ export function answersAreValid(answers: Answers): boolean {
  * A = sofort anrufen, B = normal, C = später / Info-Follow-up.
  */
 export function scoreLead(a: Answers): 'A' | 'B' | 'C' {
-  if (a.beruf === 'ohne' || a.start === 'info') return 'C';
+  if (a.beruf === 'ohne') return 'C';
   const festAngestellt = a.beruf === 'angestellt';
   const stabil = festAngestellt || a.beruf === 'selbststaendig';
   const gutesEinkommen = a.einkommen === '60-80' || a.einkommen === 'ue80';

@@ -62,7 +62,7 @@ export default function Datenschutz() {
             <Section title="5. Investment-Check">
               <p>Wenn du den Investment-Check ausfüllst, verarbeiten wir:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>deine Antworten (Ziel, berufliche Situation einschließlich Probezeit, Einkommensspanne, gewünschter Startzeitpunkt),</li>
+                <li>deine Antworten (Ziel, berufliche Situation einschließlich Probezeit, Einkommensspanne),</li>
                 <li>deine Kontaktdaten (Vorname, Telefonnummer, E-Mail-Adresse),</li>
                 <li>die Angaben zu deiner Einwilligung (Zeitpunkt, Wortlaut und Version des Einwilligungstextes, IP-Adresse, Browserkennung),</li>
                 <li>die Herkunft deines Besuchs, falls du über einen Link mit Kampagnen-Kennzeichnung kommst (z. B. QR-Code auf einem Flyer). Diese Kennzeichnung wird nur im Arbeitsspeicher deines Browsers gehalten und nicht auf deinem Gerät gespeichert.</li>
