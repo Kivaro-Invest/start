@@ -26,7 +26,7 @@ export type QuestionId =
 export type Answers = Partial<Record<QuestionId, string>>;
 
 // Kurz gehalten (3 Fragen + Kontakt): Für Werbe-Traffic zählt jede Hürde.
-// Probezeit steckt in der Berufsfrage; Ersparnisse, Immobilienbesitz, Alter und Startzeitpunkt klären wir im Telefonat.
+// Probezeit, Ersparnisse, Immobilienbesitz, Alter und Startzeitpunkt klären wir im Telefonat.
 export const QUESTIONS: Question[] = [
   {
     id: 'ziel',
@@ -42,8 +42,7 @@ export const QUESTIONS: Question[] = [
     id: 'beruf',
     title: 'Was machst du beruflich?',
     options: [
-      { value: 'angestellt', label: 'Angestellt (nach der Probezeit)' },
-      { value: 'angestellt-probezeit', label: 'Angestellt (noch in der Probezeit)' },
+      { value: 'angestellt', label: 'Angestellt' },
       { value: 'selbststaendig', label: 'Selbstständig' },
       { value: 'ohne', label: 'Arbeitssuchend / im Ruhestand' },
     ],
@@ -84,8 +83,7 @@ export function answersAreValid(answers: Answers): boolean {
  */
 export function scoreLead(a: Answers): 'A' | 'B' | 'C' {
   if (a.beruf === 'ohne') return 'C';
-  const festAngestellt = a.beruf === 'angestellt';
-  const stabil = festAngestellt || a.beruf === 'selbststaendig';
+  const stabil = a.beruf === 'angestellt' || a.beruf === 'selbststaendig';
   const gutesEinkommen = a.einkommen === '60-80' || a.einkommen === 'ue80';
   if (stabil && gutesEinkommen) return 'A';
   return 'B';
